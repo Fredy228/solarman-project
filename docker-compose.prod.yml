@@ -1,0 +1,35 @@
+services:
+  client:
+    build:
+      target: prod
+    command: sh -c "
+      npm i
+      && npm run dev
+      "
+    restart: unless-stopped
+
+  server:
+    build:
+      target: prod
+    command: sh -c "
+      npm run prisma:deploy
+      && npm run start:prod
+      "
+    restart: unless-stopped
+
+  db:
+    restart: unless-stopped
+
+  nginx:
+    ports:
+      - "${NGINX_PORT}:80"
+      - "${NGINX_SSL_PORT}:443"
+    volumes:
+      - "${PATH_SSL_FOLDER}:/etc/ssl"
+    command: >
+      sh -c "
+      envsubst '$${PORT_SERVER}, $${NEXT_PUBLIC_SERVER_HOST}'
+      < /etc/nginx/templates/nginx-prod.conf > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'
+      "
+    restart: unless-stopped

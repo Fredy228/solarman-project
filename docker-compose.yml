@@ -1,0 +1,40 @@
+services:
+  client:
+    build:
+      context: ./
+      dockerfile: ./client/Dockerfile
+    working_dir: /app
+    ports:
+      - "${PORT_CLIENT}:3000"
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile
+    working_dir: /app
+    ports:
+      - "${PORT_SERVER}:${PORT_SERVER}"
+    depends_on:
+      - db
+
+  db:
+    image: mongo:8.2
+    ports:
+      - "${DB_EXTERNAL_PORT}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./database:/data/db
+
+  nginx:
+    image: nginx:stable
+    env_file:
+      - .env
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    depends_on:
+      - server
+      - client
