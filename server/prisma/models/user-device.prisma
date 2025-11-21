@@ -1,0 +1,24 @@
+model UserDevice {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  details   DetailsDevice?
+  ipAddress String         @default("unknown")
+
+  accessToken  String
+  refreshToken String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @map("user_id")
+
+  @@map("user_device")
+}
+
+type DetailsDevice {
+  platform String?
+  os       String?
+  browser  String?
+  version  String?
+}
