@@ -22,7 +22,7 @@ export const envSchema = Joi.object({
   COOKIES_EXPIRE: Joi.number()
     .integer()
     .default(7 * 24 * 60 * 60),
-  TOKEN_KEY_CRM: Joi.string().default(''),
-  TELEGRAM_TOKEN: Joi.string().default(''),
-  TELEGRAM_CHAT_ID: Joi.string().default(''),
+  TOKEN_KEY_CRM: Joi.string().default('').allow(''),
+  TELEGRAM_TOKEN: Joi.string().default('').allow(''),
+  TELEGRAM_CHAT_ID: Joi.string().default('').allow(''),
 });

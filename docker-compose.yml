@@ -6,6 +6,8 @@ services:
     working_dir: /app
     ports:
       - "${PORT_CLIENT}:3000"
+    env_file:
+      - .env
     depends_on:
       - server
 
@@ -16,6 +18,12 @@ services:
     working_dir: /app
     ports:
       - "${PORT_SERVER}:${PORT_SERVER}"
+    volumes:
+      - ./server/static:/app/static
+    # environment:
+    #   - DATABASE_URL=${DATABASE_URL}
+    env_file:
+      - .env
     depends_on:
       - db
 

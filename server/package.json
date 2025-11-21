@@ -21,9 +21,6 @@
     "prisma:generate": "prisma generate",
     "prisma:deploy": "prisma db push"
   },
-  "prisma": {
-    "schema": "./prisma"
-  },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",

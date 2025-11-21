@@ -8,7 +8,8 @@ services:
       "
     volumes:
       - ./client:/app/
-      - ./.env:/app/.env
+      # - ./.env:/app/.env
+      - /app/node_modules
     restart: no
 
   server:
@@ -22,7 +23,8 @@ services:
       "
     volumes:
       - ./server:/app/
-      - ./.env:/app/.env
+      # - ./.env:/app/.env
+      - /app/node_modules
     restart: no
 
   db:
