@@ -9,6 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^6.5.0",
+    "@mui/x-data-grid": "^8.19.0",
+    "@refinedev/core": "^5.0.6",
+    "@refinedev/kbar": "^2.0.1",
+    "@refinedev/mui": "^7.0.1",
+    "@refinedev/nextjs-router": "^7.0.4",
+    "@refinedev/simple-rest": "^6.0.1",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0"

@@ -20,8 +20,6 @@ services:
       - "${PORT_SERVER}:${PORT_SERVER}"
     volumes:
       - ./server/static:/app/static
-    # environment:
-    #   - DATABASE_URL=${DATABASE_URL}
     env_file:
       - .env
     depends_on:
