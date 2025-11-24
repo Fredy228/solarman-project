@@ -1,48 +1,66 @@
 import { AuthProvider } from "@refinedev/core";
+import { isAxiosError } from "axios";
+
+import { authApi } from "../features/auth";
+import {
+  ADMIN_AUTH_ROUTES,
+  ADMIN_PROTECTED_ROUTES,
+} from "../configs/routes.config";
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
-    // TODO: Implement your login logic here
-    // Example: Make an API call to your backend
-    // If login is successful, return { success: true, redirectTo: "/" };
-    // If login fails, return { success: false, error: new Error("Login failed") };
-    console.log("Login attempt:", { email, password });
-    return { success: false, error: new Error("Login logic not implemented.") };
+    try {
+      await authApi.login({ email, password });
+      return { success: true, redirectTo: ADMIN_PROTECTED_ROUTES.dashboard };
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        return {
+          success: false,
+          error: new Error("Неправильна пошта чи пароль"),
+        };
+      }
+      return {
+        success: false,
+        error: error instanceof Error ? error : new Error("Невідома помилка"),
+      };
+    }
   },
   logout: async () => {
-    // TODO: Implement your logout logic here
-    // Example: Make an API call to your backend to clear session/cookie
-    // If logout is successful, return { success: true, redirectTo: "/login" };
-    // If logout fails, return { success: false, error: new Error("Logout failed") };
-    console.log("Logout attempt");
-    return {
-      success: false,
-      error: new Error("Logout logic not implemented."),
-    };
+    try {
+      await authApi.logout();
+      return { success: true, redirectTo: ADMIN_AUTH_ROUTES.login };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error : new Error("Невідома помилка"),
+      };
+    }
   },
   check: async () => {
-    // TODO: Implement logic to check if the user is authenticated
-    // Example: Make an API call to a protected endpoint (e.g., /api/auth/me)
-    // If authenticated, return { authenticated: true };
-    // If not authenticated, return { authenticated: false, redirectTo: "/login" };
-    console.log("Auth check attempt");
-    return { authenticated: false, redirectTo: "/admin/login" };
+    try {
+      await authApi.check();
+      return { authenticated: true };
+    } catch {
+      return { authenticated: false, redirectTo: ADMIN_AUTH_ROUTES.login };
+    }
   },
   getPermissions: async () => {
-    // TODO: Implement logic to get user permissions
-    // Example: Fetch user roles or permissions from your backend
-    console.log("Get permissions attempt");
-    return [];
+    try {
+      const user = await authApi.check();
+      return user.role;
+    } catch {
+      return null;
+    }
   },
   getIdentity: async () => {
-    // TODO: Implement logic to get user identity (e.g., user details)
-    // Example: Make an API call to get the current user's profile
-    console.log("Get identity attempt");
-    return null;
+    try {
+      const user = await authApi.check();
+      return user;
+    } catch {
+      return null;
+    }
   },
   onError: async (error) => {
-    // TODO: Implement error handling
-    // Example: Redirect to login page on 401 Unauthorized
     console.error("Auth error:", error);
     return { error };
   },

@@ -1,18 +1,19 @@
 "use client";
 
+import { Typography } from "@mui/material";
 import { AuthPage } from "@refinedev/mui";
 
 export default function Login() {
   return (
     <AuthPage
       type="login"
+      registerLink={false}
+      forgotPasswordLink={false}
+      rememberMe={false}
       title={
-        <div style={{ fontSize: "24px", fontWeight: "bold" }}>Моя Админка</div>
-      }
-      formProps={
-        {
-          // initialValues: { email: "admin@example.com" },
-        }
+        <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+          Адмінка SolarMan
+        </Typography>
       }
     />
   );

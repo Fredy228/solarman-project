@@ -3,16 +3,15 @@
 import React from "react";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { ThemeProvider } from "@emotion/react";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 import {
   RefineSnackbarProvider,
   ThemedLayout,
   useNotificationProvider,
 } from "@refinedev/mui";
-import routerProvider from "@refinedev/nextjs-router";
-import CssBaseline from "@mui/material/CssBaseline";
-import GlobalStyles from "@mui/material/GlobalStyles";
-import { ThemeProvider } from "@mui/material/styles";
 
+import routerProvider from "@refinedev/nextjs-router";
 import { authProvider } from "@/src/providers/authProvider";
 import { theme } from "@/src/configs/mui.config";
 
@@ -42,7 +41,9 @@ export default function AdminLayout({
               },
             ]}
           >
-            <ThemedLayout>{children}</ThemedLayout>
+            <ThemedLayout Title={() => <div>Admin Panel</div>}>
+              {children}
+            </ThemedLayout>
 
             <RefineKbar />
           </Refine>
