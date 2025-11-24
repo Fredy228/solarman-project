@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 
-export interface TUserAuth
-  extends Pick<User, 'id' | 'name' | 'role' | 'email'> {
+export type TUserPublic = Pick<User, 'id' | 'name' | 'role' | 'email'>;
+
+export type TUserAuth = TUserPublic & {
   deviceId: string;
-}
+};

@@ -25,4 +25,6 @@ export const envSchema = Joi.object({
   TOKEN_KEY_CRM: Joi.string().default('').allow(''),
   TELEGRAM_TOKEN: Joi.string().default('').allow(''),
   TELEGRAM_CHAT_ID: Joi.string().default('').allow(''),
+  DEFAULT_ADMIN_EMAIL: Joi.string().default('').allow(''),
+  DEFAULT_ADMIN_PASS: Joi.string().default('').allow(''),
 });

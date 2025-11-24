@@ -1,4 +1,4 @@
 export enum ETokenAuth {
-  ACCESS = 'access_token',
-  REFRESH = 'refresh_token',
+  ACCESS = 'accessToken',
+  REFRESH = 'refreshToken',
 }

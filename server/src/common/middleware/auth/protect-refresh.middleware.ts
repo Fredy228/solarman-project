@@ -28,7 +28,7 @@ export class ProtectRefreshMiddleware
     _: Response,
     next: NextFunction,
   ) {
-    const token = req.cookies.refreshToken as string;
+    const token = req.cookies?.refreshToken as string;
     const { id } = this.verifyToken(token);
 
     const user = await this.prisma.user.findUnique({

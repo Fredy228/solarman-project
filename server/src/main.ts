@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import * as process from 'process';
 import { join } from 'path';
+import cookieParser from 'cookie-parser';
 
 import { MainModule } from './main.module';
 import { HttpExceptionFilter } from './common/filters/http-exeption.filter';
@@ -19,6 +20,7 @@ async function bootstrap() {
     origin: corsOrigin ? corsOrigin.split(',') : ['*'],
     credentials: true,
   });
+  app.use(cookieParser());
   app.useGlobalFilters(new HttpExceptionFilter());
   app.setGlobalPrefix('/api');
   app.useStaticAssets(join(process.cwd(), 'static'), {

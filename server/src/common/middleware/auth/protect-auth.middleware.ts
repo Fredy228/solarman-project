@@ -15,7 +15,7 @@ export class ProtectAuthMiddleware
   }
 
   use(req: ProtectReqType, _: Response, next: NextFunction) {
-    const { exp: _exp, ...user } = this.verifyToken(req.cookies.accessToken);
+    const { exp: _exp, ...user } = this.verifyToken(req.cookies?.accessToken);
 
     req.user = user;
     next();
