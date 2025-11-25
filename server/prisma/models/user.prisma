@@ -12,6 +12,8 @@ model User {
   updatedAt DateTime @updatedAt
 
   devices UserDevice[]
+
+  @@map("user")
 }
 
 enum Role {
