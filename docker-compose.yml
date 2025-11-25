@@ -26,34 +26,23 @@ services:
       - db
 
   db:
-    image: mongo:8.2
+    build: ./mongodb_custom
     command:
+      - "mongod"
       - "--replSet"
       - "rs0"
       - "--bind_ip_all"
+      - "--auth"
+      - "--keyFile"
+      - "/data/keyfile/mongo.key"
     ports:
       - "${DB_EXTERNAL_PORT}:27017"
-    # environment:
-    #   MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
-    #   MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-    healthcheck:
-      test: |
-        mongosh --eval "
-          try {
-            rs.status();
-          } catch (err) {
-            rs.initiate({
-              _id: 'rs0',
-              members: [{ _id: 0, host: 'db:27017' }]
-            });
-          }
-        "
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./database:/data/db
+      - ./keys:/data/keyfile
 
   nginx:
     image: nginx:stable
