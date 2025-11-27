@@ -3,11 +3,9 @@ import axios, {
   AxiosInstance,
   AxiosResponse,
   InternalAxiosRequestConfig,
-  isAxiosError,
 } from "axios";
 
 import { API_ROUTES, API_URL } from "../configs/api-routes.config";
-import { ADMIN_AUTH_ROUTES } from "../configs/routes.config";
 
 interface RetryConfig extends InternalAxiosRequestConfig {
   _isRetry?: boolean;
@@ -50,8 +48,8 @@ class ApiClient {
       if (originalRequest?.url === API_ROUTES.auth.login) throw error;
 
       if (!this.refreshPromise) {
-        this.refreshPromise = this.axiosInstance
-          .get<{ accessToken: string }>(API_ROUTES.auth.refresh, {
+        this.refreshPromise = axios
+          .get<{ accessToken: string }>(API_URL + API_ROUTES.auth.refresh, {
             withCredentials: true,
           })
           .then(({ data }) => {
@@ -62,18 +60,8 @@ class ApiClient {
           });
       }
 
-      try {
-        await this.refreshPromise;
-        return this.axiosInstance.request(originalRequest);
-      } catch (e) {
-        if (isAxiosError(e) && e.response?.status === 401) {
-          // toast.error("Your session has expired.");
-          document.location.href = ADMIN_AUTH_ROUTES.login;
-        } else {
-          // toast.error("Unknown error");
-        }
-        throw e;
-      }
+      await this.refreshPromise;
+      return this.axiosInstance.request(originalRequest);
     }
     throw error;
   };

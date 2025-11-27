@@ -11,25 +11,26 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
     "@mui/x-data-grid": "^8.19.0",
     "@refinedev/core": "^5.0.6",
     "@refinedev/kbar": "^2.0.1",
     "@refinedev/mui": "^7.0.1",
     "@refinedev/nextjs-router": "^7.0.4",
-    "@refinedev/simple-rest": "^6.0.1",
+    "axios": "^1.13.2",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "24.10.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
-    "tailwindcss": "^4",
+    "tailwindcss": "^4.1.17",
     "typescript": "^5"
   }
 }

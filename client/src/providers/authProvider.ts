@@ -41,7 +41,14 @@ export const authProvider: AuthProvider = {
       await authApi.check();
       return { authenticated: true };
     } catch {
-      return { authenticated: false, redirectTo: ADMIN_AUTH_ROUTES.login };
+      return {
+        authenticated: false,
+        redirectTo: ADMIN_AUTH_ROUTES.login,
+        error: {
+          message: "Увійдіть в систему",
+          name: "Unauthorized",
+        },
+      };
     }
   },
   getPermissions: async () => {

@@ -3,6 +3,7 @@
 import React from "react";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import routerProvider from "@refinedev/nextjs-router";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline, GlobalStyles } from "@mui/material";
 import {
@@ -10,10 +11,13 @@ import {
   ThemedLayout,
   useNotificationProvider,
 } from "@refinedev/mui";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import routerProvider from "@refinedev/nextjs-router";
 import { authProvider } from "@/src/providers/authProvider";
 import { theme } from "@/src/configs/mui.config";
+import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
+import ListAlt from "@mui/icons-material/ListAlt";
+import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 
 export default function AdminLayout({
   children,
@@ -33,15 +37,31 @@ export default function AdminLayout({
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
+              disableTelemetry: true,
             }}
             resources={[
               {
-                name: "dashboard",
-                list: "/admin",
+                name: "Dashboard",
+                list: ADMIN_PROTECTED_ROUTES.dashboard,
+                meta: {
+                  label: "Головна",
+                  icon: <DashboardIcon />,
+                },
+              },
+              {
+                name: "portfolio",
+                list: ADMIN_PROTECTED_ROUTES.portfolio,
+                meta: {
+                  label: "Портфоліо",
+                  icon: <ListAlt />,
+                },
               },
             ]}
           >
-            <ThemedLayout Title={() => <div>Admin Panel</div>}>
+            <ThemedLayout
+              Sider={ModifiedSider}
+              Title={() => <div>Admin Panel</div>}
+            >
               {children}
             </ThemedLayout>
 
