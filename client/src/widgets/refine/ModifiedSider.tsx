@@ -26,6 +26,7 @@ import {
   useLink,
   useMenu,
   useWarnAboutChange,
+  useIsAuthenticated,
 } from "@refinedev/core";
 import {
   RefineThemedLayoutSiderProps,
@@ -59,6 +60,8 @@ export const ModifiedSider: React.FC<RefineThemedLayoutSiderProps> = ({
   const isExistAuthentication = useIsExistAuthentication();
   const { warnWhen, setWarnWhen } = useWarnAboutChange();
   const { mutate: mutateLogout } = useLogout();
+
+  const { data } = useIsAuthenticated();
 
   const defaultExpandMenuItems = (() => {
     const defaultOpenKeys = {};
@@ -301,6 +304,10 @@ export const ModifiedSider: React.FC<RefineThemedLayoutSiderProps> = ({
   const items = renderTreeView(menuItems, selectedKey);
 
   const renderSider = () => {
+    if (!data?.authenticated) {
+      return null;
+    }
+
     if (render) {
       return render({
         logout,

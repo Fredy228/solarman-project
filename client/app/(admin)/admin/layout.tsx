@@ -12,11 +12,11 @@ import {
   useNotificationProvider,
 } from "@refinedev/mui";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ListAlt from "@mui/icons-material/ListAlt";
 
 import { authProvider } from "@/src/providers/authProvider";
 import { theme } from "@/src/configs/mui.config";
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
-import ListAlt from "@mui/icons-material/ListAlt";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 
 export default function AdminLayout({
@@ -50,7 +50,10 @@ export default function AdminLayout({
               },
               {
                 name: "portfolio",
-                list: ADMIN_PROTECTED_ROUTES.portfolio,
+                list: ADMIN_PROTECTED_ROUTES.portfolio.list,
+                create: ADMIN_PROTECTED_ROUTES.portfolio.create,
+                edit: ADMIN_PROTECTED_ROUTES.portfolio.edit,
+                show: ADMIN_PROTECTED_ROUTES.portfolio.show,
                 meta: {
                   label: "Портфоліо",
                   icon: <ListAlt />,
