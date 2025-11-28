@@ -8,14 +8,37 @@ import {
   useDataGrid,
 } from "@refinedev/mui";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
 import ProtectProvider from "@/src/providers/protect-provider";
 
 export default function PortfolioList() {
   const { dataGridProps } = useDataGrid();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", type: "number", width: 50 },
+    {
+      field: "cover",
+      headerName: "Головна фотографія",
+      renderCell: function render({ row }) {
+        return row.cover ? (
+          <Box
+            component="img"
+            src={row.cover}
+            alt={row.title}
+            sx={{
+              width: 80,
+              height: 56,
+              objectFit: "cover",
+              borderRadius: "4px",
+            }}
+          />
+        ) : null;
+      },
+      align: "center",
+      headerAlign: "center",
+      flex: 1,
+    },
     { field: "title", headerName: "Назва", flex: 1 },
+    { field: "description", headerName: "Опис", flex: 1 },
     {
       field: "actions",
       headerName: "Дії",
@@ -37,7 +60,12 @@ export default function PortfolioList() {
   return (
     <ProtectProvider keyProvider="portfolio-list">
       <List>
-        <DataGrid {...(dataGridProps as any)} columns={columns} autoHeight />
+        <DataGrid
+          {...(dataGridProps as any)}
+          columns={columns}
+          autoHeight
+          rowHeight={72}
+        />
       </List>
     </ProtectProvider>
   );
