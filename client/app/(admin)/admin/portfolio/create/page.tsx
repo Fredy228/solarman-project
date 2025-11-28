@@ -3,10 +3,21 @@
 import { Create } from "@refinedev/mui";
 import { Box, TextField } from "@mui/material";
 import { useForm } from "@refinedev/react-hook-form";
-import { Controller } from "react-hook-form";
-import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { useEffect } from "react";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { Controller } from "react-hook-form";
+
+import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
+import { portfolioSchema } from "@/src/validators/portfolio";
+
+interface IPortfolioCreate {
+  cover: File | null;
+  title: string;
+  tag: string;
+  description: string;
+  images: File[] | null;
+}
 
 export default function PortfolioCreate() {
   const {
@@ -17,16 +28,26 @@ export default function PortfolioCreate() {
     formState: { errors },
     watch,
     setValue,
-  } = useForm();
-
-  const titleValue = watch("title");
+  } = useForm<IPortfolioCreate>({
+    resolver: joiResolver(portfolioSchema),
+    defaultValues: {
+      cover: null,
+      title: "",
+      tag: "",
+      description: "",
+      images: null,
+    },
+  });
 
   useEffect(() => {
-    if (titleValue) {
-      const slug = generateSlug(titleValue);
-      setValue("tag", slug, { shouldValidate: true });
-    }
-  }, [titleValue, setValue]);
+    const subscription = watch((value, { name }) => {
+      if (name === "title" && value.title) {
+        const slug = generateSlug(value.title);
+        setValue("tag", slug, { shouldValidate: true });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue]);
 
   return (
     <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
@@ -76,6 +97,7 @@ export default function PortfolioCreate() {
 
         <TextField
           {...register("description")}
+          error={!!errors.description}
           margin="normal"
           fullWidth
           slotProps={{ inputLabel: { shrink: true } }}

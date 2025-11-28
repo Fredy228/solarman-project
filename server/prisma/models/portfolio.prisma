@@ -1,0 +1,15 @@
+model Portfolio {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  tag         String  @unique
+  title       String
+  description String?
+
+  cover  String
+  images String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("portfolio")
+}
