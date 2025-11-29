@@ -65,6 +65,8 @@ export default function PortfolioCreate() {
               value={field.value}
               onChange={field.onChange}
               label="Завантажити головну фотографію"
+              error={!!errors.cover}
+              helperText={(errors as any).cover?.message}
             />
           )}
         />
@@ -98,13 +100,14 @@ export default function PortfolioCreate() {
         <TextField
           {...register("description")}
           error={!!errors.description}
+          helperText={(errors as any).description?.message}
           margin="normal"
           fullWidth
           slotProps={{ inputLabel: { shrink: true } }}
           label="Опис"
           name="description"
           multiline
-          rows={4}
+          rows={5}
         />
 
         <Controller
@@ -117,6 +120,8 @@ export default function PortfolioCreate() {
               onChange={field.onChange}
               label="Завантажити додаткові фотографії"
               multiple
+              error={!!errors.images}
+              helperText={(errors as any).images?.message}
             />
           )}
         />

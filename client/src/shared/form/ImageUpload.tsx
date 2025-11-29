@@ -9,6 +9,8 @@ interface ImageUploadProps {
   onChange: (value: File | File[] | null) => void;
   multiple?: boolean;
   label: string;
+  error?: boolean;
+  helperText?: string;
 }
 
 export const ImageUpload = ({
@@ -16,6 +18,8 @@ export const ImageUpload = ({
   onChange,
   multiple = false,
   label,
+  error = false,
+  helperText,
 }: ImageUploadProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -45,7 +49,11 @@ export const ImageUpload = ({
 
   return (
     <Box>
-      <Button variant="contained" component="label">
+      <Button
+        variant="contained"
+        component="label"
+        color={error ? "error" : "primary"}
+      >
         {label}
         <input
           type="file"
@@ -55,6 +63,15 @@ export const ImageUpload = ({
           onChange={handleFileChange}
         />
       </Button>
+      {helperText && (
+        <Typography
+          color="error"
+          variant="caption"
+          sx={{ display: "block", mt: 1 }}
+        >
+          {helperText}
+        </Typography>
+      )}
 
       {files.length > 0 && (
         <Box
