@@ -1,9 +1,10 @@
 model Portfolio {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  tag         String  @unique
+  tag         String   @unique
   title       String
   description String?
+  date        DateTime
 
   cover  String
   images String[] @default([])

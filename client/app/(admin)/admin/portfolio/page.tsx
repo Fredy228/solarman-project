@@ -35,10 +35,10 @@ export default function PortfolioList() {
       },
       align: "center",
       headerAlign: "center",
-      flex: 1,
+      width: 100,
     },
-    { field: "title", headerName: "Назва", flex: 1 },
-    { field: "description", headerName: "Опис", flex: 1 },
+    { field: "title", headerName: "Назва", flex: 1, minWidth: 250 },
+    { field: "date", headerName: "Дата завершення", width: 100 },
     {
       field: "actions",
       headerName: "Дії",
@@ -53,7 +53,7 @@ export default function PortfolioList() {
       },
       align: "center",
       headerAlign: "center",
-      minWidth: 150,
+      width: 150,
     },
   ];
 

@@ -34,4 +34,12 @@ export class PortfolioCreateDto {
     }),
   )
   description: string;
+
+  @JoiSchema(
+    Joi.date().required().messages({
+      'any.required': "Дата є обов'язковим полем",
+      'date.base': 'Необхідно вказати дату',
+    }),
+  )
+  date: Date;
 }

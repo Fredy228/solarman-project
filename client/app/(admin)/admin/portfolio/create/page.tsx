@@ -17,6 +17,7 @@ interface IPortfolioCreate {
   tag: string;
   description: string;
   images: File[] | null;
+  date: string;
 }
 
 export default function PortfolioCreate() {
@@ -36,6 +37,7 @@ export default function PortfolioCreate() {
       tag: "",
       description: "",
       images: null,
+      date: "",
     },
   });
 
@@ -95,6 +97,20 @@ export default function PortfolioCreate() {
           slotProps={{ inputLabel: { shrink: true } }}
           label="Тег (для SEO)"
           name="tag"
+        />
+
+        <TextField
+          {...register("date", {
+            required: "Це поле є обов'язковим",
+          })}
+          error={!!(errors as any)?.date}
+          helperText={(errors as any)?.date?.message}
+          margin="normal"
+          fullWidth
+          slotProps={{ inputLabel: { shrink: true } }}
+          label="Дата завершення"
+          name="date"
+          type="date"
         />
 
         <TextField

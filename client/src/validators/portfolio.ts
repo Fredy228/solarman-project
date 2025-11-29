@@ -23,6 +23,11 @@ export const portfolioSchema = Joi.object({
     "string.max": "Тег не може перевищувати 300 символів",
   }),
 
+  date: Joi.date().required().messages({
+    "any.required": "Дата є обов'язковим полем",
+    "date.base": "Необхідно вказати дату",
+  }),
+
   description: Joi.string().trim().min(5).max(5000).required().messages({
     "string.empty": "Опис є обов'язковим полем",
     "any.required": "Опис є обов'язковим полем",
