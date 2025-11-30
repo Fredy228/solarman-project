@@ -19,6 +19,7 @@ import { theme } from "@/src/configs/mui.config";
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import { dataProvider } from "@/src/providers/dataProvider";
+import { accessControlProvider } from "@/src/providers/accessControlProvider";
 
 export default function AdminLayout({
   children,
@@ -36,6 +37,7 @@ export default function AdminLayout({
             authProvider={authProvider}
             notificationProvider={useNotificationProvider}
             dataProvider={dataProvider}
+            accessControlProvider={accessControlProvider}
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,

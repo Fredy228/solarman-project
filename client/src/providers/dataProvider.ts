@@ -77,4 +77,8 @@ export const dataProvider: DataProvider = {
     }
     return baseDataProvider.update({ resource, id, variables });
   },
+
+  deleteOne: async ({ resource, id, variables }) => {
+    return baseDataProvider.deleteOne({ resource, id, variables });
+  },
 };

@@ -7,8 +7,13 @@ import {
   ShowButton,
   useDataGrid,
 } from "@refinedev/mui";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import {
+  DataGrid,
+  getGridDateOperators,
+  getGridStringOperators,
+  GridColDef,
+} from "@mui/x-data-grid";
+import { Box, Stack } from "@mui/material";
 import ProtectProvider from "@/src/providers/protect-provider";
 
 export default function PortfolioList() {
@@ -22,11 +27,12 @@ export default function PortfolioList() {
         return row.cover ? (
           <Box
             component="img"
-            src={row.cover}
+            src={"/" + row.cover}
             alt={row.title}
             sx={{
-              width: 80,
-              height: 56,
+              width: 170,
+              height: 120,
+              padding: "10px 0",
               objectFit: "cover",
               borderRadius: "4px",
             }}
@@ -35,25 +41,52 @@ export default function PortfolioList() {
       },
       align: "center",
       headerAlign: "center",
-      width: 100,
+      width: 180,
+      sortable: false,
+      filterable: false,
     },
-    { field: "title", headerName: "Назва", flex: 1, minWidth: 250 },
-    { field: "date", headerName: "Дата завершення", width: 100 },
+    {
+      field: "title",
+      headerName: "Назва",
+      flex: 1,
+      minWidth: 250,
+      filterOperators: getGridStringOperators().filter(
+        (operator) => operator.value === "contains",
+      ),
+    },
+    {
+      field: "date",
+      headerName: "Дата завершення",
+      type: "date",
+      width: 150,
+      align: "center",
+      valueGetter: (value) => value && new Date(value),
+      filterOperators: getGridDateOperators().filter((operator) =>
+        ["is", "onOrAfter", "onOrBefore"].includes(operator.value),
+      ),
+    },
     {
       field: "actions",
       headerName: "Дії",
       renderCell: function render({ row }) {
         return (
-          <>
-            <EditButton hideText recordItemId={row.id} />
+          <Stack
+            direction="row"
+            spacing={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
             <ShowButton hideText recordItemId={row.id} />
+            <EditButton hideText recordItemId={row.id} />
             <DeleteButton hideText recordItemId={row.id} />
-          </>
+          </Stack>
         );
       },
       align: "center",
       headerAlign: "center",
       width: 150,
+      sortable: false,
+      filterable: false,
     },
   ];
 
@@ -64,7 +97,7 @@ export default function PortfolioList() {
           {...(dataGridProps as any)}
           columns={columns}
           autoHeight
-          rowHeight={72}
+          rowHeight={120}
         />
       </List>
     </ProtectProvider>
