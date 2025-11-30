@@ -5,7 +5,9 @@ import { PortfolioCreateDto } from './dto/portfolio.create.dto';
 import { PrismaService } from '../../libs/prisma/prisma.service';
 import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 import { FileService } from '../../libs/file/file.service';
-import { PortfolioGetManyDto } from './dto/portfolio.get-many.dto';
+import { PortfolioGetManyQueryDto } from './dto/portfolio-get-many.query.dto';
+import { generatePrismaDateFilter } from '../../helpers/prisma/generate-prisma-date-filter';
+import { generatePrismaPaginateOption } from '../../helpers/prisma/generate-prisma-paginate-option';
 
 @Injectable()
 export class PortfolioService {
@@ -14,7 +16,7 @@ export class PortfolioService {
     private readonly fileService: FileService,
   ) {}
 
-  async getMany(query: PortfolioGetManyDto) {
+  async getMany(query: PortfolioGetManyQueryDto) {
     const {
       _start,
       _end,
@@ -31,42 +33,12 @@ export class PortfolioService {
         contains: title_like,
         mode: 'insensitive',
       },
+      date: generatePrismaDateFilter({ date, date_gte, date_lte }),
     };
-
-    const dateFilter: Prisma.DateTimeFilter = {};
-
-    if (date) {
-      const gte = new Date(date);
-      gte.setHours(0, 0, 0, 0);
-      const lt = new Date(date);
-      lt.setHours(23, 59, 59, 999);
-      dateFilter.gte = gte;
-      dateFilter.lt = lt;
-    }
-
-    if (date_gte) {
-      const gte = new Date(date_gte);
-      gte.setHours(0, 0, 0, 0);
-      dateFilter.gte = gte;
-    }
-
-    if (date_lte) {
-      const lte = new Date(date_lte);
-      lte.setHours(23, 59, 59, 999);
-      dateFilter.lte = lte;
-    }
-
-    if (Object.keys(dateFilter).length > 0) {
-      whereOption.date = dateFilter;
-    }
 
     const [portfolios, total] = await this.prisma.$transaction([
       this.prisma.portfolio.findMany({
-        skip: _start,
-        take: _end - _start,
-        orderBy: {
-          [_sort]: _order.toLowerCase(),
-        },
+        ...generatePrismaPaginateOption(_start, _end, _sort, _order),
         where: whereOption,
       }),
       this.prisma.portfolio.count({

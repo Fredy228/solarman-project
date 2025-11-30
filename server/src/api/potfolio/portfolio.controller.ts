@@ -19,7 +19,7 @@ import { type ProtectReqType } from '../../common/types/request.type';
 import { FileValidatorPipe } from '../../common/pipe/validator-file.pipe';
 import { PortfolioCreateDto } from './dto/portfolio.create.dto';
 import { PortfolioService } from './portfolio.service';
-import { PortfolioGetManyDto } from './dto/portfolio.get-many.dto';
+import { PortfolioGetManyQueryDto } from './dto/portfolio-get-many.query.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -28,7 +28,7 @@ export class PortfolioController {
   @Get('/')
   @HttpCode(HttpStatus.OK)
   async getMany(
-    @Query(JoiPipe) query: PortfolioGetManyDto,
+    @Query(JoiPipe) query: PortfolioGetManyQueryDto,
     @Res() res: Response,
   ) {
     const { data, total } = await this.portfolioService.getMany(query);
