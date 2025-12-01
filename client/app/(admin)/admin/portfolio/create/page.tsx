@@ -4,7 +4,7 @@ import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 
-import { portfolioSchema } from "@/src/validators/portfolio";
+import { portfolioSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
 import { IPortfolio } from "@/src/features/portfolio";
 

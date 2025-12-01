@@ -7,7 +7,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
-import { portfolioSchema } from "@/src/validators/portfolio";
+import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
 import { IPortfolio } from "@/src/features/portfolio";
 
@@ -24,7 +24,11 @@ export default function PortfolioEdit() {
   const portfolioData = useMemo(() => {
     return (
       data?.data && {
-        ...data.data,
+        title: data.data.title,
+        tag: data.data.tag,
+        description: data.data.description,
+        cover: data.data.cover,
+        images: data.data.images,
         date: data.data.date
           ? (new Date(data.data.date)
               .toISOString()
@@ -44,8 +48,8 @@ export default function PortfolioEdit() {
     watch,
     setValue,
     reset,
-  } = useForm<IPortfolio, HttpError, IPortfolio>({
-    resolver: joiResolver(portfolioSchema),
+  } = useForm<IPortfolio, HttpError, Partial<IPortfolio>>({
+    resolver: joiResolver(portfolioUpdateSchema),
     refineCoreProps: {
       resource: "portfolio",
       id,
@@ -64,19 +68,31 @@ export default function PortfolioEdit() {
 
   useEffect(() => {
     if (portfolioData) {
-      reset(portfolioData);
+      reset({
+        ...portfolioData,
+        images: null,
+        cover: null,
+      });
     }
   }, [portfolioData, reset]);
 
-  const handleSave = (data: IPortfolio) => {
-    const dirtyData: Partial<IPortfolio> = {};
-    const dirtyFieldKeys = Object.keys(dirtyFields) as (keyof IPortfolio)[];
+  const handleSave = (data: Partial<IPortfolio>) => {
+    console.log("update portfolio");
+    const updatedData: Partial<IPortfolio> = {};
 
-    for (const key of dirtyFieldKeys) {
-      // @ts-expect-error We are intentionally creating a partial object from a full object
-      dirtyData[key] = data[key];
-    }
-    void onFinish(dirtyData as IPortfolio);
+    (Object.keys(dirtyFields) as Array<keyof IPortfolio>).forEach((key) => {
+      if (key === "title" && !dirtyFields["tag"]) {
+        updatedData["title"] = data["title"];
+        updatedData["tag"] = data["tag"];
+      }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      updatedData[key] = data[key];
+    });
+
+    if (Object.keys(updatedData).length === 0) return;
+
+    void onFinish(updatedData);
   };
 
   return (
@@ -84,7 +100,7 @@ export default function PortfolioEdit() {
       isLoading={isLoading || formLoading}
       saveButtonProps={{
         ...saveButtonProps,
-        onClick: handleSubmit(handleSave),
+        onClick: handleSubmit(handleSave, (err) => console.log(err)),
       }}
     >
       <PortfolioForm

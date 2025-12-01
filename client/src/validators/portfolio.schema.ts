@@ -1,13 +1,10 @@
 import Joi from "joi";
 
 export const portfolioSchema = Joi.object({
-  cover: Joi.object()
-    .instance(File)
-    .required()
-    .messages({
-      "any.required": "Головна фотографія є обов'язковою",
-      "object.base": "Необхідно завантажити файл",
-    }),
+  cover: Joi.object().instance(File).required().messages({
+    "any.required": "Головна фотографія є обов'язковою",
+    "object.base": "Необхідно завантажити файл",
+  }),
 
   title: Joi.string().trim().min(2).max(250).required().messages({
     "string.empty": "Назва є обов'язковим полем",
@@ -43,4 +40,10 @@ export const portfolioSchema = Joi.object({
     .messages({
       "array.max": "Можна завантажити не більше 10 зображень",
     }),
+});
+
+export const portfolioUpdateSchema = portfolioSchema.keys({
+  cover: Joi.object().instance(File).allow(null).optional().messages({
+    "object.base": "Необхідно завантажити файл",
+  }),
 });
