@@ -1,7 +1,7 @@
 "use client";
 
 import { Edit } from "@refinedev/mui";
-import { HttpError, useOne } from "@refinedev/core";
+import { HttpError, useNavigation, useOne } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useParams } from "next/navigation";
@@ -13,6 +13,7 @@ import { IPortfolio } from "@/src/features/portfolio";
 
 export default function PortfolioEdit() {
   const { id } = useParams<{ id: string }>();
+  const { list } = useNavigation();
 
   const {
     query: { data, isLoading },
@@ -24,11 +25,7 @@ export default function PortfolioEdit() {
   const portfolioData = useMemo(() => {
     return (
       data?.data && {
-        title: data.data.title,
-        tag: data.data.tag,
-        description: data.data.description,
-        cover: data.data.cover,
-        images: data.data.images,
+        ...data?.data,
         date: data.data.date
           ? (new Date(data.data.date)
               .toISOString()
@@ -69,28 +66,31 @@ export default function PortfolioEdit() {
   useEffect(() => {
     if (portfolioData) {
       reset({
-        ...portfolioData,
-        images: null,
-        cover: null,
+        title: portfolioData.title,
+        tag: portfolioData.tag,
+        description: portfolioData.description,
+        date: portfolioData.date,
       });
     }
   }, [portfolioData, reset]);
 
   const handleSave = (data: Partial<IPortfolio>) => {
-    console.log("update portfolio");
+    if (Object.keys(dirtyFields).length === 0) {
+      return list("portfolio");
+    }
+
     const updatedData: Partial<IPortfolio> = {};
 
     (Object.keys(dirtyFields) as Array<keyof IPortfolio>).forEach((key) => {
       if (key === "title" && !dirtyFields["tag"]) {
         updatedData["title"] = data["title"];
         updatedData["tag"] = data["tag"];
+      } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        updatedData[key] = data[key];
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      updatedData[key] = data[key];
     });
-
-    if (Object.keys(updatedData).length === 0) return;
 
     void onFinish(updatedData);
   };
