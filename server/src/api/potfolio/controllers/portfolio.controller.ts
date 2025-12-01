@@ -1,17 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
-  Req,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JoiPipe } from 'nestjs-joi';
-
-import { type ProtectReqType } from '../../../common/types/request.type';
 import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
 import { PortfolioService } from '../portfolio.service';
@@ -29,7 +28,6 @@ export class PortfolioController {
     ]),
   )
   async create(
-    @Req() req: ProtectReqType,
     @UploadedFiles(
       new FileValidatorPipe({
         cover: {
@@ -53,5 +51,11 @@ export class PortfolioController {
     @Body(JoiPipe) body: PortfolioCreateDto,
   ) {
     return this.portfolioService.create(body, files);
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async getOne(@Param('id') id: string): Promise<void> {
+    return this.portfolioService.deleteById(id);
   }
 }

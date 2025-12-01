@@ -111,4 +111,11 @@ export class PortfolioService {
 
     return portfolio;
   }
+
+  async deleteById(id: string): Promise<void> {
+    const portfolio = await this.getOne(id);
+
+    this.fileService.deleteFolder(['static', 'portfolio', portfolio.tag]);
+    await this.prisma.portfolio.delete({ where: { id } });
+  }
 }

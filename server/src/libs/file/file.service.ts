@@ -144,11 +144,9 @@ export class FileService {
     }
   }
 
-  deleteFolders(folderPaths: string[]): void {
+  deleteFolder(folderPath: string[]): void {
     try {
-      folderPaths.forEach((folderPath: string) =>
-        removeSync(join(process.cwd(), folderPath)),
-      );
+      removeSync(join(process.cwd(), ...folderPath));
     } catch (e) {
       this.logger.error(e);
       throw new CustomHttpExceptionUtil(
