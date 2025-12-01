@@ -14,7 +14,7 @@ import Image from "next/image";
 
 import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
-import { ImagesPreview } from "../../../widgets/refine/ImagesPreview";
+import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 import { IPortfolio } from "@/src/features/portfolio";
 
 interface IPortfolioForm {
@@ -151,7 +151,11 @@ export const PortfolioForm = ({
         )}
       />
       {isEdit && portfolio?.images && (
-        <ImagesPreview images={portfolio.images} />
+        <ImagesPreview
+          id={portfolio.id}
+          images={portfolio.images}
+          resource={"portfolio/image"}
+        />
       )}
     </Box>
   );

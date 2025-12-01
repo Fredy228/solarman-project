@@ -14,6 +14,7 @@ import { JoiPipe } from 'nestjs-joi';
 import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
 import { PortfolioService } from '../portfolio.service';
+import { PortfolioGetManyQueryDto } from '../dto/portfolio-delete-image.query.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -55,7 +56,16 @@ export class PortfolioController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async getOne(@Param('id') id: string): Promise<void> {
+  async deleteById(@Param('id') id: string): Promise<void> {
     return this.portfolioService.deleteById(id);
+  }
+
+  @Delete('/image/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteImageById(
+    @Param('id') id: string,
+    @Body(JoiPipe) body: PortfolioGetManyQueryDto,
+  ): Promise<void> {
+    return this.portfolioService.deleleImageById(id, body.image);
   }
 }

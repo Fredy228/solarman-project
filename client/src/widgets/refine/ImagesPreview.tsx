@@ -5,23 +5,47 @@ import { Close } from "@mui/icons-material";
 import { useDelete } from "@refinedev/core";
 import Image from "next/image";
 import { IPortfolio } from "@/src/features/portfolio";
+import { useState } from "react";
 
-export const ImagesPreview = ({ images }: { images: IPortfolio["images"] }) => {
+export const ImagesPreview = ({
+  images,
+  resource,
+  id,
+}: {
+  id?: string;
+  images: IPortfolio["images"];
+  resource: string;
+}) => {
   const { mutate: deleteImage } = useDelete();
+  const [savedImages, setSavedImages] = useState<string[]>(
+    (images as string[]) || [],
+  );
 
-  const handleDelete = (id: string) => {
-    deleteImage({
-      resource: "portfolio/image",
-      id,
-    });
+  const handleDelete = (imageWillDelete: string) => {
+    if (!id) return;
+    deleteImage(
+      {
+        resource,
+        id,
+        values: {
+          image: imageWillDelete,
+        },
+      },
+      {
+        onSuccess: async () => {
+          setSavedImages((prev) =>
+            prev.filter((item) => item !== imageWillDelete),
+          );
+        },
+      },
+    );
   };
 
   if (!images) return null;
 
   return (
     <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-      {images.map((image) => {
-        if (typeof image !== "string") return null;
+      {savedImages.map((image) => {
         return (
           <Box key={image} sx={{ position: "relative" }}>
             <Image

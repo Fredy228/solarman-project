@@ -1,4 +1,5 @@
 export interface IPortfolio {
+  id?: string;
   cover: File | null | string;
   title: string;
   tag: string;
