@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Portfolio, Prisma } from '@prisma/client';
 
 import { PortfolioCreateDto } from './dto/portfolio.create.dto';
 import { PrismaService } from '../../libs/prisma/prisma.service';
@@ -94,5 +94,21 @@ export class PortfolioService {
         images: imagesPath,
       },
     });
+  }
+
+  async getOne(id: string): Promise<Portfolio> {
+    const portfolio = await this.prisma.portfolio.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!portfolio)
+      throw new CustomHttpExceptionUtil(
+        HttpStatus.NOT_FOUND,
+        'Портфоліо не знайдено',
+      );
+
+    return portfolio;
   }
 }

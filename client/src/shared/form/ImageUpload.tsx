@@ -42,10 +42,12 @@ export const ImageUpload = ({
         onChange(null);
       }
     },
-    [value, onChange]
+    [value, onChange],
   );
 
-  const files = Array.isArray(value) ? value : value ? [value] : [];
+  const files = (Array.isArray(value) ? value : value ? [value] : []).filter(
+    (f) => typeof f !== "string",
+  );
 
   return (
     <Box>
