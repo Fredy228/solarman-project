@@ -1,9 +1,18 @@
-export interface IPortfolio {
-  id?: string;
-  cover: File | null | string;
+interface IPortfolioBase {
   title: string;
   tag: string;
   description: string;
-  images: File[] | null | string[];
-  date: Date | null;
+}
+
+export interface IPortfolio extends IPortfolioBase {
+  id: string;
+  date: string;
+  images: string[];
+  cover: string;
+}
+
+export interface IPortfolioForm extends IPortfolioBase {
+  date: string | null;
+  images: File[] | null;
+  cover: File | null;
 }

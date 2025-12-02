@@ -3,10 +3,11 @@
 import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import { HttpError } from "@refinedev/core";
 
 import { portfolioSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import { IPortfolio } from "@/src/features/portfolio";
+import { IPortfolioForm } from "@/src/features/portfolio";
 
 export default function PortfolioCreate() {
   const {
@@ -17,7 +18,7 @@ export default function PortfolioCreate() {
     formState: { errors },
     watch,
     setValue,
-  } = useForm<IPortfolio>({
+  } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
     resolver: joiResolver(portfolioSchema),
     defaultValues: {
       cover: null,

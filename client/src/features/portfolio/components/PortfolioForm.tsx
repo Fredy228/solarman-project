@@ -15,36 +15,36 @@ import Image from "next/image";
 import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
-import { IPortfolio } from "@/src/features/portfolio";
+import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 
-interface IPortfolioForm {
-  control: Control<any>;
-  errors: FieldErrors<any>;
-  register: UseFormRegister<any>;
-  watch: UseFormWatch<any>;
-  setValue: UseFormSetValue<any>;
+type PortfolioFormProps = {
+  control: Control<IPortfolioForm>;
+  errors: FieldErrors<IPortfolioForm>;
+  registerAction: UseFormRegister<IPortfolioForm>;
+  watch: UseFormWatch<IPortfolioForm>;
+  setValueAction: UseFormSetValue<IPortfolioForm>;
   isEdit?: boolean;
   portfolio?: IPortfolio;
-}
+};
 
 export const PortfolioForm = ({
   control,
   errors,
-  register,
+  registerAction,
   watch,
-  setValue,
+  setValueAction,
   isEdit = false,
   portfolio,
-}: IPortfolioForm) => {
+}: PortfolioFormProps) => {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === "title" && value.title) {
         const slug = generateSlug(value.title);
-        setValue("tag", slug, { shouldValidate: true });
+        setValueAction("tag", slug, { shouldValidate: true });
       }
     });
     return () => subscription.unsubscribe();
-  }, [watch, setValue]);
+  }, [watch, setValueAction]);
 
   return (
     <Box
@@ -66,11 +66,11 @@ export const PortfolioForm = ({
                 : "Завантажити головну фотографію"
             }
             error={!!errors.cover}
-            helperText={(errors as any).cover?.message}
+            helperText={errors?.cover?.message}
           />
         )}
       />
-      {isEdit && portfolio?.cover && typeof portfolio.cover === "string" && (
+      {isEdit && portfolio?.cover && (
         <Box>
           <Image
             src={"/" + portfolio.cover}
@@ -83,11 +83,11 @@ export const PortfolioForm = ({
       )}
 
       <TextField
-        {...register("title", {
+        {...registerAction("title", {
           required: "Це поле є обов'язковим",
         })}
-        error={!!(errors as any)?.title}
-        helperText={(errors as any)?.title?.message}
+        error={!!errors?.title}
+        helperText={errors?.title?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
@@ -96,11 +96,11 @@ export const PortfolioForm = ({
       />
 
       <TextField
-        {...register("tag", {
+        {...registerAction("tag", {
           required: "Це поле є обов'язковим",
         })}
-        error={!!(errors as any)?.tag}
-        helperText={(errors as any)?.tag?.message}
+        error={!!errors?.tag}
+        helperText={errors?.tag?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
@@ -109,11 +109,12 @@ export const PortfolioForm = ({
       />
 
       <TextField
-        {...register("date", {
+        {...registerAction("date", {
           required: "Це поле є обов'язковим",
+          valueAsDate: true,
         })}
-        error={!!(errors as any)?.date}
-        helperText={(errors as any)?.date?.message}
+        error={!!errors?.date}
+        helperText={errors?.date?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
@@ -123,9 +124,9 @@ export const PortfolioForm = ({
       />
 
       <TextField
-        {...register("description")}
+        {...registerAction("description")}
         error={!!errors.description}
-        helperText={(errors as any).description?.message}
+        helperText={errors.description?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
@@ -146,7 +147,7 @@ export const PortfolioForm = ({
             label="Завантажити додаткові фотографії"
             multiple
             error={!!errors.images}
-            helperText={(errors as any).images?.message}
+            helperText={errors.images?.message}
           />
         )}
       />

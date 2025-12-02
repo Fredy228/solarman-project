@@ -9,7 +9,7 @@ import { useEffect, useMemo } from "react";
 
 import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import { IPortfolio } from "@/src/features/portfolio";
+import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 
 export default function PortfolioEdit() {
   const { id } = useParams<{ id: string }>();
@@ -22,15 +22,11 @@ export default function PortfolioEdit() {
     id,
   });
 
-  const portfolioData = useMemo(() => {
+  const portfolioData: IPortfolio | undefined = useMemo(() => {
     return (
       data?.data && {
-        ...data?.data,
-        date: data.data.date
-          ? (new Date(data.data.date)
-              .toISOString()
-              .split("T")[0] as unknown as Date)
-          : null,
+        ...data.data,
+        date: new Date(data.data.date).toISOString().split("T")[0],
       }
     );
   }, [data]);
@@ -45,7 +41,7 @@ export default function PortfolioEdit() {
     watch,
     setValue,
     reset,
-  } = useForm<IPortfolio, HttpError, Partial<IPortfolio>>({
+  } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
     resolver: joiResolver(portfolioUpdateSchema),
     refineCoreProps: {
       resource: "portfolio",
@@ -74,14 +70,14 @@ export default function PortfolioEdit() {
     }
   }, [portfolioData, reset]);
 
-  const handleSave = (data: Partial<IPortfolio>) => {
+  const handleSave = (data: IPortfolioForm) => {
     if (Object.keys(dirtyFields).length === 0) {
       return list("portfolio");
     }
 
-    const updatedData: Partial<IPortfolio> = {};
+    const updatedData: Partial<IPortfolioForm> = {};
 
-    (Object.keys(dirtyFields) as Array<keyof IPortfolio>).forEach((key) => {
+    (Object.keys(dirtyFields) as Array<keyof IPortfolioForm>).forEach((key) => {
       if (key === "title" && !dirtyFields["tag"]) {
         updatedData["title"] = data["title"];
         updatedData["tag"] = data["tag"];
@@ -92,7 +88,7 @@ export default function PortfolioEdit() {
       }
     });
 
-    void onFinish(updatedData);
+    void onFinish(updatedData as IPortfolioForm);
   };
 
   return (
