@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Portfolio, Prisma } from '@prisma/client';
+import { ObjectId } from 'bson';
 
 import { PortfolioCreateDto } from './dto/portfolio.create.dto';
 import { PrismaService } from '../../libs/prisma/prisma.service';
@@ -8,6 +9,8 @@ import { FileService } from '../../libs/file/file.service';
 import { PortfolioGetManyQueryDto } from './dto/portfolio-get-many.query.dto';
 import { generatePrismaDateFilter } from '../../helpers/prisma/generate-prisma-date-filter';
 import { generatePrismaPaginateOption } from '../../helpers/prisma/generate-prisma-paginate-option';
+import { PortfolioUpdateDto } from './dto/portfolio.update.dto';
+import { PortfolioErrorMessage } from '../../common/messages/error/portfolio.message';
 
 @Injectable()
 export class PortfolioService {
@@ -73,16 +76,18 @@ export class PortfolioService {
         `Портфоліо з тегом ${body.tag} вже існує`,
       );
 
+    const newId = new ObjectId().toString();
+
     const coverPath = await this.fileService.saveImage({
       file: files.cover[0],
-      filePath: ['static', 'portfolio', body.tag],
+      filePath: ['static', 'portfolio', newId],
       format: 'webp',
     });
 
     const imagesPath = await this.fileService.saveImageMany(
-      files.images || [],
+      files?.images || [],
       {
-        filePath: ['static', 'portfolio', body.tag],
+        filePath: ['static', 'portfolio', newId],
         format: 'webp',
       },
     );
@@ -90,6 +95,7 @@ export class PortfolioService {
     return this.prisma.portfolio.create({
       data: {
         ...body,
+        id: newId,
         cover: coverPath,
         images: imagesPath,
       },
@@ -106,20 +112,61 @@ export class PortfolioService {
     if (!portfolio)
       throw new CustomHttpExceptionUtil(
         HttpStatus.NOT_FOUND,
-        'Портфоліо не знайдено',
+        PortfolioErrorMessage.NOT_FOUND,
       );
 
     return portfolio;
   }
 
+  async update(
+    id: string,
+    body: PortfolioUpdateDto,
+    files: {
+      cover?: Array<Express.Multer.File>;
+      images?: Array<Express.Multer.File>;
+    },
+  ) {
+    const portfolio = await this.getOne(id);
+
+    const updatedBody = { ...body };
+
+    if (files?.cover && files.cover[0]) {
+      updatedBody['cover'] = await this.fileService.saveImage({
+        file: files.cover[0],
+        filePath: ['static', 'portfolio', portfolio.id],
+        format: 'webp',
+      });
+
+      this.fileService.deleteFiles([portfolio.cover]);
+    }
+
+    if (files?.images && files.images.length) {
+      const imagesPath = await this.fileService.saveImageMany(
+        files.images || [],
+        {
+          filePath: ['static', 'portfolio', portfolio.id],
+          format: 'webp',
+        },
+      );
+      updatedBody['images'] = portfolio.images.concat(imagesPath);
+    }
+
+    return this.prisma.portfolio.update({
+      where: {
+        id,
+      },
+      data: updatedBody,
+    });
+  }
+
   async deleteById(id: string): Promise<void> {
     const portfolio = await this.getOne(id);
 
-    this.fileService.deleteFolder(['static', 'portfolio', portfolio.tag]);
+    this.fileService.deleteFolder(['static', 'portfolio', portfolio.id]);
     await this.prisma.portfolio.delete({ where: { id } });
   }
 
-  async deleleImageById(id: string, image: string): Promise<void> {
+  async deleteImageById(id: string, image: string): Promise<void> {
     const portfolio = await this.getOne(id);
 
     const images = portfolio.images.filter((item) => item !== image);

@@ -66,6 +66,8 @@ export default function PortfolioEdit() {
         tag: portfolioData.tag,
         description: portfolioData.description,
         date: portfolioData.date,
+        images: null,
+        cover: null,
       });
     }
   }, [portfolioData, reset]);
@@ -102,9 +104,9 @@ export default function PortfolioEdit() {
       <PortfolioForm
         control={control}
         errors={errors}
-        register={register}
+        registerAction={register}
         watch={watch}
-        setValue={setValue}
+        setValueAction={setValue}
         isEdit={true}
         portfolio={portfolioData}
       />

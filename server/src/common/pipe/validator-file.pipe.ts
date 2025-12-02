@@ -19,14 +19,16 @@ export class FileValidatorPipe implements PipeTransform {
     },
   ) {}
 
-  transform(files: TFileImg) {
+  transform(files?: TFileImg) {
     Object.entries(this.options).forEach(([key, value]) => {
-      if ((!files[key] || !files[key].length) && value.nullable)
+      if ((!files || !files[key] || !files[key].length) && !value.nullable)
         throw new CustomHttpExceptionUtil(
           HttpStatus.BAD_REQUEST,
           `Ви завантажили не всі файли`,
         );
     });
+
+    if (!files) return files;
 
     Object.entries(files).forEach(([key, value]) => {
       const { allowType, allowFormat, maxSize } = this.options[key];

@@ -4,7 +4,13 @@ import { join } from 'path';
 import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 import * as process from 'process';
-import { ensureDir, pathExistsSync, removeSync, writeFile } from 'fs-extra';
+import {
+  ensureDir,
+  pathExistsSync,
+  removeSync,
+  rename,
+  writeFile,
+} from 'fs-extra';
 import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 import { unlinkSync } from 'node:fs';
 
@@ -152,6 +158,32 @@ export class FileService {
       throw new CustomHttpExceptionUtil(
         HttpStatus.INTERNAL_SERVER_ERROR,
         'Помилка видалення папки.',
+      );
+    }
+  }
+
+  async renameFolder(oldPath: string[], newPath: string[]): Promise<void> {
+    try {
+      const oldFullPath = join(process.cwd(), ...oldPath);
+      const newFullPath = join(process.cwd(), ...newPath);
+
+      const isExistFolder = pathExistsSync(oldFullPath);
+      if (isExistFolder) {
+        await rename(oldFullPath, newFullPath);
+      } else {
+        throw new CustomHttpExceptionUtil(
+          HttpStatus.NOT_FOUND,
+          'Папку не знайдено.',
+        );
+      }
+    } catch (e) {
+      this.logger.error(e);
+      if (e instanceof CustomHttpExceptionUtil) {
+        throw e;
+      }
+      throw new CustomHttpExceptionUtil(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Помилка перейменування папки.',
       );
     }
   }

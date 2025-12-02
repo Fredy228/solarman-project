@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -15,6 +16,7 @@ import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
 import { PortfolioService } from '../portfolio.service';
 import { PortfolioGetManyQueryDto } from '../dto/portfolio-delete-image.query.dto';
+import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -38,7 +40,7 @@ export class PortfolioController {
           allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
         },
         images: {
-          nullable: false,
+          nullable: true,
           maxSize: 10,
           allowType: ['image'],
           allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
@@ -54,6 +56,41 @@ export class PortfolioController {
     return this.portfolioService.create(body, files);
   }
 
+  @Patch('/:id')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 1 },
+      { name: 'images', maxCount: 10 },
+    ]),
+  )
+  async update(
+    @Param('id') id: string,
+    @UploadedFiles(
+      new FileValidatorPipe({
+        cover: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+        images: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+      }),
+    )
+    files: {
+      cover?: Array<Express.Multer.File>;
+      images?: Array<Express.Multer.File>;
+    },
+    @Body(JoiPipe) body: PortfolioUpdateDto,
+  ) {
+    return this.portfolioService.update(id, body, files);
+  }
+
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async deleteById(@Param('id') id: string): Promise<void> {
@@ -66,6 +103,6 @@ export class PortfolioController {
     @Param('id') id: string,
     @Body(JoiPipe) body: PortfolioGetManyQueryDto,
   ): Promise<void> {
-    return this.portfolioService.deleleImageById(id, body.image);
+    return this.portfolioService.deleteImageById(id, body.image);
   }
 }

@@ -35,9 +35,9 @@ export default function PortfolioCreate() {
       <PortfolioForm
         control={control}
         errors={errors}
-        register={register}
+        registerAction={register}
         watch={watch}
-        setValue={setValue}
+        setValueAction={setValue}
       />
     </Create>
   );
