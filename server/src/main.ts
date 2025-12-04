@@ -27,6 +27,8 @@ async function bootstrap() {
     prefix: '/api/static',
   });
 
+  app.enableShutdownHooks();
+
   const PORT = configService.get<number>('PORT_SERVER') || 3000;
 
   await app.listen(PORT, () => {

@@ -9,13 +9,15 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { useEffect } from "react";
+import { type FC, useEffect } from "react";
 import Image from "next/image";
 
 import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
+import { HtmlFromText } from "@/src/shared/html-from-text/HtmlFromText";
+import { HtmlFromTextHelper } from "@/src/shared/html-from-text/HtmlFronTextHelper";
 
 type PortfolioFormProps = {
   control: Control<IPortfolioForm>;
@@ -27,7 +29,7 @@ type PortfolioFormProps = {
   portfolio?: IPortfolio;
 };
 
-export const PortfolioForm = ({
+export const PortfolioForm: FC<PortfolioFormProps> = ({
   control,
   errors,
   registerAction,
@@ -35,7 +37,7 @@ export const PortfolioForm = ({
   setValueAction,
   isEdit = false,
   portfolio,
-}: PortfolioFormProps) => {
+}) => {
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === "title" && value.title) {
@@ -123,6 +125,7 @@ export const PortfolioForm = ({
         type="date"
       />
 
+      <HtmlFromTextHelper />
       <TextField
         {...registerAction("description")}
         error={!!errors.description}
@@ -134,7 +137,13 @@ export const PortfolioForm = ({
         name="description"
         multiline
         rows={5}
+        sx={{
+          "& .MuiInputBase-inputMultiline": {
+            resize: "vertical",
+          },
+        }}
       />
+      {watch("description") && <HtmlFromText text={watch("description")} />}
 
       <Controller
         name="images"
