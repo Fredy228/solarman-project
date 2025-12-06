@@ -24,7 +24,7 @@ export default function PortfolioCreate() {
       cover: null,
       title: "",
       tag: "",
-      description: "",
+      description: undefined,
       images: null,
       date: "",
     },

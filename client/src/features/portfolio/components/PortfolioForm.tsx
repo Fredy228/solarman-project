@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import {
   Control,
   Controller,
@@ -11,13 +11,19 @@ import {
 } from "react-hook-form";
 import { type FC, useEffect } from "react";
 import Image from "next/image";
+import { PartialBlock } from "@blocknote/core";
+import dynamic from "next/dynamic";
 
 import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
-import { HtmlFromText } from "@/src/shared/html-from-text/HtmlFromText";
-import { HtmlFromTextHelper } from "@/src/shared/html-from-text/HtmlFronTextHelper";
+const BlockNoteEditor = dynamic(
+  () => import("@/src/shared/editor/BlockNoteEditor"),
+  {
+    ssr: false,
+  },
+);
 
 type PortfolioFormProps = {
   control: Control<IPortfolioForm>;
@@ -47,6 +53,11 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
     });
     return () => subscription.unsubscribe();
   }, [watch, setValueAction]);
+
+  const getInitialContent = (): PartialBlock[] | undefined => {
+    if (isEdit && portfolio?.description) return portfolio?.description;
+    return undefined;
+  };
 
   return (
     <Box
@@ -125,25 +136,30 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         type="date"
       />
 
-      <HtmlFromTextHelper />
-      <TextField
-        {...registerAction("description")}
-        error={!!errors.description}
-        helperText={errors.description?.message}
-        margin="normal"
-        fullWidth
-        slotProps={{ inputLabel: { shrink: true } }}
-        label="Опис"
-        name="description"
-        multiline
-        rows={5}
-        sx={{
-          "& .MuiInputBase-inputMultiline": {
-            resize: "vertical",
-          },
-        }}
-      />
-      {watch("description") && <HtmlFromText text={watch("description")} />}
+      <Box>
+        <Typography
+          variant="body1"
+          color={errors.description ? "error" : "text.primary"}
+        >
+          Опис
+        </Typography>
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <BlockNoteEditor
+              onChange={field.onChange}
+              initialContent={getInitialContent()}
+              editable={true}
+            />
+          )}
+        />
+        {errors.description && (
+          <Typography variant="caption" color="error">
+            {errors.description.message}
+          </Typography>
+        )}
+      </Box>
 
       <Controller
         name="images"

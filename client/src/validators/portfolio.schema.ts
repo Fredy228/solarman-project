@@ -25,12 +25,7 @@ export const portfolioSchema = Joi.object({
     "date.base": "Необхідно вказати дату",
   }),
 
-  description: Joi.string().trim().min(5).max(5000).required().messages({
-    "string.empty": "Опис є обов'язковим полем",
-    "any.required": "Опис є обов'язковим полем",
-    "string.min": "Опис повинен містити щонайменше 5 символів",
-    "string.max": "Опис не може перевищувати 5000 символів",
-  }),
+  description: Joi.array().required(),
 
   images: Joi.array()
     .items(Joi.object().instance(File))

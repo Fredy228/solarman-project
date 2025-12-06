@@ -52,7 +52,7 @@ export default function PortfolioEdit() {
     defaultValues: {
       title: "",
       tag: "",
-      description: "",
+      description: undefined,
       date: null,
       cover: null,
       images: null,

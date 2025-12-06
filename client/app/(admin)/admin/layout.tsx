@@ -4,7 +4,6 @@ import React from "react";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider from "@refinedev/nextjs-router";
-import { ThemeProvider } from "@emotion/react";
 import { CssBaseline, GlobalStyles } from "@mui/material";
 import {
   RefineSnackbarProvider,
@@ -27,8 +26,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <>
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
       <RefineSnackbarProvider>
         <RefineKbarProvider>
@@ -76,6 +74,6 @@ export default function AdminLayout({
           </Refine>
         </RefineKbarProvider>
       </RefineSnackbarProvider>
-    </ThemeProvider>
+    </>
   );
 }
