@@ -4,7 +4,7 @@ import React from "react";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider from "@refinedev/nextjs-router";
-import { CssBaseline, GlobalStyles } from "@mui/material";
+import { GlobalStyles } from "@mui/material";
 import {
   RefineSnackbarProvider,
   ThemedLayout,
@@ -14,7 +14,6 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListAlt from "@mui/icons-material/ListAlt";
 
 import { authProvider } from "@/src/providers/authProvider";
-import { theme } from "@/src/configs/mui.config";
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import { dataProvider } from "@/src/providers/dataProvider";
