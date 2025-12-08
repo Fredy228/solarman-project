@@ -12,7 +12,9 @@ import {
 } from "@refinedev/mui";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ListAlt from "@mui/icons-material/ListAlt";
+import { useTranslations, useLocale } from "next-intl";
 
+import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { authProvider } from "@/src/providers/authProvider";
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
@@ -24,6 +26,21 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations("refine");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const i18nProvider = {
+    translate: (key: string, params: any) => {
+      return t(key, params);
+    },
+    changeLocale: (lang: string) => {
+      router.replace(pathname, { locale: lang });
+    },
+    getLocale: () => locale,
+  };
+
   return (
     <>
       <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
@@ -35,6 +52,7 @@ export default function AdminLayout({
             notificationProvider={useNotificationProvider}
             dataProvider={dataProvider}
             accessControlProvider={accessControlProvider}
+            i18nProvider={i18nProvider}
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
@@ -51,10 +69,10 @@ export default function AdminLayout({
               },
               {
                 name: "portfolio",
-                list: ADMIN_PROTECTED_ROUTES.portfolio.list,
-                create: ADMIN_PROTECTED_ROUTES.portfolio.create,
-                edit: ADMIN_PROTECTED_ROUTES.portfolio.edit,
-                show: ADMIN_PROTECTED_ROUTES.portfolio.show,
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.edit,
+                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.show,
                 meta: {
                   label: "Портфоліо",
                   icon: <ListAlt />,
