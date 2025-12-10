@@ -1,9 +1,11 @@
 import { PartialBlock } from "@blocknote/core";
 
 interface IPortfolioBase {
-  title: string;
   tag: string;
-  description: PartialBlock[];
+  titleUk: string;
+  titleRu: string;
+  descriptionUk: PartialBlock[];
+  descriptionRu: PartialBlock[];
 }
 
 export interface IPortfolio extends IPortfolioBase {

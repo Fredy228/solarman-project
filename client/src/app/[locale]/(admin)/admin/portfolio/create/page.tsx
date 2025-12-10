@@ -4,12 +4,15 @@ import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { HttpError } from "@refinedev/core";
+import { useTranslations } from "next-intl";
 
 import { portfolioSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
 import { IPortfolioForm } from "@/src/features/portfolio";
 
 export default function PortfolioCreate() {
+  const t = useTranslations("validation");
+
   const {
     saveButtonProps,
     refineCore: { formLoading },
@@ -19,12 +22,14 @@ export default function PortfolioCreate() {
     watch,
     setValue,
   } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
-    resolver: joiResolver(portfolioSchema),
+    resolver: joiResolver(portfolioSchema(t)),
     defaultValues: {
       cover: null,
-      title: "",
+      titleUk: "",
+      titleRu: "",
       tag: "",
-      description: undefined,
+      descriptionUk: undefined,
+      descriptionRu: undefined,
       images: null,
       date: "",
     },

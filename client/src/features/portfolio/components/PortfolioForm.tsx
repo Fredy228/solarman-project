@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Chip, Divider, TextField, Typography } from "@mui/material";
 import {
   Control,
   Controller,
@@ -11,8 +11,8 @@ import {
 } from "react-hook-form";
 import { type FC, useEffect } from "react";
 import Image from "next/image";
-import { PartialBlock } from "@blocknote/core";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 import { ImageUpload } from "@/src/shared/form/ImageUpload";
 import { generateSlug } from "@/src/libs/slug";
@@ -44,20 +44,17 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
   isEdit = false,
   portfolio,
 }) => {
+  const t = useTranslations("refine");
+
   useEffect(() => {
     const subscription = watch((value, { name }) => {
-      if (name === "title" && value.title) {
-        const slug = generateSlug(value.title);
+      if (name === "titleUk" && value.titleUk) {
+        const slug = generateSlug(value.titleUk);
         setValueAction("tag", slug, { shouldValidate: true });
       }
     });
     return () => subscription.unsubscribe();
   }, [watch, setValueAction]);
-
-  const getInitialContent = (): PartialBlock[] | undefined => {
-    if (isEdit && portfolio?.description) return portfolio?.description;
-    return undefined;
-  };
 
   return (
     <Box
@@ -65,6 +62,9 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
       sx={{ display: "flex", flexDirection: "column", gap: 3 }}
       autoComplete="off"
     >
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.cover")} size="small" />
+      </Divider>
       <Controller
         name="cover"
         control={control}
@@ -73,11 +73,7 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
           <ImageUpload
             value={field.value}
             onChange={field.onChange}
-            label={
-              isEdit
-                ? "Оновити головну фотографію"
-                : "Завантажити головну фотографію"
-            }
+            label={isEdit ? t("common.update") : t("common.upload")}
             error={!!errors.cover}
             helperText={errors?.cover?.message}
           />
@@ -95,35 +91,56 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         </Box>
       )}
 
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.title")} size="small" />
+      </Divider>
       <TextField
-        {...registerAction("title", {
-          required: "Це поле є обов'язковим",
+        {...registerAction("titleUk", {
+          required: t("common.required_field"),
         })}
-        error={!!errors?.title}
-        helperText={errors?.title?.message}
+        error={!!errors?.titleUk}
+        helperText={errors?.titleUk?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
-        label="Назва"
-        name="title"
+        label={t("portfolio.fields.title") + " (uk)"}
+        name="titleUk"
+      />
+      <TextField
+        {...registerAction("titleRu", {
+          required: t("common.required_field"),
+        })}
+        error={!!errors?.titleRu}
+        helperText={errors?.titleRu?.message}
+        margin="normal"
+        fullWidth
+        slotProps={{ inputLabel: { shrink: true } }}
+        label={t("portfolio.fields.title") + " (ru)"}
+        name="titleRu"
       />
 
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.tag")} size="small" />
+      </Divider>
       <TextField
         {...registerAction("tag", {
-          required: "Це поле є обов'язковим",
+          required: t("common.required_field"),
         })}
         error={!!errors?.tag}
         helperText={errors?.tag?.message}
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
-        label="Тег (для SEO)"
+        label={t("portfolio.fields.tag") + " (SEO)"}
         name="tag"
       />
 
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.date")} size="small" />
+      </Divider>
       <TextField
         {...registerAction("date", {
-          required: "Це поле є обов'язковим",
+          required: t("common.required_field"),
           valueAsDate: true,
         })}
         error={!!errors?.date}
@@ -131,36 +148,53 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         margin="normal"
         fullWidth
         slotProps={{ inputLabel: { shrink: true } }}
-        label="Дата завершення"
+        label={t("portfolio.fields.date")}
         name="date"
         type="date"
       />
 
-      <Box>
-        <Typography
-          variant="body1"
-          color={errors.description ? "error" : "text.primary"}
-        >
-          Опис
-        </Typography>
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <BlockNoteEditor
-              onChange={field.onChange}
-              initialContent={getInitialContent()}
-              editable={true}
-            />
-          )}
-        />
-        {errors.description && (
-          <Typography variant="caption" color="error">
-            {errors.description.message}
-          </Typography>
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.description")} size="small" />
+      </Divider>
+      <Controller
+        name="descriptionUk"
+        control={control}
+        render={({ field }) => (
+          <BlockNoteEditor
+            label={t("portfolio.fields.description") + " (uk)"}
+            onChange={field.onChange}
+            initialContent={portfolio?.descriptionUk}
+            editable={true}
+          />
         )}
-      </Box>
+      />
+      {errors.descriptionUk && (
+        <Typography variant="caption" color="error">
+          {errors.descriptionUk.message}
+        </Typography>
+      )}
 
+      <Controller
+        name="descriptionRu"
+        control={control}
+        render={({ field }) => (
+          <BlockNoteEditor
+            label={t("portfolio.fields.description") + " (ru)"}
+            onChange={field.onChange}
+            initialContent={portfolio?.descriptionUk}
+            editable={true}
+          />
+        )}
+      />
+      {errors.descriptionRu && (
+        <Typography variant="caption" color="error">
+          {errors.descriptionRu.message}
+        </Typography>
+      )}
+
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.images")} size="small" />
+      </Divider>
       <Controller
         name="images"
         control={control}
@@ -169,7 +203,7 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
           <ImageUpload
             value={field.value}
             onChange={field.onChange}
-            label="Завантажити додаткові фотографії"
+            label={t("common.upload_more")}
             multiple
             error={!!errors.images}
             helperText={errors.images?.message}

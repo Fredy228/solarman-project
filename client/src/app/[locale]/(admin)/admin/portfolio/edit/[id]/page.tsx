@@ -6,6 +6,7 @@ import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
@@ -14,6 +15,7 @@ import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 export default function PortfolioEdit() {
   const { id } = useParams<{ id: string }>();
   const { list } = useNavigation();
+  const t = useTranslations("validation");
 
   const {
     query: { data, isLoading },
@@ -42,7 +44,7 @@ export default function PortfolioEdit() {
     setValue,
     reset,
   } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
-    resolver: joiResolver(portfolioUpdateSchema),
+    resolver: joiResolver(portfolioUpdateSchema(t)),
     refineCoreProps: {
       resource: "portfolio",
       id,
@@ -50,9 +52,11 @@ export default function PortfolioEdit() {
       redirect: "show",
     },
     defaultValues: {
-      title: "",
+      titleUk: "",
+      titleRu: "",
       tag: "",
-      description: undefined,
+      descriptionUk: undefined,
+      descriptionRu: undefined,
       date: null,
       cover: null,
       images: null,
@@ -62,9 +66,11 @@ export default function PortfolioEdit() {
   useEffect(() => {
     if (portfolioData) {
       reset({
-        title: portfolioData.title,
+        titleUk: portfolioData.titleUk,
+        titleRu: portfolioData.titleRu,
         tag: portfolioData.tag,
-        description: portfolioData.description,
+        descriptionUk: portfolioData.descriptionUk,
+        descriptionRu: portfolioData.descriptionRu,
         date: portfolioData.date,
         images: null,
         cover: null,
@@ -80,8 +86,8 @@ export default function PortfolioEdit() {
     const updatedData: Partial<IPortfolioForm> = {};
 
     (Object.keys(dirtyFields) as Array<keyof IPortfolioForm>).forEach((key) => {
-      if (key === "title" && !dirtyFields["tag"]) {
-        updatedData["title"] = data["title"];
+      if (key === "titleUk" && !dirtyFields["tag"]) {
+        updatedData["titleUk"] = data["titleUk"];
         updatedData["tag"] = data["tag"];
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

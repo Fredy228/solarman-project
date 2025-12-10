@@ -20,6 +20,7 @@ import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import { dataProvider } from "@/src/providers/dataProvider";
 import { accessControlProvider } from "@/src/providers/accessControlProvider";
+import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
 
 export default function AdminLayout({
   children,
@@ -83,6 +84,7 @@ export default function AdminLayout({
             <ThemedLayout
               Sider={ModifiedSider}
               Title={() => <div>Admin Panel</div>}
+              Header={CustomHeader}
             >
               {children}
             </ThemedLayout>

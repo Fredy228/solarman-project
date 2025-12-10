@@ -14,15 +14,18 @@ import {
   GridColDef,
 } from "@mui/x-data-grid";
 import { Box, Stack } from "@mui/material";
+import { useTranslations } from "next-intl";
+
 import ProtectProvider from "@/src/providers/protect-provider";
 
 export default function PortfolioList() {
   const { dataGridProps } = useDataGrid();
+  const t = useTranslations("refine");
 
   const columns: GridColDef[] = [
     {
       field: "cover",
-      headerName: "Головна фотографія",
+      headerName: t("portfolio.fields.cover"),
       renderCell: function render({ row }) {
         return row.cover ? (
           <Box
@@ -47,7 +50,7 @@ export default function PortfolioList() {
     },
     {
       field: "title",
-      headerName: "Назва",
+      headerName: t("portfolio.fields.title"),
       flex: 1,
       minWidth: 250,
       filterOperators: getGridStringOperators().filter(
@@ -56,7 +59,7 @@ export default function PortfolioList() {
     },
     {
       field: "date",
-      headerName: "Дата завершення",
+      headerName: t("portfolio.fields.date"),
       type: "date",
       width: 150,
       align: "center",
@@ -67,7 +70,7 @@ export default function PortfolioList() {
     },
     {
       field: "actions",
-      headerName: "Дії",
+      headerName: t("actions.actions"),
       renderCell: function render({ row }) {
         return (
           <Stack

@@ -8,14 +8,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale;
 
-  console.log(`Requested locale: ${requested}, resolved locale: ${locale}`);
-
   return {
     locale,
     messages: {
       common: (await import(`./messages/${locale}/common.json`)).default,
       home: (await import(`./messages/${locale}/home.json`)).default,
       refine: (await import(`./messages/${locale}/refine.json`)).default,
+      validation: (await import(`./messages/${locale}/validation.json`))
+        .default,
     },
   };
 });

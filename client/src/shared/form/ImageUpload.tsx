@@ -3,6 +3,7 @@
 import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useCallback } from "react";
+import Image from "next/image";
 
 interface ImageUploadProps {
   value: File | File[] | null;
@@ -96,9 +97,11 @@ export const ImageUpload = ({
                 borderRadius: "8px",
               }}
             >
-              <img
+              <Image
                 src={URL.createObjectURL(file)}
                 alt={`preview ${index}`}
+                width={120}
+                height={120}
                 style={{
                   width: "100%",
                   height: "100%",

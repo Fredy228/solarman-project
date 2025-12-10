@@ -1,44 +1,87 @@
 import Joi from "joi";
 
-export const portfolioSchema = Joi.object({
-  cover: Joi.object().instance(File).required().messages({
-    "any.required": "Головна фотографія є обов'язковою",
-    "object.base": "Необхідно завантажити файл",
-  }),
+import { TranslatorType } from "../i18n/types";
 
-  title: Joi.string().trim().min(2).max(250).required().messages({
-    "string.empty": "Назва є обов'язковим полем",
-    "any.required": "Назва є обов'язковим полем",
-    "string.min": "Назва повинна містити щонайменше 2 символи",
-    "string.max": "Назва не може перевищувати 250 символів",
-  }),
+export const portfolioSchema = (t: TranslatorType) =>
+  Joi.object({
+    cover: Joi.object()
+      .instance(File)
+      .required()
+      .messages({
+        "any.required": t("cover.name") + t("common.required"),
+        "object.base": t("cover.base"),
+      }),
 
-  tag: Joi.string().trim().min(5).max(300).required().messages({
-    "string.empty": "Тег є обов'язковим полем",
-    "any.required": "Тег є обов'язковим полем",
-    "string.min": "Тег повинен містити щонайменше 5 символів",
-    "string.max": "Тег не може перевищувати 300 символів",
-  }),
+    titleUk: Joi.string()
+      .trim()
+      .min(2)
+      .max(250)
+      .required()
+      .messages({
+        "string.empty": t("title.name") + t("common.required"),
+        "any.required": t("title.name") + t("common.required"),
+        "string.min":
+          t("title.name") + t("common.min") + " 2 " + t("common.symbol"),
+        "string.max":
+          t("title.name") + t("common.max") + " 250 " + t("common.symbol"),
+      }),
 
-  date: Joi.date().required().messages({
-    "any.required": "Дата є обов'язковим полем",
-    "date.base": "Необхідно вказати дату",
-  }),
+    titleRu: Joi.string()
+      .trim()
+      .min(2)
+      .max(250)
+      .required()
+      .messages({
+        "string.empty": t("title.name") + t("common.required"),
+        "any.required": t("title.name") + t("common.required"),
+        "string.min":
+          t("title.name") + t("common.min") + " 2 " + t("common.symbol"),
+        "string.max":
+          t("title.name") + t("common.max") + " 250 " + t("common.symbol"),
+      }),
 
-  description: Joi.array().required(),
+    tag: Joi.string()
+      .trim()
+      .min(5)
+      .max(300)
+      .required()
+      .messages({
+        "string.empty": t("tag.name") + t("common.required"),
+        "any.required": t("tag.name") + t("common.required"),
+        "string.min":
+          t("tag.name") + t("common.min") + " 2 " + t("common.symbol"),
+        "string.max":
+          t("tag.name") + t("common.max") + " 300 " + t("common.symbol"),
+      }),
 
-  images: Joi.array()
-    .items(Joi.object().instance(File))
-    .max(10)
-    .optional()
-    .allow(null)
-    .messages({
-      "array.max": "Можна завантажити не більше 10 зображень",
-    }),
-});
+    date: Joi.date()
+      .required()
+      .messages({
+        "any.required": t("date.name") + t("common.required"),
+        "date.base": t("date.base"),
+      }),
 
-export const portfolioUpdateSchema = portfolioSchema.keys({
-  cover: Joi.object().instance(File).allow(null).optional().messages({
-    "object.base": "Необхідно завантажити файл",
-  }),
-});
+    descriptionUk: Joi.array().optional(),
+
+    descriptionRu: Joi.array().optional(),
+
+    images: Joi.array()
+      .items(Joi.object().instance(File))
+      .max(10)
+      .optional()
+      .allow(null)
+      .messages({
+        "array.max": t("images.max") + " 10",
+      }),
+  });
+
+export const portfolioUpdateSchema = (t: TranslatorType) =>
+  portfolioSchema(t).keys({
+    cover: Joi.object()
+      .instance(File)
+      .allow(null)
+      .optional()
+      .messages({
+        "object.base": t("images.base"),
+      }),
+  });
