@@ -2,15 +2,13 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Portfolio, Prisma } from '@prisma/client';
 import { ObjectId } from 'bson';
 
-import { PortfolioCreateDto } from './dto/portfolio.create.dto';
-import { PrismaService } from '../../libs/prisma/prisma.service';
-import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
-import { FileService } from '../../libs/file/file.service';
-import { PortfolioGetManyQueryDto } from './dto/portfolio-get-many.query.dto';
-import { generatePrismaDateFilter } from '../../helpers/prisma/generate-prisma-date-filter';
-import { generatePrismaPaginateOption } from '../../helpers/prisma/generate-prisma-paginate-option';
-import { PortfolioUpdateDto } from './dto/portfolio.update.dto';
-import { PortfolioErrorMessage } from '../../common/messages/error/portfolio.message';
+import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
+import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
+import { FileService } from '../../../libs/file/file.service';
+import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
+import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
+import { Language } from '../../../common/enums/language.enum';
 
 @Injectable()
 export class PortfolioService {
@@ -18,42 +16,6 @@ export class PortfolioService {
     private readonly prisma: PrismaService,
     private readonly fileService: FileService,
   ) {}
-
-  async getMany(query: PortfolioGetManyQueryDto) {
-    const {
-      _start,
-      _end,
-      _sort,
-      _order,
-      title_like,
-      date,
-      date_gte,
-      date_lte,
-    } = query;
-
-    const whereOption: Prisma.PortfolioWhereInput = {
-      title: {
-        contains: title_like,
-        mode: 'insensitive',
-      },
-      date: generatePrismaDateFilter({ date, date_gte, date_lte }),
-    };
-
-    const [portfolios, total] = await this.prisma.$transaction([
-      this.prisma.portfolio.findMany({
-        ...generatePrismaPaginateOption(_start, _end, _sort, _order),
-        where: whereOption,
-      }),
-      this.prisma.portfolio.count({
-        where: whereOption,
-      }),
-    ]);
-
-    return {
-      data: portfolios,
-      total,
-    };
-  }
 
   async create(
     body: PortfolioCreateDto,
@@ -76,6 +38,8 @@ export class PortfolioService {
         `Портфоліо з тегом ${body.tag} вже існує`,
       );
 
+    const { titleUk, titleRu, descriptionRu, descriptionUk, tag, date } = body;
+
     const newId = new ObjectId().toString();
 
     const coverPath = await this.fileService.saveImage({
@@ -94,15 +58,24 @@ export class PortfolioService {
 
     return this.prisma.portfolio.create({
       data: {
-        ...body,
         id: newId,
+        tag,
+        title: {
+          uk: titleUk,
+          ru: titleRu,
+        },
+        description: {
+          uk: descriptionUk,
+          ru: descriptionRu,
+        },
+        date,
         cover: coverPath,
         images: imagesPath,
       },
     });
   }
 
-  async getOne(id: string): Promise<Portfolio> {
+  async getOne(id: string, lang: Language): Promise<Portfolio> {
     const portfolio = await this.prisma.portfolio.findUnique({
       where: {
         id,
@@ -112,7 +85,7 @@ export class PortfolioService {
     if (!portfolio)
       throw new CustomHttpExceptionUtil(
         HttpStatus.NOT_FOUND,
-        PortfolioErrorMessage.NOT_FOUND,
+        PortfolioErrorMessage[lang].NOT_FOUND,
       );
 
     return portfolio;
@@ -125,10 +98,26 @@ export class PortfolioService {
       cover?: Array<Express.Multer.File>;
       images?: Array<Express.Multer.File>;
     },
+    lang: Language,
   ) {
-    const portfolio = await this.getOne(id);
+    const portfolio = await this.getOne(id, lang);
 
-    const updatedBody = { ...body };
+    const updatedBody: Prisma.PortfolioUpdateInput = {
+      tag: body?.tag,
+      title: {
+        update: {
+          uk: body?.titleUk,
+          ru: body?.titleRu,
+        },
+      },
+      description: {
+        update: {
+          uk: body?.descriptionUk,
+          ru: body?.descriptionRu,
+        },
+      },
+      date: body?.date,
+    };
 
     if (files?.cover && files.cover[0]) {
       updatedBody['cover'] = await this.fileService.saveImage({
@@ -159,15 +148,19 @@ export class PortfolioService {
     });
   }
 
-  async deleteById(id: string): Promise<void> {
-    const portfolio = await this.getOne(id);
+  async deleteById(id: string, lang: Language): Promise<void> {
+    const portfolio = await this.getOne(id, lang);
 
     this.fileService.deleteFolder(['static', 'portfolio', portfolio.id]);
     await this.prisma.portfolio.delete({ where: { id } });
   }
 
-  async deleteImageById(id: string, image: string): Promise<void> {
-    const portfolio = await this.getOne(id);
+  async deleteImageById(
+    id: string,
+    image: string,
+    lang: Language,
+  ): Promise<void> {
+    const portfolio = await this.getOne(id, lang);
 
     const images = portfolio.images.filter((item) => item !== image);
     this.fileService.deleteFiles([image]);

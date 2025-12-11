@@ -1,9 +1,9 @@
 model Portfolio {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  tag         String   @unique
-  title       String
-  description String?
+  tag         String           @unique
+  title       LocalizedContent
+  description LocalizedContent
   date        DateTime
 
   cover  String

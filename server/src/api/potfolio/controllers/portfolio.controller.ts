@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -12,11 +13,15 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JoiPipe } from 'nestjs-joi';
+import { Portfolio } from '@prisma/client';
+
 import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
-import { PortfolioService } from '../portfolio.service';
-import { PortfolioGetManyQueryDto } from '../dto/portfolio-delete-image.query.dto';
+import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
+import { Lang } from '../../../common/decorator/lang.decorator';
+import { Language } from '../../../common/enums/language.enum';
+import { PortfolioDeleteImageQueryDto } from '../dto/portfolio-delete-image.query.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -87,22 +92,36 @@ export class PortfolioController {
       images?: Array<Express.Multer.File>;
     },
     @Body(JoiPipe) body: PortfolioUpdateDto,
+    @Lang() lang: Language,
   ) {
-    return this.portfolioService.update(id, body, files);
+    return this.portfolioService.update(id, body, files, lang);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteById(@Param('id') id: string): Promise<void> {
-    return this.portfolioService.deleteById(id);
+  async deleteById(
+    @Param('id') id: string,
+    @Lang() lang: Language,
+  ): Promise<void> {
+    return this.portfolioService.deleteById(id, lang);
   }
 
   @Delete('/image/:id')
   @HttpCode(HttpStatus.OK)
   async deleteImageById(
     @Param('id') id: string,
-    @Body(JoiPipe) body: PortfolioGetManyQueryDto,
+    @Body(JoiPipe) body: PortfolioDeleteImageQueryDto,
+    @Lang() lang: Language,
   ): Promise<void> {
-    return this.portfolioService.deleteImageById(id, body.image);
+    return this.portfolioService.deleteImageById(id, body.image, lang);
+  }
+
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async getOne(
+    @Param('id') id: string,
+    @Lang() lang: Language,
+  ): Promise<Portfolio> {
+    return this.portfolioService.getOne(id, lang);
   }
 }

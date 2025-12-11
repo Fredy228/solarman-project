@@ -6,13 +6,19 @@ JoiSchemaOptions({
 });
 export class PortfolioCreateDto {
   @JoiSchema(portfolioSchema.extract('title').required())
-  title: string;
+  titleUk: string;
+
+  @JoiSchema(portfolioSchema.extract('title').required())
+  titleRu: string;
 
   @JoiSchema(portfolioSchema.extract('tag').required())
   tag: string;
 
   @JoiSchema(portfolioSchema.extract('description').required())
-  description: string;
+  descriptionUk: string;
+
+  @JoiSchema(portfolioSchema.extract('description').required())
+  descriptionRu: string;
 
   @JoiSchema(portfolioSchema.extract('date').required())
   date: Date;

@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 @JoiSchemaOptions({
   allowUnknown: false,
 })
-export class PortfolioGetManyQueryDto {
+export class PortfolioDeleteImageQueryDto {
   @JoiSchema(Joi.string().required())
   image: string;
 }
