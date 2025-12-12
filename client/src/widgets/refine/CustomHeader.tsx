@@ -4,7 +4,7 @@ import { AppBar, Stack, Toolbar } from "@mui/material";
 import { RefineThemedLayoutHeaderProps } from "@refinedev/mui";
 import { HamburgerMenu } from "@refinedev/mui";
 
-import { LanguageSwitcher } from "@/src/shared/language-switcher/LanguageSwitcher";
+import { LanguageSwitcher } from "@/src/shared/ui/language-switcher/LanguageSwitcher";
 
 export const CustomHeader: React.FC<RefineThemedLayoutHeaderProps> = ({
   sticky,

@@ -14,13 +14,16 @@ import {
   GridColDef,
 } from "@mui/x-data-grid";
 import { Box, Stack } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import dayjs from "dayjs";
 
 import ProtectProvider from "@/src/providers/protect-provider";
+import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 
 export default function PortfolioList() {
   const { dataGridProps } = useDataGrid();
   const t = useTranslations("refine");
+  const locale = useLocale();
 
   const columns: GridColDef[] = [
     {
@@ -53,6 +56,7 @@ export default function PortfolioList() {
       headerName: t("portfolio.fields.title"),
       flex: 1,
       minWidth: 250,
+      valueGetter: (value) => value[locale as keyof LocalizedContent],
       filterOperators: getGridStringOperators().filter(
         (operator) => operator.value === "contains",
       ),
@@ -63,6 +67,7 @@ export default function PortfolioList() {
       type: "date",
       width: 150,
       align: "center",
+      valueFormatter: (value) => value && dayjs(value).format("DD.MM.YYYY"),
       valueGetter: (value) => value && new Date(value),
       filterOperators: getGridDateOperators().filter((operator) =>
         ["is", "onOrAfter", "onOrBefore"].includes(operator.value),

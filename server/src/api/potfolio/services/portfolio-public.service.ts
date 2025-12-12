@@ -48,9 +48,11 @@ export class PortfolioPublicService {
 
     const whereOption: Prisma.PortfolioWhereInput = {
       title: {
-        [lang]: {
-          contains: title_like,
-          mode: 'insensitive',
+        is: {
+          [lang]: {
+            contains: title_like,
+            mode: 'insensitive',
+          },
         },
       },
       date: generatePrismaDateFilter({ date, date_gte, date_lte }),

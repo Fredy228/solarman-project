@@ -102,6 +102,7 @@ export const ImageUpload = ({
                 alt={`preview ${index}`}
                 width={120}
                 height={120}
+                loading="eager"
                 style={{
                   width: "100%",
                   height: "100%",

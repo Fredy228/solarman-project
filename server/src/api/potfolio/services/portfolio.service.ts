@@ -9,6 +9,7 @@ import { FileService } from '../../../libs/file/file.service';
 import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
 import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
 import { Language } from '../../../common/enums/language.enum';
+import { prepareLocalizedUpdate } from '../../../helpers/prisma/prepare-localized-update';
 
 @Injectable()
 export class PortfolioService {
@@ -104,18 +105,11 @@ export class PortfolioService {
 
     const updatedBody: Prisma.PortfolioUpdateInput = {
       tag: body?.tag,
-      title: {
-        update: {
-          uk: body?.titleUk,
-          ru: body?.titleRu,
-        },
-      },
-      description: {
-        update: {
-          uk: body?.descriptionUk,
-          ru: body?.descriptionRu,
-        },
-      },
+      title: prepareLocalizedUpdate(body?.titleUk, body?.titleRu),
+      description: prepareLocalizedUpdate(
+        body?.descriptionUk,
+        body?.descriptionRu,
+      ),
       date: body?.date,
     };
 

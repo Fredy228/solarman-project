@@ -1,5 +1,6 @@
 import simpleRestProvider from "@refinedev/simple-rest";
 import { DataProvider } from "@refinedev/core";
+
 import { API_URL } from "../configs/api-routes.config";
 import apiClient from "../libs/api-client";
 
@@ -7,11 +8,11 @@ const axiosInstance = apiClient.getInstance();
 
 const baseDataProvider = simpleRestProvider(API_URL, axiosInstance);
 
-const isFile = (value: any): value is File => {
+const isFile = (value: unknown): value is File => {
   return value instanceof File;
 };
 
-const hasFiles = (values: Record<string, any>): boolean => {
+const hasFiles = (values: Record<string, unknown>): boolean => {
   return Object.values(values).some((value) => {
     if (Array.isArray(value)) {
       return value.some(isFile);
@@ -20,22 +21,26 @@ const hasFiles = (values: Record<string, any>): boolean => {
   });
 };
 
-const createFormData = (values: Record<string, any>): FormData => {
+const createFormData = (values: Record<string, unknown>): FormData => {
   const formData = new FormData();
   for (const key in values) {
     const value = values[key];
     if (Array.isArray(value)) {
-      value.forEach((item) => {
-        if (isFile(item)) {
-          formData.append(key, item);
-        } else {
-          formData.append(key, JSON.stringify(item));
-        }
-      });
+      if (value.some(isFile)) {
+        value.forEach((item) => {
+          if (isFile(item)) {
+            formData.append(key, item);
+          } else {
+            formData.append(key, JSON.stringify(item));
+          }
+        });
+      } else {
+        formData.append(key, JSON.stringify(value));
+      }
     } else if (isFile(value)) {
       formData.append(key, value);
     } else {
-      formData.append(key, value);
+      formData.append(key, String(value));
     }
   }
   return formData;
@@ -45,8 +50,8 @@ export const dataProvider: DataProvider = {
   ...baseDataProvider,
 
   create: async ({ resource, variables }) => {
-    if (hasFiles(variables as Record<string, any>)) {
-      const formData = createFormData(variables as Record<string, any>);
+    if (hasFiles(variables as Record<string, unknown>)) {
+      const formData = createFormData(variables as Record<string, unknown>);
       const { data } = await axiosInstance.post(
         `${API_URL}/${resource}`,
         formData,
@@ -62,8 +67,8 @@ export const dataProvider: DataProvider = {
   },
 
   update: async ({ resource, id, variables }) => {
-    if (hasFiles(variables as Record<string, any>)) {
-      const formData = createFormData(variables as Record<string, any>);
+    if (hasFiles(variables as Record<string, unknown>)) {
+      const formData = createFormData(variables as Record<string, unknown>);
       const { data } = await axiosInstance.patch(
         `${API_URL}/${resource}/${id}`,
         formData,

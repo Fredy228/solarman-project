@@ -7,5 +7,5 @@ export const portfolioSchema = Joi.object({
 
   date: Joi.date(),
 
-  description: Joi.array(),
+  description: Joi.string(),
 });

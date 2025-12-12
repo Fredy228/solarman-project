@@ -22,6 +22,8 @@
     "prisma:deploy": "prisma db push"
   },
   "dependencies": {
+    "@blocknote/core": "^0.44.2",
+    "@blocknote/server-util": "^0.44.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",

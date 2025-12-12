@@ -8,10 +8,13 @@ import {
 } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
-import { type FC } from "react";
+import { type FC, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
+import { useLocale } from "next-intl";
+import { uk, ru } from "@blocknote/core/locales";
 
 import "@blocknote/mantine/style.css";
+import { ELocale } from "@/src/i18n/routing";
 
 const { image, video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
 
@@ -26,14 +29,39 @@ type BlockNoteEditorProps = {
   label?: string;
 };
 
+const translateEditor = (locale: string) => {
+  switch (locale) {
+    case ELocale.UK:
+      return uk;
+    case ELocale.RU:
+      return ru;
+    default:
+      return uk;
+  }
+};
+
 const BlockNoteEditor: FC<BlockNoteEditorProps> = (props) => {
   const { onChange, initialContent, editable, label } = props;
   const theme = useTheme();
+  const locale = useLocale();
 
   const editor = useCreateBlockNote({
-    initialContent: initialContent,
     schema,
+    dictionary: translateEditor(locale),
   });
+
+  useEffect(() => {
+    if (editor && initialContent) {
+      const content = editor.document[0]?.content;
+      const isPristine =
+        editor.document.length <= 1 &&
+        (!content || (Array.isArray(content) && content.length === 0));
+
+      if (isPristine) {
+        editor.replaceBlocks(editor.document, initialContent as any);
+      }
+    }
+  }, [editor, initialContent]);
 
   return (
     <Box
@@ -89,6 +117,7 @@ const BlockNoteEditor: FC<BlockNoteEditorProps> = (props) => {
       <BlockNoteView
         editor={editor}
         editable={editable}
+        theme="light"
         onChange={(editor) => onChange(editor.document)}
       />
     </Box>

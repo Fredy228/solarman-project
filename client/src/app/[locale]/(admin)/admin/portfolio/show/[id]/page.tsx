@@ -4,8 +4,18 @@ import { useOne } from "@refinedev/core";
 import { useParams } from "next/navigation";
 import { DateField, Show, TagField } from "@refinedev/mui";
 import { Box, Card, CardMedia, Stack, Typography } from "@mui/material";
+import { useLocale } from "next-intl";
+import dynamic from "next/dynamic";
 
 import { IPortfolio } from "@/src/features/portfolio";
+import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+const BlockNoteView = dynamic(
+  () => import("@/src/widgets/refine/BlockNoteView"),
+  {
+    ssr: false,
+    loading: () => <p>Загрузка описания...</p>,
+  },
+);
 
 export default function PortfolioShow() {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +25,7 @@ export default function PortfolioShow() {
     resource: "portfolio",
     id,
   });
+  const locale = useLocale();
 
   const record = data?.data;
 
@@ -25,7 +36,9 @@ export default function PortfolioShow() {
           <Typography variant="body1" fontWeight="bold">
             Назва:
           </Typography>
-          <Typography variant="body1">{record?.title}</Typography>
+          <Typography variant="body1">
+            {record?.title[locale as keyof LocalizedContent]}
+          </Typography>
         </Stack>
         <Stack direction="row" gap={2} alignItems="center">
           <Typography variant="body1" fontWeight="bold">
@@ -37,15 +50,15 @@ export default function PortfolioShow() {
           <Typography variant="body1" fontWeight="bold">
             Дата завершення:
           </Typography>
-          <DateField value={record?.date} />
+          <DateField value={record?.date} format="DD.MM.YYYY" />
         </Stack>
         <Stack gap={1}>
           <Typography variant="body1" fontWeight="bold">
             Опис:
           </Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
-            {record?.description}
-          </Typography>
+          {record?.description && (
+            <BlockNoteView description={record.description} locale={locale} />
+          )}
         </Stack>
         <Stack gap={1}>
           <Typography variant="body1" fontWeight="bold">
@@ -57,7 +70,7 @@ export default function PortfolioShow() {
                 component="img"
                 sx={{ height: "auto", maxHeight: 400, objectFit: "contain" }}
                 image={"/" + record.cover}
-                alt={record.title}
+                alt={record.title[locale as keyof LocalizedContent]}
               />
             </Card>
           )}

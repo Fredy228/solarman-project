@@ -31,7 +31,7 @@ export default function PortfolioCreate() {
       descriptionUk: undefined,
       descriptionRu: undefined,
       images: null,
-      date: "",
+      date: null,
     },
   });
 

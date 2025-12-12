@@ -54,16 +54,39 @@ export const portfolioSchema = (t: TranslatorType) =>
           t("tag.name") + t("common.max") + " 300 " + t("common.symbol"),
       }),
 
-    date: Joi.date()
+    date: Joi.any()
+      .custom((value, helpers) => {
+        if (!value) {
+          return value;
+        }
+        if (typeof value.isValid === "function" && value.isValid()) {
+          return value;
+        }
+        return helpers.error("date.base");
+      })
       .required()
       .messages({
         "any.required": t("date.name") + t("common.required"),
         "date.base": t("date.base"),
       }),
 
-    descriptionUk: Joi.array().optional(),
+    descriptionUk: Joi.array()
+      .items(Joi.object().unknown(true))
+      .min(1)
+      .required()
+      .messages({
+        "array.base": t("description.base"),
+        "array.min": t("description.min"),
+      }),
 
-    descriptionRu: Joi.array().optional(),
+    descriptionRu: Joi.array()
+      .items(Joi.object().unknown(true))
+      .min(1)
+      .required()
+      .messages({
+        "array.base": t("description.base"),
+        "array.min": t("description.min"),
+      }),
 
     images: Joi.array()
       .items(Joi.object().instance(File))

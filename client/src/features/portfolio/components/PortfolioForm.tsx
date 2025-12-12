@@ -14,12 +14,19 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 
-import { ImageUpload } from "@/src/shared/form/ImageUpload";
+import { ImageUpload } from "@/src/shared/ui/form/ImageUpload";
+
 import { generateSlug } from "@/src/libs/slug";
+
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
+
 import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
+
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 const BlockNoteEditor = dynamic(
-  () => import("@/src/shared/editor/BlockNoteEditor"),
+  () => import("@/src/shared/ui/editor/BlockNoteEditor"),
+
   {
     ssr: false,
   },
@@ -138,19 +145,25 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
       <Divider textAlign="left">
         <Chip label={t("portfolio.fields.date")} size="small" />
       </Divider>
-      <TextField
-        {...registerAction("date", {
-          required: t("common.required_field"),
-          valueAsDate: true,
-        })}
-        error={!!errors?.date}
-        helperText={errors?.date?.message}
-        margin="normal"
-        fullWidth
-        slotProps={{ inputLabel: { shrink: true } }}
-        label={t("portfolio.fields.date")}
+      <Controller
         name="date"
-        type="date"
+        control={control}
+        rules={{ required: t("common.required_field") }}
+        render={({ field }) => (
+          <DatePicker
+            {...field}
+            label={t("portfolio.fields.date")}
+            format="DD.MM.YYYY"
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                margin: "normal",
+                error: !!errors?.date,
+                helperText: errors?.date?.message,
+              },
+            }}
+          />
+        )}
       />
 
       <Divider textAlign="left">
@@ -163,7 +176,9 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
           <BlockNoteEditor
             label={t("portfolio.fields.description") + " (uk)"}
             onChange={field.onChange}
-            initialContent={portfolio?.descriptionUk}
+            initialContent={
+              portfolio?.description?.uk && JSON.parse(portfolio.description.uk)
+            }
             editable={true}
           />
         )}
@@ -181,7 +196,9 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
           <BlockNoteEditor
             label={t("portfolio.fields.description") + " (ru)"}
             onChange={field.onChange}
-            initialContent={portfolio?.descriptionUk}
+            initialContent={
+              portfolio?.description?.ru && JSON.parse(portfolio.description.ru)
+            }
             editable={true}
           />
         )}
