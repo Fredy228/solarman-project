@@ -1,0 +1,36 @@
+model Goods {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  tag         String           @unique
+  title       LocalizedContent
+  description LocalizedContent
+
+  type         GoodsType
+  cost         Int
+  spec         Json?
+  instructions PdfInfo[]
+
+  cover String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  country String?
+
+  brand   GoodsBrand? @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  brandId String?     @db.ObjectId
+
+  @@map("goods")
+}
+
+type PdfInfo {
+  fileName String
+  filePath String
+}
+
+enum GoodsType {
+  PANEL
+  BATTERY
+  INVERTOR
+  CHARGE_STATION
+}

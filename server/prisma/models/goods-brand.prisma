@@ -1,0 +1,9 @@
+model GoodsBrand {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name String @unique
+
+  goods Goods[]
+
+  @@map("goods_brand")
+}
