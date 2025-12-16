@@ -107,13 +107,13 @@ export class PortfolioController {
   }
 
   @Delete('/image/:id')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteImageById(
     @Param('id') id: string,
     @Body(JoiPipe) body: PortfolioDeleteImageQueryDto,
     @Lang() lang: Language,
   ): Promise<void> {
-    return this.portfolioService.deleteImageById(id, body.image, lang);
+    await this.portfolioService.deleteImageById(id, body.image, lang);
   }
 
   @Get('/:id')
