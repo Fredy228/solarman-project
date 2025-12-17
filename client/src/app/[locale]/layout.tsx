@@ -36,7 +36,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextIntlClientProvider>
-          <MuiProvider>{children}</MuiProvider>
+          <MuiProvider locale={locale}>{children}</MuiProvider>
         </NextIntlClientProvider>
       </body>
     </html>

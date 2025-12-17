@@ -7,11 +7,10 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { type Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import dayjs from "dayjs";
 import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 
 export const PortfolioEditForm = () => {
@@ -32,11 +31,6 @@ export const PortfolioEditForm = () => {
     }
 
     return data.data;
-
-    // return {
-    //   ...data.data,
-    //   date: dayjs(data.data.date),
-    // };
   }, [data]);
 
   const {
@@ -122,7 +116,7 @@ export const PortfolioEditForm = () => {
       isLoading={isLoading || formLoading}
       saveButtonProps={{
         ...saveButtonProps,
-        onClick: handleSubmit(handleSave, (err) => console.log(err)),
+        onClick: handleSubmit(handleSave, (err) => console.error(err)),
       }}
     >
       <PortfolioForm

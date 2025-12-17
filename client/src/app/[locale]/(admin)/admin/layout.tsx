@@ -21,6 +21,7 @@ import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import { dataProvider } from "@/src/providers/dataProvider";
 import { accessControlProvider } from "@/src/providers/accessControlProvider";
 import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
+import { theme } from "@/src/configs/mui.config";
 
 export default function AdminLayout({
   children,
@@ -64,7 +65,7 @@ export default function AdminLayout({
                 name: "Dashboard",
                 list: ADMIN_PROTECTED_ROUTES.dashboard,
                 meta: {
-                  label: "Головна",
+                  label: t("common.main"),
                   icon: <DashboardIcon />,
                 },
               },
@@ -75,7 +76,17 @@ export default function AdminLayout({
                 edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.edit,
                 show: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.show,
                 meta: {
-                  label: "Портфоліо",
+                  label: t("portfolio.portfolio"),
+                  icon: <ListAlt />,
+                },
+              },
+              {
+                name: "goods-brand",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.edit,
+                meta: {
+                  label: t("goods-brand.goods-brand"),
                   icon: <ListAlt />,
                 },
               },
