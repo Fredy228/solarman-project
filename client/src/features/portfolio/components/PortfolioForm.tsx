@@ -1,6 +1,17 @@
 "use client";
 
-import { Box, Chip, Divider, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import {
   Control,
   Controller,
@@ -20,7 +31,11 @@ import { generateSlug } from "@/src/libs/slug";
 
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 
-import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
+import {
+  EPortfolioType,
+  IPortfolio,
+  IPortfolioForm,
+} from "@/src/features/portfolio";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -140,6 +155,30 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         slotProps={{ inputLabel: { shrink: true } }}
         label={t("portfolio.fields.tag") + " (SEO)"}
         name="tag"
+      />
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.type")} size="small" />
+      </Divider>
+      <Controller
+        name="type"
+        control={control}
+        defaultValue={portfolio?.type || EPortfolioType.HOME}
+        rules={{ required: t("common.required_field") }}
+        render={({ field }) => (
+          <FormControl fullWidth error={!!errors.type}>
+            <InputLabel>{t("portfolio.fields.type")}</InputLabel>
+            <Select {...field} label={t("portfolio.fields.type")}>
+              {Object.values(EPortfolioType).map((type: EPortfolioType) => (
+                <MenuItem key={type} value={type}>
+                  {t(`portfolio.type.${type}`)}
+                </MenuItem>
+              ))}
+            </Select>
+            {errors.type && (
+              <FormHelperText>{errors.type.message}</FormHelperText>
+            )}
+          </FormControl>
+        )}
       />
 
       <Divider textAlign="left">

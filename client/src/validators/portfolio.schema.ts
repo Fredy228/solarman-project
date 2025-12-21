@@ -1,3 +1,4 @@
+import { EPortfolioType } from "@/src/features/portfolio";
 import Joi from "joi";
 
 import { TranslatorType } from "../i18n/types";
@@ -68,6 +69,13 @@ export const portfolioSchema = (t: TranslatorType) =>
       .messages({
         "any.required": t("date.name") + t("common.required"),
         "date.base": t("date.base"),
+      }),
+
+    type: Joi.string()
+      .required()
+      .valid(...Object.values(EPortfolioType))
+      .messages({
+        "any.required": t("type.name") + t("common.required"),
       }),
 
     descriptionUk: Joi.array()

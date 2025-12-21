@@ -5,9 +5,9 @@ model Goods {
   title       LocalizedContent
   description LocalizedContent
 
-  type         GoodsType
-  cost         Int
-  spec         Json?
+  category     GoodsCategory
+  price        Int
+  specs        Json?
   instructions PdfInfo[]
 
   cover String
@@ -28,9 +28,12 @@ type PdfInfo {
   filePath String
 }
 
-enum GoodsType {
+enum GoodsCategory {
   PANEL
-  BATTERY
   INVERTOR
+  BATTERY
+  FASTENER
+  COMPONENT
   CHARGE_STATION
+  READY_MADE_SOLUTION
 }

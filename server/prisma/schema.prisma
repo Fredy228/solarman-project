@@ -11,3 +11,9 @@ type LocalizedContent {
   uk String
   ru String
 }
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

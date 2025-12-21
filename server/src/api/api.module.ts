@@ -10,8 +10,8 @@ import { GoodsBrandModule } from './goods-brand/goods-brand.module';
   imports: [
     AuthModule,
     UserModule,
-    GoodsModule,
     PortfolioModule,
+    GoodsModule,
     GoodsBrandModule,
   ],
 })

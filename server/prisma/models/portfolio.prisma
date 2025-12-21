@@ -5,6 +5,8 @@ model Portfolio {
   title       LocalizedContent
   description LocalizedContent
   date        DateTime
+  type        PortfolioType    @default(HOME)
+  status      ProductStatus    @default(DRAFT)
 
   cover  String
   images String[] @default([])
@@ -13,4 +15,9 @@ model Portfolio {
   updatedAt DateTime @updatedAt
 
   @@map("portfolio")
+}
+
+enum PortfolioType {
+  ENTERPRISES
+  HOME
 }

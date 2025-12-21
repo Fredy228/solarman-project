@@ -1,4 +1,6 @@
 import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
+import { PortfolioType, ProductStatus } from '@prisma/client';
+
 import { portfolioSchema } from '../../../common/validators/portfolio.schema';
 
 JoiSchemaOptions({
@@ -22,4 +24,10 @@ export class PortfolioUpdateDto {
 
   @JoiSchema(portfolioSchema.extract('date').optional())
   date?: Date;
+
+  @JoiSchema(portfolioSchema.extract('type').optional())
+  type?: PortfolioType;
+
+  @JoiSchema(portfolioSchema.extract('status').optional())
+  status?: ProductStatus;
 }

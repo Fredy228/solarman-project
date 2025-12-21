@@ -106,15 +106,22 @@ export class FileService {
   async saveFile(
     file: Express.Multer.File,
     ...filePath: string[]
-  ): Promise<string | null> {
+  ): Promise<{
+    fileName: string;
+    filePath: string;
+  }> {
     try {
-      const { fullFilePath, dbFilePath } = await this.generatePathFile({
-        file,
-        filePath,
-      });
+      const { fullFilePath, dbFilePath, fileName } =
+        await this.generatePathFile({
+          file,
+          filePath,
+        });
       await writeFile(fullFilePath, file.buffer);
 
-      return dbFilePath;
+      return {
+        fileName,
+        filePath: dbFilePath,
+      };
     } catch (e) {
       this.logger.error(e);
       throw new CustomHttpExceptionUtil(
@@ -127,7 +134,12 @@ export class FileService {
   async saveFileMany(
     files: Array<Express.Multer.File>,
     ...filePath: string[]
-  ): Promise<Array<string | null>> {
+  ): Promise<
+    Array<{
+      fileName: string;
+      filePath: string;
+    }>
+  > {
     return Promise.all(files.map((item) => this.saveFile(item, ...filePath)));
   }
 
@@ -184,6 +196,40 @@ export class FileService {
       throw new CustomHttpExceptionUtil(
         HttpStatus.INTERNAL_SERVER_ERROR,
         'Помилка перейменування папки.',
+      );
+    }
+  }
+
+  async moveFiles(
+    filePaths: string[],
+    destinationDir: string[],
+  ): Promise<string[]> {
+    try {
+      const destinationFullPath = join(process.cwd(), ...destinationDir);
+      await ensureDir(destinationFullPath);
+
+      const movePromises = filePaths.map(async (filePath) => {
+        const oldPath = join(process.cwd(), filePath.replace(/^api\//, ''));
+        const fileName = path.basename(oldPath);
+        const newPath = join(destinationFullPath, fileName);
+        const newDbPath = join('api', ...destinationDir, fileName);
+
+        if (pathExistsSync(oldPath)) {
+          await rename(oldPath, newPath);
+          return newDbPath;
+        } else {
+          this.logger.warn(`File not found, skipping move: ${oldPath}`);
+          return null;
+        }
+      });
+
+      const newPaths = await Promise.all(movePromises);
+      return newPaths.filter((p) => p !== null);
+    } catch (e) {
+      this.logger.error('Error moving files:', e);
+      throw new CustomHttpExceptionUtil(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Помилка переміщення файлів.',
       );
     }
   }

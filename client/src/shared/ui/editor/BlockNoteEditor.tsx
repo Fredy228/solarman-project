@@ -16,7 +16,8 @@ import { uk, ru } from "@blocknote/core/locales";
 import "@blocknote/mantine/style.css";
 import { ELocale } from "@/src/i18n/routing";
 
-const { image, video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
+const { video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
+// const { image, video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
 
 const schema = BlockNoteSchema.create({
   blockSpecs: filteredBlockSpecs,

@@ -7,8 +7,11 @@ import { HttpError } from "@refinedev/core";
 import { useTranslations } from "next-intl";
 
 import { portfolioSchema } from "@/src/validators/portfolio.schema";
-import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import { IPortfolioForm } from "@/src/features/portfolio";
+import {
+  IPortfolioForm,
+  EPortfolioType,
+  PortfolioForm,
+} from "@/src/features/portfolio";
 
 export default function PortfolioCreate() {
   const t = useTranslations("validation");
@@ -32,6 +35,7 @@ export default function PortfolioCreate() {
       descriptionRu: undefined,
       images: null,
       date: null,
+      type: EPortfolioType.HOME,
     },
   });
 
