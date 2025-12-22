@@ -1,0 +1,9 @@
+model GlobalParam {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  name        String            @unique
+  value       Json?
+  title       LocalizedContent
+  description LocalizedContent?
+
+  @@map("global_param")
+}

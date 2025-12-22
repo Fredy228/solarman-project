@@ -200,31 +200,25 @@ export class FileService {
     }
   }
 
-  async moveFiles(
-    filePaths: string[],
+  async moveFile(
+    filePath: string,
     destinationDir: string[],
-  ): Promise<string[]> {
+  ): Promise<string | null> {
     try {
       const destinationFullPath = join(process.cwd(), ...destinationDir);
       await ensureDir(destinationFullPath);
+      const oldPath = join(process.cwd(), filePath.replace(/^api\//, ''));
+      const fileName = path.basename(oldPath);
+      const newPath = join(destinationFullPath, fileName);
+      const newDbPath = join('api', ...destinationDir, fileName);
 
-      const movePromises = filePaths.map(async (filePath) => {
-        const oldPath = join(process.cwd(), filePath.replace(/^api\//, ''));
-        const fileName = path.basename(oldPath);
-        const newPath = join(destinationFullPath, fileName);
-        const newDbPath = join('api', ...destinationDir, fileName);
-
-        if (pathExistsSync(oldPath)) {
-          await rename(oldPath, newPath);
-          return newDbPath;
-        } else {
-          this.logger.warn(`File not found, skipping move: ${oldPath}`);
-          return null;
-        }
-      });
-
-      const newPaths = await Promise.all(movePromises);
-      return newPaths.filter((p) => p !== null);
+      if (pathExistsSync(oldPath)) {
+        await rename(oldPath, newPath);
+        return newDbPath;
+      } else {
+        this.logger.warn(`File not found, skipping move: ${oldPath}`);
+        return null;
+      }
     } catch (e) {
       this.logger.error('Error moving files:', e);
       throw new CustomHttpExceptionUtil(
@@ -232,5 +226,16 @@ export class FileService {
         'Помилка переміщення файлів.',
       );
     }
+  }
+
+  async moveFileMany(
+    filePaths: string[],
+    destinationDir: string[],
+  ): Promise<Array<string>> {
+    return (
+      await Promise.all(
+        filePaths.map((filePath) => this.moveFile(filePath, destinationDir)),
+      )
+    ).filter((result) => result !== null);
   }
 }

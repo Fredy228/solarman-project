@@ -14,7 +14,9 @@ import { useLocale } from "next-intl";
 import { uk, ru } from "@blocknote/core/locales";
 
 import "@blocknote/mantine/style.css";
+
 import { ELocale } from "@/src/i18n/routing";
+import apiClient from "@/src/libs/api-client";
 
 const { video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
 // const { image, video, audio, file, ...filteredBlockSpecs } = defaultBlockSpecs;
@@ -28,6 +30,7 @@ type BlockNoteEditorProps = {
   initialContent?: PartialBlock[];
   editable?: boolean;
   label?: string;
+  disabledImage?: boolean;
 };
 
 const translateEditor = (locale: string) => {
@@ -49,6 +52,24 @@ const BlockNoteEditor: FC<BlockNoteEditorProps> = (props) => {
   const editor = useCreateBlockNote({
     schema,
     dictionary: translateEditor(locale),
+    uploadFile: async (file) => {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const { data } = await apiClient
+          .getInstance()
+          .post("/upload/image", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        return "/" + data.url;
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to upload file");
+      }
+    },
   });
 
   useEffect(() => {

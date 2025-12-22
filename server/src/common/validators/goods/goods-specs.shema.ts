@@ -12,14 +12,14 @@ export const panelSpecSchema = Joi.object({
   type: Joi.string()
     .valid(...Object.values(EPanelSpecType))
     .optional(),
-  power: Joi.number().min(1).max(9999999).optional(),
+  power: Joi.number().min(1).optional(),
 }).unknown(false);
 
 export const invertorSpecSchema = Joi.object({
   type: Joi.string()
     .valid(...Object.values(EInvertorSpecType))
     .optional(),
-  power: Joi.number().min(1).max(9999999).optional(),
+  power: Joi.number().min(1).optional(),
   phase: Joi.number().valid(1, 3).optional(),
 }).unknown(false);
 
@@ -27,8 +27,8 @@ export const batterySpecSchema = Joi.object({
   type: Joi.string()
     .valid(...Object.values(EBatterySpecType))
     .optional(),
-  capacity: Joi.number().min(1).max(9999999).optional(),
-  voltage: Joi.number().min(1).max(9999999).optional(),
+  capacity: Joi.number().min(1).optional(),
+  voltage: Joi.number().min(1).optional(),
 }).unknown(false);
 
 export const fastenerSpecSchema = Joi.object({
@@ -41,9 +41,9 @@ export const fastenerSpecSchema = Joi.object({
 }).unknown(false);
 
 export const chargeStationSpecSchema = Joi.object({
-  power: Joi.number().min(0.01).max(9999999).optional(),
+  power: Joi.number().min(0.01).optional(),
 }).unknown(false);
 
 export const readyMadeSolutionSpecSchema = Joi.object({
-  power: Joi.number().min(0.01).max(9999999).optional(),
+  power: Joi.number().min(0.01).optional(),
 }).unknown(false);

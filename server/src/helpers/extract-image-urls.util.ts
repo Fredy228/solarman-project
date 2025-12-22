@@ -1,4 +1,6 @@
-export function extractImageUrls(blocks: any[]): string[] {
+import { Block } from '@blocknote/core';
+
+export function extractImageUrls(blocks: Block[]): string[] {
   let urls: string[] = [];
 
   if (!Array.isArray(blocks)) {
@@ -6,8 +8,11 @@ export function extractImageUrls(blocks: any[]): string[] {
   }
 
   for (const block of blocks) {
-    if (block.type === 'image' && block.props?.url) {
-      urls.push(block.props.url);
+    if (block.type === 'image') {
+      const url = block.props['url'];
+      if (typeof url === 'string') {
+        urls.push(url);
+      }
     }
 
     if (block.children && block.children.length > 0) {

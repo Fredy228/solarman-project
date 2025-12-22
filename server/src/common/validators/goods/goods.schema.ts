@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-import { GoodsCategory } from '@prisma/client';
+import { BadgeType, ECurrency, GoodsCategory } from '@prisma/client';
 
 import {
   batterySpecSchema,
@@ -17,8 +17,11 @@ export const goodsSchema = Joi.object({
   country: Joi.string().min(1).max(100),
   brand: Joi.string().min(1).max(300),
   description: Joi.string(),
-  price: Joi.number().min(0).max(9999999),
+  price: Joi.number().min(0),
+  discountPrice: Joi.number().min(0),
   category: Joi.string().valid(...Object.values(GoodsCategory)),
+  currency: Joi.string().valid(...Object.values(ECurrency)),
+  badge: Joi.string().valid(...Object.values(BadgeType)),
   specs: Joi.alternatives().conditional('category', {
     switch: [
       { is: GoodsCategory.PANEL, then: panelSpecSchema.optional().allow(null) },

@@ -5,10 +5,13 @@ model Goods {
   title       LocalizedContent
   description LocalizedContent
 
-  category     GoodsCategory
-  price        Int
-  specs        Json?
-  instructions PdfInfo[]
+  category      GoodsCategory
+  price         Int
+  discountPrice Int?
+  currency      ECurrency
+  specs         Json?
+  instructions  PdfInfo[]
+  badge         BadgeType?
 
   cover String
 
@@ -26,6 +29,18 @@ model Goods {
 type PdfInfo {
   fileName String
   filePath String
+}
+
+enum ECurrency {
+  USD
+  EUR
+  UAH
+}
+
+enum BadgeType {
+  SALE
+  LOW_STOCK
+  PRICE_INCREASE_PLANNED
 }
 
 enum GoodsCategory {

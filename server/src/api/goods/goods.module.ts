@@ -1,6 +1,6 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 
-import { GoodsPublicService } from './services/goods-public-service';
+import { GoodsPublicService } from './services/goods-public.service';
 import { GoodsService } from './services/goods.service';
 import { GoodsPublicController } from './controllers/goods-public.controller';
 import { GoodsController } from './controllers/goods.controller';
