@@ -1,4 +1,167 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import { JoiPipe } from 'nestjs-joi';
+import { Goods } from '@prisma/client';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+
+import { GoodsService } from '../services/goods.service';
+import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
+import { Lang } from '../../../common/decorator/lang.decorator';
+import { Language } from '../../../common/enums/language.enum';
+import { GoodsCreateDto } from '../dto/goods.create.dto';
+import { GoodsUpdateDto } from '../dto/goods.update.dto';
+import { GoodsDeleteImageDto } from '../dto/goods-delete-image.dto';
+import { GoodsDeleteInstructionsDto } from '../dto/goods-delete-instructions.dto';
 
 @Controller('goods')
-export class GoodsController {}
+export class GoodsController {
+  constructor(private readonly goodsService: GoodsService) {}
+
+  @Post('/')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 1 },
+      { name: 'images', maxCount: 10 },
+      { name: 'instructions', maxCount: 5 },
+    ]),
+  )
+  async create(
+    @UploadedFiles(
+      new FileValidatorPipe({
+        cover: {
+          nullable: false,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+        images: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+        instructions: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['application'],
+          allowFormat: ['pdf', 'x-pdf', 'x-bzpdf', 'x-gzpdf'],
+        },
+      }),
+    )
+    files: {
+      cover: Array<Express.Multer.File>;
+      images?: Array<Express.Multer.File>;
+      instructions?: Array<Express.Multer.File>;
+    },
+    @Body(JoiPipe) body: GoodsCreateDto,
+    @Lang() lang: Language,
+  ) {
+    return this.goodsService.create(
+      body,
+      lang,
+      files.cover,
+      files.images,
+      files.instructions,
+    );
+  }
+
+  @Patch('/:id')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'cover', maxCount: 1 },
+      { name: 'images', maxCount: 10 },
+    ]),
+  )
+  async update(
+    @Param('id') id: string,
+    @UploadedFiles(
+      new FileValidatorPipe({
+        cover: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+        images: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['image'],
+          allowFormat: ['png', 'jpg', 'jpeg', 'webp'],
+        },
+        instructions: {
+          nullable: true,
+          maxSize: 10,
+          allowType: ['application'],
+          allowFormat: ['pdf', 'x-pdf', 'x-bzpdf', 'x-gzpdf'],
+        },
+      }),
+    )
+    files: {
+      cover?: Array<Express.Multer.File>;
+      images?: Array<Express.Multer.File>;
+      instructions?: Array<Express.Multer.File>;
+    },
+    @Body(JoiPipe) body: GoodsUpdateDto,
+    @Lang() lang: Language,
+  ) {
+    return this.goodsService.update(
+      id,
+      body,
+      lang,
+      files.cover,
+      files.images,
+      files.instructions,
+    );
+  }
+
+  @Delete('/:id')
+  @HttpCode(HttpStatus.OK)
+  async deleteById(
+    @Param('id') id: string,
+    @Lang() lang: Language,
+  ): Promise<void> {
+    return this.goodsService.deleteById(id, lang);
+  }
+
+  @Delete('/image/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteImageById(
+    @Param('id') id: string,
+    @Body(JoiPipe) body: GoodsDeleteImageDto,
+    @Lang() lang: Language,
+  ): Promise<void> {
+    await this.goodsService.deleteImageById(id, body.path, lang);
+  }
+
+  @Delete('/instructions/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteInstructionsById(
+    @Param('id') id: string,
+    @Body(JoiPipe) body: GoodsDeleteInstructionsDto,
+    @Lang() lang: Language,
+  ): Promise<void> {
+    await this.goodsService.deletePdfInstructionsById(id, body.path, lang);
+  }
+
+  @Get('/:id')
+  @HttpCode(HttpStatus.OK)
+  async getOne(
+    @Param('id') id: string,
+    @Lang() lang: Language,
+  ): Promise<Goods> {
+    return this.goodsService.getOne(id, lang);
+  }
+}

@@ -111,6 +111,8 @@ export class PortfolioService {
         body?.descriptionRu,
       ),
       date: body?.date,
+      status: body?.status,
+      type: body?.type,
     };
 
     if (files?.cover && files.cover[0]) {

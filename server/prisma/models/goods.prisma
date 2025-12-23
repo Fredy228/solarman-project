@@ -10,8 +10,10 @@ model Goods {
   discountPrice Int?
   currency      ECurrency
   specs         Json?
-  instructions  PdfInfo[]
   badge         BadgeType?
+
+  instructions PdfInfo[]
+  images       String[]  @default([])
 
   cover String
 

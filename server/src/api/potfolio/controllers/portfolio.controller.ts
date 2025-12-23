@@ -21,7 +21,7 @@ import { PortfolioService } from '../services/portfolio.service';
 import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
 import { Lang } from '../../../common/decorator/lang.decorator';
 import { Language } from '../../../common/enums/language.enum';
-import { PortfolioDeleteImageQueryDto } from '../dto/portfolio-delete-image.query.dto';
+import { PortfolioDeleteImageDto } from '../dto/portfolio-delete-image.dto';
 
 @Controller('portfolio')
 export class PortfolioController {
@@ -110,10 +110,10 @@ export class PortfolioController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteImageById(
     @Param('id') id: string,
-    @Body(JoiPipe) body: PortfolioDeleteImageQueryDto,
+    @Body(JoiPipe) body: PortfolioDeleteImageDto,
     @Lang() lang: Language,
   ): Promise<void> {
-    await this.portfolioService.deleteImageById(id, body.image, lang);
+    await this.portfolioService.deleteImageById(id, body.path, lang);
   }
 
   @Get('/:id')

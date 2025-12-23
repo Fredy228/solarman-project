@@ -27,9 +27,9 @@ export class BaseQueryGetManyDto {
   _sort: string;
 
   @JoiSchema(
-    Joi.string().optional().valid('asc', 'desc').default('DESC').messages({
+    Joi.string().optional().valid('asc', 'desc').default('desc').messages({
       'string.base': '_order повинен бути рядком',
-      'any.only': '_order повинен бути "ASC" або "DESC"',
+      'any.only': '_order повинен бути "asc" або "desc"',
     }),
   )
   _order: 'asc' | 'desc';

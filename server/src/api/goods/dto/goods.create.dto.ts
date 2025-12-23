@@ -5,6 +5,7 @@ import { goodsSchema } from '../../../common/validators/goods/goods.schema';
 
 JoiSchemaOptions({
   allowUnknown: false,
+  convert: true,
 });
 export class GoodsCreateDto {
   @JoiSchema(goodsSchema.extract('title').required())
