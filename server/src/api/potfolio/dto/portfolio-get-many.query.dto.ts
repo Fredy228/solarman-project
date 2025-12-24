@@ -1,4 +1,5 @@
 import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
+import { PortfolioType, ProductStatus } from '@prisma/client';
 
 import { BaseQueryGetManyDto } from '../../../common/dto/base-query-get-many.dto';
 import { portfolioSchema } from '../../../common/validators/portfolio.schema';
@@ -9,6 +10,12 @@ import { portfolioSchema } from '../../../common/validators/portfolio.schema';
 export class PortfolioGetManyQueryDto extends BaseQueryGetManyDto {
   @JoiSchema(portfolioSchema.extract('title').optional().allow(''))
   title_like?: string;
+
+  @JoiSchema(portfolioSchema.extract('type').optional().allow(''))
+  type?: PortfolioType;
+
+  @JoiSchema(portfolioSchema.extract('status').optional().allow(''))
+  status?: ProductStatus;
 
   @JoiSchema(portfolioSchema.extract('date').optional())
   date?: Date;

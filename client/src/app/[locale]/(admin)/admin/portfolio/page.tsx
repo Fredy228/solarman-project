@@ -10,20 +10,71 @@ import {
 import {
   DataGrid,
   getGridDateOperators,
+  getGridSingleSelectOperators,
   getGridStringOperators,
   GridColDef,
+  GridRowModel,
 } from "@mui/x-data-grid";
-import { Box, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
+import { useNotification, useUpdate } from "@refinedev/core";
 import dayjs from "dayjs";
 
 import ProtectProvider from "@/src/providers/protect-provider";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+import { EPortfolioType } from "@/src/features/portfolio/types/portfolio-type.enum";
+import { EProductStatus } from "@/src/shared/types/product-status.enum";
+import { productStatusConfig } from "@/src/shared/configs/product-status.config";
+import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
 
 export default function PortfolioList() {
-  const { dataGridProps } = useDataGrid();
+  const { dataGridProps } = useDataGrid({
+    syncWithLocation: true,
+  });
   const t = useTranslations("refine");
   const locale = useLocale();
+  const { mutate: updatePortfolio } = useUpdate();
+  const { open } = useNotification();
+
+  const handleProcessRowUpdate = async (
+    newRow: GridRowModel,
+    oldRow: GridRowModel,
+  ) => {
+    if (newRow.status !== oldRow.status) {
+      try {
+        await new Promise((resolve, reject) => {
+          updatePortfolio(
+            {
+              resource: "portfolio",
+              id: newRow.id,
+              values: {
+                status: newRow.status,
+              },
+            },
+            {
+              onSuccess: () => resolve(true),
+              onError: (error) => reject(error),
+            },
+          );
+        });
+
+        return newRow;
+      } catch (error) {
+        console.error("Failed to update status:", error);
+        return oldRow;
+      }
+    }
+
+    return newRow;
+  };
+
+  const handleProcessRowUpdateError = (error: Error) => {
+    console.error("Error updating row:", error);
+    open?.({
+      type: "error",
+      message: t("notifications.editError"),
+    });
+  };
 
   const columns: GridColDef[] = [
     {
@@ -62,6 +113,38 @@ export default function PortfolioList() {
       ),
     },
     {
+      field: "type",
+      headerName: t("portfolio.fields.type"),
+      width: 170,
+      align: "center",
+      headerAlign: "center",
+      filterOperators: getGridSingleSelectOperators().filter(
+        (operator) => operator.value === "is",
+      ),
+      type: "singleSelect",
+      valueOptions: Object.values(EPortfolioType).map((type) => ({
+        value: type,
+        label: t(`portfolio.type.${type}`),
+      })),
+      valueFormatter: (value: string) => t(`portfolio.type.${value}`),
+      renderCell: (params) => {
+        const config = portfolioTypeConfig[params.value as EPortfolioType];
+        if (!config) {
+          return params.value;
+        }
+        return (
+          <Chip
+            label={t(`portfolio.type.${params.value}`)}
+            color={config.color}
+            icon={config.icon}
+            variant="filled"
+            size="small"
+            sx={{ minWidth: "100px", justifyContent: "flex-start" }}
+          />
+        );
+      },
+    },
+    {
       field: "date",
       headerName: t("portfolio.fields.date"),
       type: "date",
@@ -72,6 +155,41 @@ export default function PortfolioList() {
       filterOperators: getGridDateOperators().filter((operator) =>
         ["is", "onOrAfter", "onOrBefore"].includes(operator.value),
       ),
+    },
+    {
+      field: "status",
+      headerName: t("portfolio.fields.status"),
+      width: 170,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+      type: "singleSelect",
+      valueOptions: Object.values(EProductStatus).map((status) => ({
+        value: status,
+        label: t(`portfolio.status.${status}`),
+      })),
+      valueFormatter: (value: string) => t(`portfolio.status.${value}`),
+      filterOperators: getGridSingleSelectOperators().filter(
+        (operator) => operator.value === "is",
+      ),
+      renderCell: (params) => {
+        const config = productStatusConfig[params.value as EProductStatus];
+
+        if (!config) {
+          return params.value;
+        }
+
+        return (
+          <Chip
+            label={t(`portfolio.status.${params.value}`)}
+            color={config.color}
+            icon={config.icon}
+            variant="filled"
+            size="small"
+            sx={{ minWidth: "100px", justifyContent: "flex-start" }}
+          />
+        );
+      },
     },
     {
       field: "actions",
@@ -106,6 +224,8 @@ export default function PortfolioList() {
           columns={columns}
           autoHeight
           rowHeight={120}
+          processRowUpdate={handleProcessRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
         />
       </List>
     </ProtectProvider>

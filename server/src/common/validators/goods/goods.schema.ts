@@ -12,8 +12,8 @@ import {
 import { joiJsonCheck } from '../../../helpers/joi/joi-json-check.util';
 
 export const goodsSchema = Joi.object({
-  title: Joi.string().min(2).max(250),
-  tag: Joi.string().min(2).max(300),
+  title: Joi.string().min(1).max(250),
+  tag: Joi.string().min(1).max(300),
   country: Joi.string().min(1).max(100),
   brand: Joi.string().min(1).max(300),
   description: Joi.string(),

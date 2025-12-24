@@ -56,6 +56,8 @@ export class PortfolioPublicService {
         },
       },
       date: generatePrismaDateFilter({ date, date_gte, date_lte }),
+      type: query?.type,
+      status: query?.status,
     };
 
     const [portfolios, total] = await this.prisma.$transaction([
@@ -67,6 +69,8 @@ export class PortfolioPublicService {
           title: true,
           date: true,
           cover: true,
+          type: true,
+          status: true,
         },
       }),
       this.prisma.portfolio.count({

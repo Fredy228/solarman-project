@@ -3,12 +3,14 @@
 import { useOne } from "@refinedev/core";
 import { useParams } from "next/navigation";
 import { DateField, Show, TagField } from "@refinedev/mui";
-import { Box, Card, CardMedia, Stack, Typography } from "@mui/material";
-import { useLocale } from "next-intl";
+import { Box, Card, CardMedia, Chip, Stack, Typography } from "@mui/material";
+import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 
-import { IPortfolio } from "@/src/features/portfolio";
+import { EPortfolioType, IPortfolio } from "@/src/features/portfolio";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
+
 const BlockNoteView = dynamic(
   () => import("@/src/widgets/refine/BlockNoteView"),
   {
@@ -26,6 +28,7 @@ export default function PortfolioShow() {
     id,
   });
   const locale = useLocale();
+  const t = useTranslations("refine");
 
   const record = data?.data;
 
@@ -34,35 +37,15 @@ export default function PortfolioShow() {
       <Stack gap={2}>
         <Stack direction="row" gap={2} alignItems="center">
           <Typography variant="body1" fontWeight="bold">
-            Назва:
+            {t("portfolio.fields.title")}:
           </Typography>
           <Typography variant="body1">
             {record?.title[locale as keyof LocalizedContent]}
           </Typography>
         </Stack>
-        <Stack direction="row" gap={2} alignItems="center">
-          <Typography variant="body1" fontWeight="bold">
-            Тег:
-          </Typography>
-          <TagField value={record?.tag} />
-        </Stack>
-        <Stack direction="row" gap={2} alignItems="center">
-          <Typography variant="body1" fontWeight="bold">
-            Дата завершення:
-          </Typography>
-          <DateField value={record?.date} format="DD.MM.YYYY" />
-        </Stack>
         <Stack gap={1}>
           <Typography variant="body1" fontWeight="bold">
-            Опис:
-          </Typography>
-          {record?.description && (
-            <BlockNoteView description={record.description} locale={locale} />
-          )}
-        </Stack>
-        <Stack gap={1}>
-          <Typography variant="body1" fontWeight="bold">
-            Головна фотографія:
+            {t("portfolio.fields.cover")}:
           </Typography>
           {record?.cover && typeof record.cover === "string" && (
             <Card sx={{ maxWidth: 345 }}>
@@ -77,7 +60,7 @@ export default function PortfolioShow() {
         </Stack>
         <Stack gap={1}>
           <Typography variant="body1" fontWeight="bold">
-            Фотографії:
+            {t("portfolio.fields.images")}:
           </Typography>
           <Box
             sx={{
@@ -102,6 +85,39 @@ export default function PortfolioShow() {
               return null;
             })}
           </Box>
+        </Stack>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Typography variant="body1" fontWeight="bold">
+            {t("portfolio.fields.tag")}:
+          </Typography>
+          <TagField value={record?.tag} />
+        </Stack>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Typography variant="body1" fontWeight="bold">
+            {t("portfolio.fields.date")}:
+          </Typography>
+          <DateField value={record?.date} format="DD.MM.YYYY" />
+        </Stack>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Typography variant="body1" fontWeight="bold">
+            {t("portfolio.fields.type")}:
+          </Typography>
+          <Chip
+            label={t(`portfolio.type.${record?.type}`)}
+            color={portfolioTypeConfig[record?.type as EPortfolioType]?.color}
+            icon={portfolioTypeConfig[record?.type as EPortfolioType]?.icon}
+            variant="filled"
+            size="small"
+            sx={{ minWidth: "100px", justifyContent: "flex-start" }}
+          />
+        </Stack>
+        <Stack gap={1}>
+          <Typography variant="body1" fontWeight="bold">
+            {t("portfolio.fields.description")}:
+          </Typography>
+          {record?.description && (
+            <BlockNoteView description={record.description} locale={locale} />
+          )}
         </Stack>
       </Stack>
     </Show>
