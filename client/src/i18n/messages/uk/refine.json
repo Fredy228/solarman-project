@@ -21,10 +21,15 @@
   },
   "notifications": {
     "success": "Операція успішна",
-    "createSuccess": "Портфоліо успішно створено",
-    "editSuccess": "Портфоліо успішно оновлено",
-    "showSuccess": "Портфоліо успішно показано",
-    "deleteSuccess": "Портфоліо успішно видалено"
+    "createSuccess": "Успішно створено",
+    "editSuccess": "Успішно оновлено",
+    "showSuccess": "Успішно показано",
+    "deleteSuccess": "Успішно видалено",
+    "error": "Помилка",
+    "createError": "Помилка створення",
+    "editError": "Помилка редагування",
+    "showError": "Помилка показування",
+    "deleteError": "Помилка видалення"
   },
   "common": {
     "main": "Головна",
@@ -32,6 +37,9 @@
     "upload_more": "Завантажити ще",
     "update": "Оновити",
     "required_field": "Обов'язкове поле"
+  },
+  "group": {
+    "goods": "Управління товарами"
   },
   "portfolio": {
     "portfolio": "Портфоліо",
@@ -71,6 +79,46 @@
     },
     "fields": {
       "name": "Назва"
+    }
+  },
+  "goods": {
+    "goods": "Товари",
+    "titles": {
+      "list": "Список товарів",
+      "create": "Створити товар",
+      "edit": "Радагувати товар",
+      "show": "Товар"
+    },
+    "fields": {
+      "cover": "Головна фотографія",
+      "title": "Назва",
+      "description": "Опис",
+      "tag": "Тег",
+      "images": "Фотографії",
+      "status": "Статус",
+      "price": "Ціна",
+      "discountPrice": "Знижкова ціна",
+      "category": "Категорія",
+      "badge": "Бейдж"
+    },
+    "status": {
+      "DRAFT": "Черновик",
+      "PUBLISHED": "Опубликовано",
+      "ARCHIVED": "В архиве"
+    },
+    "category": {
+      "PANEL": "Панелі",
+      "INVERTOR": "Инвертори",
+      "BATTERY": "Батареї",
+      "FASTENER": "Кріплення",
+      "COMPONENT": "Компоненти",
+      "CHARGE_STATION": "Зарядні станції",
+      "READY_MADE_SOLUTION": "Готові решення"
+    },
+    "badge": {
+      "SALE": "Акційний товар",
+      "LOW_STOCK": "Мало на складі",
+      "PRICE_INCREASE_PLANNED": "Планується підвищення ціни"
     }
   }
 }

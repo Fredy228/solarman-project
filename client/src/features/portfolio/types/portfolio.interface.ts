@@ -20,7 +20,7 @@ export interface IPortfolio extends IPortfolioBase {
   description: LocalizedContent;
 }
 
-export interface IPortfolioLocalozed extends IPortfolioBase {
+export interface IPortfolioLocalized extends IPortfolioBase {
   title: string;
   description: string;
 }

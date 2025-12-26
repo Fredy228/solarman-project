@@ -1,0 +1,5 @@
+export enum EBadgeType {
+  SALE = "SALE",
+  LOW_STOCK = "LOW_STOCK",
+  PRICE_INCREASE_PLANNED = "PRICE_INCREASE_PLANNED",
+}

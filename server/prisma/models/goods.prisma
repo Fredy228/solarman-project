@@ -11,16 +11,14 @@ model Goods {
   currency      ECurrency
   specs         Json?
   badge         BadgeType?
+  country       String?
 
   instructions PdfInfo[]
   images       String[]  @default([])
-
-  cover String
+  cover        String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  country String?
 
   brand   GoodsBrand? @relation(fields: [brandId], references: [id], onDelete: SetNull)
   brandId String?     @db.ObjectId

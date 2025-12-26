@@ -7,10 +7,10 @@ FROM base AS dev
 
 # ===== prod =====
 FROM base AS prod
-COPY ./server /app
 
+COPY ./server /app
 COPY ./.env /app/.env
 
 RUN npm i
 RUN npm run prisma:generate
-RUN pnpm run build
+RUN npm run build

@@ -11,8 +11,13 @@ import {
   useNotificationProvider,
 } from "@refinedev/mui";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ListAlt from "@mui/icons-material/ListAlt";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  Building2,
+  GalleryVerticalEnd,
+  ShoppingBasket,
+  ShoppingCart,
+} from "lucide-react";
 
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { authProvider } from "@/src/providers/authProvider";
@@ -21,7 +26,6 @@ import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import { dataProvider } from "@/src/providers/dataProvider";
 import { accessControlProvider } from "@/src/providers/accessControlProvider";
 import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
-import { theme } from "@/src/configs/mui.config";
 
 export default function AdminLayout({
   children,
@@ -77,7 +81,25 @@ export default function AdminLayout({
                 show: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.show,
                 meta: {
                   label: t("portfolio.portfolio"),
-                  icon: <ListAlt />,
+                  icon: <GalleryVerticalEnd />,
+                },
+              },
+              {
+                name: "goods-group",
+                meta: {
+                  label: t("group.goods"),
+                  icon: <ShoppingCart />,
+                },
+              },
+              {
+                name: "goods",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.edit,
+                meta: {
+                  label: t("goods.goods"),
+                  parent: "goods-group",
+                  icon: <ShoppingBasket />,
                 },
               },
               {
@@ -87,7 +109,8 @@ export default function AdminLayout({
                 edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.edit,
                 meta: {
                   label: t("goods-brand.goods-brand"),
-                  icon: <ListAlt />,
+                  parent: "goods-group",
+                  icon: <Building2 />,
                 },
               },
             ]}

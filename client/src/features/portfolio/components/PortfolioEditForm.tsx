@@ -11,8 +11,11 @@ import dayjs from "dayjs";
 
 import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
-import { EPortfolioType } from "../types/portfolio-type.enum";
+import {
+  EPortfolioType,
+  IPortfolio,
+  IPortfolioForm,
+} from "@/src/features/portfolio";
 
 export const PortfolioEditForm = () => {
   const { id } = useParams<{ id: string }>();

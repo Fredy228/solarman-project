@@ -21,10 +21,15 @@
   },
   "notifications": {
     "success": "Успешно",
-    "createSuccess": "Портфолио успешно создано",
-    "editSuccess": "Портфолио успешно отредактировано",
-    "showSuccess": "Портфолио успешно показано",
-    "deleteSuccess": "Портфолио успешно удалено"
+    "createSuccess": "Успешно создано",
+    "editSuccess": "Успешно отредактировано",
+    "showSuccess": "Успешно показано",
+    "deleteSuccess": "Успешно удалено",
+    "error": "Ошибка",
+    "createError": "Ошибка создания",
+    "editError": "Ошибка редактирования",
+    "showError": "Ошибка показания",
+    "deleteError": "Ошибка удаления"
   },
   "common": {
     "main": "Главная",
@@ -32,6 +37,9 @@
     "upload_more": "Загрузить еще",
     "update": "Обновить",
     "required_field": "Обязательное поле"
+  },
+  "group": {
+    "goods": "Управление товарами"
   },
   "portfolio": {
     "portfolio": "Портфолио",
@@ -71,6 +79,46 @@
     },
     "fields": {
       "name": "Название"
+    }
+  },
+  "goods": {
+    "goods": "Товары",
+    "titles": {
+      "list": "Список товаров",
+      "create": "Создать товар",
+      "edit": "Редактировать товар",
+      "show": "Товар"
+    },
+    "fields": {
+      "cover": "Главная фотография",
+      "title": "Название",
+      "description": "Описание",
+      "tag": "Тег",
+      "images": "Фотографии",
+      "status": "Статус",
+      "price": "Цена",
+      "discountPrice": "Скидочная цена",
+      "category": "Категория",
+      "badge": "Бейдж"
+    },
+    "status": {
+      "DRAFT": "Черновик",
+      "PUBLISHED": "Опубликовано",
+      "ARCHIVED": "В архиве"
+    },
+    "category": {
+      "PANEL": "Панели",
+      "INVERTOR": "Инверторы",
+      "BATTERY": "Батареи",
+      "FASTENER": "Крепления",
+      "COMPONENT": "Компоненты",
+      "CHARGE_STATION": "Зарядные станции",
+      "READY_MADE_SOLUTION": "Готовые решения"
+    },
+    "badge": {
+      "SALE": "Акционный товар",
+      "LOW_STOCK": "Мало на складе",
+      "PRICE_INCREASE_PLANNED": "Планируется повышение цены"
     }
   }
 }

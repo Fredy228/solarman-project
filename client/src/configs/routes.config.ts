@@ -14,6 +14,12 @@ export const ADMIN_PROTECTED_ROUTES = {
     edit: "/admin/portfolio/edit/:id",
     show: "/admin/portfolio/show/:id",
   },
+  goods: {
+    list: "/admin/goods",
+    create: "/admin/goods/create",
+    edit: "/admin/goods/edit/:id",
+    show: "/admin/goods/show/:id",
+  },
   goodsBrand: {
     list: "/admin/goods-brand",
     create: "/admin/goods-brand/create",
