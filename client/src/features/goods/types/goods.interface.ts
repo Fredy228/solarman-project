@@ -12,12 +12,13 @@ import {
   TPanelSpecs,
   TReadyMadeSolutionSpecs,
 } from "@/src/features/goods/types/goods-spec.type";
+import { PdfInfo } from "@/src/features/goods";
 
 interface IGoodsBase {
   id: string;
   cover: string;
   images: string[];
-  instructions: string[];
+  instructions: PdfInfo[];
   tag: string;
   status: EProductStatus;
   price: number;
@@ -29,27 +30,27 @@ interface IGoodsBase {
 
 interface IGoodsPanel extends IGoodsBase {
   category: EGoodsCategory.PANEL;
-  specs: TPanelSpecs;
+  specs?: TPanelSpecs | null;
 }
 interface IGoodsInvertor extends IGoodsBase {
   category: EGoodsCategory.INVERTOR;
-  specs: TInvertorSpecs;
+  specs?: TInvertorSpecs | null;
 }
 interface IGoodsBattery extends IGoodsBase {
   category: EGoodsCategory.BATTERY;
-  specs: TBatterySpecs;
+  specs?: TBatterySpecs | null;
 }
 interface IGoodsFastener extends IGoodsBase {
   category: EGoodsCategory.FASTENER;
-  specs: TFastenerSpecs;
+  specs?: TFastenerSpecs | null;
 }
 interface IGoodsChargeStation extends IGoodsBase {
   category: EGoodsCategory.CHARGE_STATION;
-  specs: TChargeStationSpecs;
+  specs?: TChargeStationSpecs | null;
 }
 interface IGoodsReadyMadeSolution extends IGoodsBase {
   category: EGoodsCategory.READY_MADE_SOLUTION;
-  specs: TReadyMadeSolutionSpecs;
+  specs?: TReadyMadeSolutionSpecs | null;
 }
 interface IGoodsComponent extends IGoodsBase {
   category: EGoodsCategory.COMPONENT;
@@ -84,11 +85,18 @@ export interface IGoodsForm {
   descriptionUk: PartialBlock[];
   descriptionRu: PartialBlock[];
   tag: string;
-  status: EProductStatus;
-  category: EGoodsCategory;
-  price: number;
-  discountPrice?: number | null;
-  currency: ECurrency;
-  badge?: EBadgeType | null;
-  country?: string | null;
+  category: EGoodsCategory | "";
+  price: string;
+  discountPrice: string;
+  currency: ECurrency | "";
+  badge?: EBadgeType | "";
+  country?: string | "";
+  specs?:
+    | TBatterySpecs
+    | TChargeStationSpecs
+    | TFastenerSpecs
+    | TInvertorSpecs
+    | TPanelSpecs
+    | TReadyMadeSolutionSpecs
+    | null;
 }

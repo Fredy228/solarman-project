@@ -114,6 +114,32 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
       )}
 
       <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.images")} size="small" />
+      </Divider>
+      <Controller
+        name="images"
+        control={control}
+        defaultValue={null}
+        render={({ field }) => (
+          <ImageUpload
+            value={field.value}
+            onChange={field.onChange}
+            label={t("common.upload_more")}
+            multiple
+            error={!!errors.images}
+            helperText={errors.images?.message}
+          />
+        )}
+      />
+      {isEdit && portfolio?.images && (
+        <ImagesPreview
+          id={portfolio.id}
+          images={portfolio.images}
+          resource={"portfolio/image"}
+        />
+      )}
+
+      <Divider textAlign="left">
         <Chip label={t("portfolio.fields.title")} size="small" />
       </Divider>
       <TextField
@@ -246,32 +272,6 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         <Typography variant="caption" color="error">
           {errors.descriptionRu.message}
         </Typography>
-      )}
-
-      <Divider textAlign="left">
-        <Chip label={t("portfolio.fields.images")} size="small" />
-      </Divider>
-      <Controller
-        name="images"
-        control={control}
-        defaultValue={null}
-        render={({ field }) => (
-          <ImageUpload
-            value={field.value}
-            onChange={field.onChange}
-            label={t("common.upload_more")}
-            multiple
-            error={!!errors.images}
-            helperText={errors.images?.message}
-          />
-        )}
-      />
-      {isEdit && portfolio?.images && (
-        <ImagesPreview
-          id={portfolio.id}
-          images={portfolio.images}
-          resource={"portfolio/image"}
-        />
       )}
     </Box>
   );

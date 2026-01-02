@@ -59,6 +59,8 @@ export class GoodsPublicService {
           price: true,
           discountPrice: true,
           badge: true,
+          category: true,
+          status: true,
           brand: {
             select: {
               name: true,

@@ -14,8 +14,9 @@ model Goods {
   country       String?
 
   instructions PdfInfo[]
-  images       String[]  @default([])
+  images       String[]      @default([])
   cover        String
+  status       ProductStatus @default(DRAFT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

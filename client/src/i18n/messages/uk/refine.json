@@ -36,7 +36,8 @@
     "upload": "Завантажити",
     "upload_more": "Завантажити ще",
     "update": "Оновити",
-    "required_field": "Обов'язкове поле"
+    "required_field": "Обов'язкове поле",
+    "noSelect": "Не обрано"
   },
   "group": {
     "goods": "Управління товарами"
@@ -99,10 +100,20 @@
       "price": "Ціна",
       "discountPrice": "Знижкова ціна",
       "category": "Категорія",
-      "badge": "Бейдж"
+      "badge": "Бейдж",
+      "brand": "Бренд",
+      "currency": "Валюта (Для відображення)",
+      "specs": {
+        "type": "Тип",
+        "power": "Потужність",
+        "phase": "Фази",
+        "voltage": "Напруга",
+        "capacity": "Ємність",
+        "material": "Матеріал"
+      }
     },
     "status": {
-      "DRAFT": "Черновик",
+      "DRAFT": "Чернетка",
       "PUBLISHED": "Опубликовано",
       "ARCHIVED": "В архиве"
     },
@@ -119,6 +130,43 @@
       "SALE": "Акційний товар",
       "LOW_STOCK": "Мало на складі",
       "PRICE_INCREASE_PLANNED": "Планується підвищення ціни"
+    },
+    "currency": {
+      "USD": "долар",
+      "EUR": "євро",
+      "UAH": "гривня"
+    },
+    "measurements": {
+      "watt": "Вт",
+      "kilowatts": "кВт",
+      "ampereHour": "Аг",
+      "volt": "В"
+    },
+    "specs": {
+      "panelType": {
+        "MONOCRYSTALLINE": "Монокристалічна",
+        "POLYCRYSTALLINE": "Полікристалічна"
+      },
+      "invertorType": {
+        "AUTONOMOUS": "Автономні",
+        "HYBRID": "Гібридні",
+        "NETWORK": "Мережеві"
+      },
+      "batteryType": {
+        "LITHIUM": "Літієві",
+        "GEL": "Гелеві",
+        "CARBON": "Карбонові"
+      },
+      "fastenerType": {
+        "SLOPING_ROOF": "На похилий дах",
+        "FLAT_ROOF": "На плоский дах",
+        "CERAMIC_ROOF": "На керамічний дах"
+      },
+      "fastenerMaterial": {
+        "STEEL": "Метал",
+        "ZINC": "Цинк",
+        "ALUMINIUM": "Алюміній"
+      }
     }
   }
 }

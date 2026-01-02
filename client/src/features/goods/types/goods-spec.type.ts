@@ -1,10 +1,10 @@
-import { EMaterialType } from "./goods-spec-material.enum";
 import {
   EBatterySpecType,
   EFastenerSpecType,
   EInvertorSpecType,
+  EMaterialType,
   EPanelSpecType,
-} from "./goods-spec-type.emum";
+} from "@/src/features/goods";
 
 export interface TPanelSpecs {
   type: EPanelSpecType;

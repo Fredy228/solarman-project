@@ -11,18 +11,18 @@ import {
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { JoiPipe } from 'nestjs-joi';
-import { Goods } from '@prisma/client';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Goods } from '@prisma/client';
+import { JoiPipe } from 'nestjs-joi';
 
-import { GoodsService } from '../services/goods.service';
-import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { Lang } from '../../../common/decorator/lang.decorator';
 import { Language } from '../../../common/enums/language.enum';
-import { GoodsCreateDto } from '../dto/goods.create.dto';
-import { GoodsUpdateDto } from '../dto/goods.update.dto';
+import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { GoodsDeleteImageDto } from '../dto/goods-delete-image.dto';
 import { GoodsDeleteInstructionsDto } from '../dto/goods-delete-instructions.dto';
+import { GoodsCreateDto } from '../dto/goods.create.dto';
+import { GoodsUpdateDto } from '../dto/goods.update.dto';
+import { GoodsService } from '../services/goods.service';
 
 @Controller('goods')
 export class GoodsController {
@@ -83,6 +83,7 @@ export class GoodsController {
     FileFieldsInterceptor([
       { name: 'cover', maxCount: 1 },
       { name: 'images', maxCount: 10 },
+      { name: 'instructions', maxCount: 5 },
     ]),
   )
   async update(
@@ -121,9 +122,9 @@ export class GoodsController {
       id,
       body,
       lang,
-      files.cover,
-      files.images,
-      files.instructions,
+      files?.cover,
+      files?.images,
+      files?.instructions,
     );
   }
 

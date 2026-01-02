@@ -36,7 +36,8 @@
     "upload": "Загрузить",
     "upload_more": "Загрузить еще",
     "update": "Обновить",
-    "required_field": "Обязательное поле"
+    "required_field": "Обязательное поле",
+    "noSelect": "Не выбранно"
   },
   "group": {
     "goods": "Управление товарами"
@@ -99,7 +100,17 @@
       "price": "Цена",
       "discountPrice": "Скидочная цена",
       "category": "Категория",
-      "badge": "Бейдж"
+      "badge": "Бейдж",
+      "brand": "Бренд",
+      "currency": "Валюта (Для отображения)",
+      "specs": {
+        "type": "Тип",
+        "power": "Мощность",
+        "phase": "Фазы",
+        "voltage": "Напряжение",
+        "capacity": "Емкость",
+        "material": "Материал"
+      }
     },
     "status": {
       "DRAFT": "Черновик",
@@ -119,6 +130,43 @@
       "SALE": "Акционный товар",
       "LOW_STOCK": "Мало на складе",
       "PRICE_INCREASE_PLANNED": "Планируется повышение цены"
+    },
+    "currency": {
+      "USD": "доллар",
+      "EUR": "евро",
+      "UAH": "гривна"
+    },
+    "measurements": {
+      "watt": "Вт",
+      "kilowatts": "кВт",
+      "ampereHour": "Ач",
+      "volt": "В"
+    },
+    "specs": {
+      "panelType": {
+        "MONOCRYSTALLINE": "Монокристаллическая",
+        "POLYCRYSTALLINE": "Поликристаллическая"
+      },
+      "invertorType": {
+        "AUTONOMOUS": "Автономные",
+        "HYBRID": "Гибридные",
+        "NETWORK": "Сетевые"
+      },
+      "batteryType": {
+        "LITHIUM": "Литиевые",
+        "GEL": "Гелевые",
+        "CARBON": "Карбоновые"
+      },
+      "fastenerType": {
+        "SLOPING_ROOF": "На наклонную крышу",
+        "FLAT_ROOF": "На плоскую крышу",
+        "CERAMIC_ROOF": "На керамическую крышу"
+      },
+      "fastenerMaterial": {
+        "STEEL": "Металл",
+        "ZINC": "Цинк",
+        "ALUMINIUM": "Алюминий"
+      }
     }
   }
 }

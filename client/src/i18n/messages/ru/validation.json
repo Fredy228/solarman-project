@@ -15,6 +15,27 @@
   "tag": {
     "name": "Тег"
   },
+  "brand": {
+    "name": "Бренд"
+  },
+  "price": {
+    "name": "Цена"
+  },
+  "discountPrice": {
+    "name": "Цена со скидкой"
+  },
+  "badge": {
+    "name": "Бейдж"
+  },
+  "country": {
+    "name": "Страна"
+  },
+  "currency": {
+    "name": "Валюта"
+  },
+  "category": {
+    "name": "Категория"
+  },
   "date": {
     "name": "Дата",
     "base": "Необходимо указать дату"

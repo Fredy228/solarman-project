@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  DeleteButton,
-  EditButton,
-  List,
-  ShowButton,
-  useDataGrid,
-} from "@refinedev/mui";
+import { Box, Chip, Stack } from "@mui/material";
 import {
   DataGrid,
   getGridSingleSelectOperators,
@@ -14,18 +8,24 @@ import {
   GridColDef,
   GridRowModel,
 } from "@mui/x-data-grid";
-import { Box, Chip, Stack } from "@mui/material";
-import { useLocale, useTranslations } from "next-intl";
 import { useNotification, useUpdate } from "@refinedev/core";
+import {
+  DeleteButton,
+  EditButton,
+  List,
+  ShowButton,
+  useDataGrid,
+} from "@refinedev/mui";
+import { useLocale, useTranslations } from "next-intl";
 
+import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
+import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
 import ProtectProvider from "@/src/providers/protect-provider";
+import { goodsBadgeConfig } from "@/src/shared/configs/goods-badge.config";
+import { goodsCategoryConfig } from "@/src/shared/configs/goods-category.config";
+import { productStatusConfig } from "@/src/shared/configs/product-status.config";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
-import { productStatusConfig } from "@/src/shared/configs/product-status.config";
-import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
-import { goodsCategoryConfig } from "@/src/shared/configs/goods-category.config";
-import { goodsBadgeConfig } from "@/src/shared/configs/goods-badge.config";
-import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 
 export default function GoodsList() {
   const { dataGridProps } = useDataGrid({
@@ -38,7 +38,7 @@ export default function GoodsList() {
 
   const handleProcessRowUpdate = async (
     newRow: GridRowModel,
-    oldRow: GridRowModel,
+    oldRow: GridRowModel
   ) => {
     if (newRow.status !== oldRow.status) {
       try {
@@ -54,7 +54,7 @@ export default function GoodsList() {
             {
               onSuccess: () => resolve(true),
               onError: (error) => reject(error),
-            },
+            }
           );
         });
 
@@ -109,7 +109,7 @@ export default function GoodsList() {
       minWidth: 250,
       valueGetter: (value) => value[locale as keyof LocalizedContent],
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains",
+        (operator) => operator.value === "contains"
       ),
     },
     {
@@ -119,7 +119,7 @@ export default function GoodsList() {
       align: "center",
       headerAlign: "center",
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is",
+        (operator) => operator.value === "is"
       ),
       type: "singleSelect",
       valueOptions: Object.values(EGoodsCategory).map((category) => ({
@@ -154,7 +154,7 @@ export default function GoodsList() {
       valueGetter: (value: number) => value / 100,
       valueFormatter: (value: number) => `${value} $`,
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains",
+        (operator) => operator.value === "contains"
       ),
     },
     {
@@ -167,7 +167,7 @@ export default function GoodsList() {
       valueGetter: (value: number) => (value ? value / 100 : null),
       valueFormatter: (value: number) => (value ? `${value} $` : null),
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains",
+        (operator) => operator.value === "contains"
       ),
     },
     {
@@ -182,9 +182,9 @@ export default function GoodsList() {
         value: badge,
         label: t(`goods.badge.${badge}`),
       })),
-      valueFormatter: (value: string) => t(`goods.badge.${value}`),
+      valueFormatter: (value: string) => value && t(`goods.badge.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is",
+        (operator) => operator.value === "is"
       ),
       renderCell: (params) => {
         const config = goodsBadgeConfig[params.value as EBadgeType];
@@ -217,7 +217,7 @@ export default function GoodsList() {
       })),
       valueFormatter: (value: string) => t(`goods.status.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is",
+        (operator) => operator.value === "is"
       ),
       renderCell: (params) => {
         const config = productStatusConfig[params.value as EProductStatus];
