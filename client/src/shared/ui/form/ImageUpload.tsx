@@ -1,9 +1,8 @@
 "use client";
 
-import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { useCallback } from "react";
-import Image from "next/image";
+import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo } from "react";
 
 interface ImageUploadProps {
   value: File | File[] | null;
@@ -43,12 +42,26 @@ export const ImageUpload = ({
         onChange(null);
       }
     },
-    [value, onChange],
+    [value, onChange]
   );
 
   const files = (Array.isArray(value) ? value : value ? [value] : []).filter(
-    (f) => typeof f !== "string",
+    (f) => typeof f !== "string"
   );
+
+  const filesWithUrls = useMemo(() => {
+    return files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+      key: `${file.name}-${file.size}-${file.lastModified}`,
+    }));
+  }, [files]);
+
+  useEffect(() => {
+    return () => {
+      filesWithUrls.forEach((f) => URL.revokeObjectURL(f.url));
+    };
+  }, [filesWithUrls]);
 
   return (
     <Box>
@@ -85,9 +98,9 @@ export const ImageUpload = ({
             marginTop: 2,
           }}
         >
-          {files.map((file, index) => (
+          {filesWithUrls.map(({ file, url, key }) => (
             <Paper
-              key={index}
+              key={key}
               elevation={3}
               sx={{
                 position: "relative",
@@ -97,9 +110,9 @@ export const ImageUpload = ({
                 borderRadius: "8px",
               }}
             >
-              <Image
-                src={URL.createObjectURL(file)}
-                alt={`preview ${index}`}
+              <img
+                src={url}
+                alt={file.name}
                 width={120}
                 height={120}
                 loading="eager"

@@ -35,6 +35,14 @@ export const goodsSchema = (t: TranslatorType) =>
       .messages({
         "array.max": t("images.max") + " 10",
       }),
+    instructions: Joi.array()
+      .items(Joi.object().instance(File))
+      .max(5)
+      .optional()
+      .allow(null)
+      .messages({
+        "array.max": t("instructions.max") + " 5",
+      }),
     titleUk: Joi.string()
       .min(1)
       .max(250)
@@ -71,6 +79,9 @@ export const goodsSchema = (t: TranslatorType) =>
     country: Joi.string()
       .min(1)
       .max(100)
+      .empty("")
+      .allow(null)
+      .default(null)
       .messages({
         "string.empty": t("country.name") + t("common.required"),
         "any.required": t("country.name") + t("common.required"),
@@ -83,6 +94,8 @@ export const goodsSchema = (t: TranslatorType) =>
       .min(1)
       .max(300)
       .empty("")
+      .allow(null)
+      .default(null)
       .messages({
         "string.empty": t("brand.name") + t("common.required"),
         "any.required": t("brand.name") + t("common.required"),

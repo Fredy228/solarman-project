@@ -1,9 +1,6 @@
-import { EProductStatus } from "@/src/shared/types/product-status.enum";
-import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
-import { ECurrency } from "@/src/shared/types/currency.enum";
+import { PdfInfo } from "@/src/features/goods";
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
-import { LocalizedContent } from "@/src/shared/types/localized-content.type";
-import { PartialBlock } from "@blocknote/core";
+import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
 import {
   TBatterySpecs,
   TChargeStationSpecs,
@@ -12,7 +9,10 @@ import {
   TPanelSpecs,
   TReadyMadeSolutionSpecs,
 } from "@/src/features/goods/types/goods-spec.type";
-import { PdfInfo } from "@/src/features/goods";
+import { ECurrency } from "@/src/shared/types/currency.enum";
+import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+import { EProductStatus } from "@/src/shared/types/product-status.enum";
+import { PartialBlock } from "@blocknote/core";
 
 interface IGoodsBase {
   id: string;
@@ -26,6 +26,10 @@ interface IGoodsBase {
   currency: ECurrency;
   badge?: EBadgeType;
   country?: string;
+  brandId?: string;
+  brand?: {
+    name: string;
+  };
 }
 
 interface IGoodsPanel extends IGoodsBase {
@@ -90,6 +94,7 @@ export interface IGoodsForm {
   discountPrice: string;
   currency: ECurrency | "";
   badge?: EBadgeType | "";
+  brand?: string | "";
   country?: string | "";
   specs?:
     | TBatterySpecs

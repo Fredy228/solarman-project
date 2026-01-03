@@ -1,14 +1,19 @@
 "use client";
 
 import {
+  Autocomplete,
   Box,
+  Button,
   Chip,
   Divider,
   MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
-import { useTranslations } from "next-intl";
+import countries from "i18n-iso-countries";
+import ruLocale from "i18n-iso-countries/langs/ru.json";
+import ukLocale from "i18n-iso-countries/langs/uk.json";
+import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useEffect, type FC } from "react";
@@ -16,13 +21,14 @@ import {
   Control,
   Controller,
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { useDebouncedCallback } from "use-debounce";
 
 import {
+  EBadgeType,
   PanelSpecForm,
   TInvertorSpecs,
   TPanelSpecs,
@@ -35,9 +41,11 @@ import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
 import { IGoods, IGoodsForm } from "@/src/features/goods/types/goods.interface";
 import { generateSlug } from "@/src/libs/slug";
 import { ECurrency } from "@/src/shared/types/currency.enum";
+import { FileUpload } from "@/src/shared/ui/form/FileUpload";
 import { ImageUpload } from "@/src/shared/ui/form/ImageUpload";
 import { NumericFormatFinance } from "@/src/shared/ui/number-input/NumericFormatFinance";
 import { AsyncAutocomplete } from "@/src/widgets/refine/AsyncAutocomplete";
+import { FilesPreview } from "@/src/widgets/refine/FilesPreview";
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 import { BatterySpecForm } from "./BatterySpecForm";
 import { ChargeStationSpecForm } from "./ChargeStationSpecForm";
@@ -56,6 +64,7 @@ type GoodsFormProps = {
   registerAction: UseFormRegister<IGoodsForm>;
   watch: UseFormWatch<IGoodsForm>;
   setValueAction: UseFormSetValue<IGoodsForm>;
+  getValuesAction: UseFormGetValues<IGoodsForm>;
   isEdit?: boolean;
   goods?: IGoods;
 };
@@ -66,26 +75,30 @@ export const GoodsForm: FC<GoodsFormProps> = ({
   registerAction,
   watch,
   setValueAction,
+  getValuesAction,
   isEdit = false,
   goods,
 }) => {
   const t = useTranslations("refine");
+  const locale = useLocale();
   const watchCategory = watch("category");
-  const watchTitleUk = watch("titleUk");
 
-  const throttledGenerateTag = useDebouncedCallback((value: string) => {
-    if (!value) return;
-    const slug = generateSlug(value);
+  useEffect(() => {
+    try {
+      countries.registerLocale(ukLocale);
+      countries.registerLocale(ruLocale);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const generateTag = () => {
+    const title = getValuesAction("titleUk");
+    if (!title) return;
+    const slug = generateSlug(title);
+    if (!slug) return;
     setValueAction("tag", slug, { shouldValidate: true });
-  }, 1000);
-
-  useEffect(() => {
-    setValueAction("specs", null);
-  }, [watchCategory, setValueAction]);
-
-  useEffect(() => {
-    throttledGenerateTag(watchTitleUk);
-  }, [watchTitleUk, setValueAction, throttledGenerateTag]);
+  };
 
   return (
     <Box
@@ -149,6 +162,33 @@ export const GoodsForm: FC<GoodsFormProps> = ({
       )}
 
       <Divider textAlign="left">
+        <Chip label={t("goods.fields.instructions")} size="small" />
+      </Divider>
+      <Controller
+        name="instructions"
+        control={control}
+        defaultValue={null}
+        render={({ field }) => (
+          <FileUpload
+            value={field.value}
+            onChange={field.onChange}
+            label={t("common.upload_more")}
+            multiple
+            allowedExtensions={["pdf", "x-pdf", "x-bzpdf", "x-gzpdf"]}
+            error={!!errors.instructions}
+            helperText={errors.instructions?.message}
+          />
+        )}
+      />
+      {isEdit && goods?.instructions && (
+        <FilesPreview
+          id={goods.id}
+          instructions={goods.instructions}
+          resource={"goods/instructions"}
+        />
+      )}
+
+      <Divider textAlign="left">
         <Chip label={t("goods.fields.title") + " *"} size="small" />
       </Divider>
       <TextField
@@ -191,6 +231,11 @@ export const GoodsForm: FC<GoodsFormProps> = ({
         label={t("goods.fields.tag") + " (SEO)"}
         name="tag"
       />
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Button variant="outlined" size="small" onClick={generateTag}>
+          {t("buttons.generate")}
+        </Button>
+      </Box>
 
       <Divider textAlign="left">
         <Chip label={t("goods.fields.price") + " *"} size="small" />
@@ -198,7 +243,7 @@ export const GoodsForm: FC<GoodsFormProps> = ({
       <Controller
         name="price"
         control={control}
-        defaultValue={goods?.price?.toString() || ""}
+        defaultValue={goods?.price ? (goods.price / 100).toFixed(2) : ""}
         rules={{ required: t("common.required_field") }}
         render={({ field }) => (
           <NumericFormatFinance
@@ -217,7 +262,9 @@ export const GoodsForm: FC<GoodsFormProps> = ({
       <Controller
         name="discountPrice"
         control={control}
-        defaultValue={goods?.discountPrice?.toString() || ""}
+        defaultValue={
+          goods?.discountPrice ? (goods.discountPrice / 100).toFixed(2) : ""
+        }
         rules={{ required: t("common.required_field") }}
         render={({ field }) => (
           <NumericFormatFinance
@@ -264,6 +311,39 @@ export const GoodsForm: FC<GoodsFormProps> = ({
       />
 
       <Divider textAlign="left">
+        <Chip label={t("goods.fields.badge")} size="small" />
+      </Divider>
+      <Controller
+        name="badge"
+        control={control}
+        defaultValue={goods?.badge || ""}
+        rules={{ required: t("common.required_field") }}
+        render={({ field }) => (
+          <TextField
+            {...field}
+            select
+            fullWidth
+            label={t("goods.fields.badge")}
+            error={!!errors.badge}
+            helperText={errors.badge?.message}
+            slotProps={{
+              inputLabel: { shrink: true },
+              select: { displayEmpty: true },
+            }}
+          >
+            <MenuItem key={"null"} value={""}>
+              {t(`common.noSelect`)}
+            </MenuItem>
+            {Object.values(EBadgeType).map((badge: EBadgeType) => (
+              <MenuItem key={badge} value={badge}>
+                {t(`goods.badge.${badge}`)}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+      />
+
+      <Divider textAlign="left">
         <Chip label={t("goods.fields.category") + " *"} size="small" />
       </Divider>
       <Controller
@@ -274,6 +354,11 @@ export const GoodsForm: FC<GoodsFormProps> = ({
         render={({ field }) => (
           <TextField
             {...field}
+            onChange={(e) => {
+              const value = e.target ? e.target.value : e;
+              field.onChange(value);
+              setValueAction("specs", null);
+            }}
             select
             fullWidth
             label={t("goods.fields.category")}
@@ -345,6 +430,52 @@ export const GoodsForm: FC<GoodsFormProps> = ({
           )}
         </>
       )}
+
+      <Divider textAlign="left">
+        <Chip label={t("goods.fields.country")} size="small" />
+      </Divider>
+      <Controller
+        name="country"
+        control={control}
+        defaultValue={goods?.country || ""}
+        rules={{ required: t("common.required_field") }}
+        render={({ field }) => {
+          const names = countries.getNames(locale === "uk" ? "uk" : "ru");
+          const options = Object.entries(names || {})
+            .map(([code, name]) => ({
+              code: code.toLowerCase(),
+              label: name as string,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+
+          const selected =
+            options.find((o) => o.code === (field.value || "")) || null;
+
+          return (
+            <Autocomplete
+              options={options}
+              getOptionLabel={(opt) => opt.label}
+              value={selected}
+              onChange={(_, newVal) =>
+                field.onChange(newVal ? newVal.code : "")
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.code === value.code
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("goods.fields.country")}
+                  error={!!errors.country}
+                  helperText={errors.country?.message}
+                  fullWidth
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
+              )}
+            />
+          );
+        }}
+      />
 
       <Divider textAlign="left">
         <Chip label={t("goods.fields.brand")} size="small" />

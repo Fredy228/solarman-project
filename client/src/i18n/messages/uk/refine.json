@@ -17,7 +17,8 @@
     "cancel": "Відмінити",
     "confirm": "Ви впевнені?",
     "logout": "Вийти",
-    "notAccessTitle": "У вас немає дозволу на доступ"
+    "notAccessTitle": "У вас немає дозволу на доступ",
+    "generate": "Згенерувати"
   },
   "notifications": {
     "success": "Операція успішна",
@@ -100,9 +101,11 @@
       "price": "Ціна",
       "discountPrice": "Знижкова ціна",
       "category": "Категорія",
+      "country": "Країна виробник",
       "badge": "Бейдж",
       "brand": "Бренд",
       "currency": "Валюта (Для відображення)",
+      "instructions": "Інструкції (PDF)",
       "specs": {
         "type": "Тип",
         "power": "Потужність",

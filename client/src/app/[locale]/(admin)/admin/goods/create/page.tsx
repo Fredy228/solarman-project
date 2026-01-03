@@ -10,7 +10,7 @@ import { GoodsForm } from "@/src/features/goods/components/GoodsForm";
 import { IGoodsForm } from "@/src/features/goods/types/goods.interface";
 import { goodsSchema } from "@/src/validators/goods.schema";
 
-export default function GoodsCreate() {
+export default function GoodsCreatePage() {
   const t = useTranslations("validation");
 
   const {

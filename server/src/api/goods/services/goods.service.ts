@@ -1,17 +1,17 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { ObjectId } from 'bson';
-import { Prisma } from '@prisma/client';
 import { Block } from '@blocknote/core';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { ObjectId } from 'bson';
 
+import { Language } from '../../../common/enums/language.enum';
+import { GoodsErrorMessage } from '../../../common/messages/error/goods.message';
+import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
+import { extractImageUrls } from '../../../helpers/extract-image-urls.util';
+import { prepareLocalizedUpdate } from '../../../helpers/prisma/prepare-localized-update';
+import { replaceImageUrls } from '../../../helpers/replace-image-urls.util';
 import { FileService } from '../../../libs/file/file.service';
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { GoodsCreateDto } from '../dto/goods.create.dto';
-import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
-import { Language } from '../../../common/enums/language.enum';
-import { GoodsErrorMessage } from '../../../common/messages/error/goods.message';
-import { extractImageUrls } from '../../../helpers/extract-image-urls.util';
-import { replaceImageUrls } from '../../../helpers/replace-image-urls.util';
-import { prepareLocalizedUpdate } from '../../../helpers/prisma/prepare-localized-update';
 import { GoodsUpdateDto } from '../dto/goods.update.dto';
 
 @Injectable()
