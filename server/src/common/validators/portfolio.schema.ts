@@ -1,5 +1,5 @@
-import Joi from 'joi';
 import { PortfolioType, ProductStatus } from '@prisma/client';
+import Joi from 'joi';
 
 export const portfolioSchema = Joi.object({
   title: Joi.string().trim().min(1).max(250),

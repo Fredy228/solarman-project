@@ -1,6 +1,12 @@
+import {
+  BadgeType,
+  ECurrency,
+  GoodsCategory,
+  ProductStatus,
+} from '@prisma/client';
 import Joi from 'joi';
-import { BadgeType, ECurrency, GoodsCategory } from '@prisma/client';
 
+import { joiJsonCheck } from '../../../helpers/joi/joi-json-check.util';
 import {
   batterySpecSchema,
   chargeStationSpecSchema,
@@ -9,7 +15,6 @@ import {
   panelSpecSchema,
   readyMadeSolutionSpecSchema,
 } from './goods-specs.schema';
-import { joiJsonCheck } from '../../../helpers/joi/joi-json-check.util';
 
 export const goodsSchema = Joi.object({
   title: Joi.string().min(1).max(250),
@@ -22,6 +27,7 @@ export const goodsSchema = Joi.object({
   category: Joi.string().valid(...Object.values(GoodsCategory)),
   currency: Joi.string().valid(...Object.values(ECurrency)),
   badge: Joi.string().valid(...Object.values(BadgeType)),
+  status: Joi.string().valid(...Object.values(ProductStatus)),
   specs: Joi.alternatives().conditional('category', {
     switch: [
       {

@@ -54,7 +54,6 @@ export default function GoodsEditPage() {
   });
 
   const specsWatch = watch("specs");
-  console.log("specsWatch", specsWatch);
 
   useEffect(() => {
     if (goodsData) {
@@ -118,7 +117,7 @@ export default function GoodsEditPage() {
       updatedData[key] = data[key];
     });
 
-    console.log(updatedData);
+    void onFinish(updatedData);
   };
 
   return (

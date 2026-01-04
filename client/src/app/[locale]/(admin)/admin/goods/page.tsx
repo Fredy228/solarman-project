@@ -17,6 +17,7 @@ import {
   useDataGrid,
 } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useMemo } from "react";
 
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
@@ -26,15 +27,125 @@ import { goodsCategoryConfig } from "@/src/shared/configs/goods-category.config"
 import { productStatusConfig } from "@/src/shared/configs/product-status.config";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
+import {
+  DataGridMultiFilter,
+  type MultiFilterFieldConfig,
+  type MultiFilterLabels,
+  type MultiFilterOperatorOption,
+} from "@/src/shared/ui/data-grid/multi-filter";
 
 export default function GoodsList() {
-  const { dataGridProps } = useDataGrid({
+  const { dataGridProps, filters, setFilters } = useDataGrid({
     syncWithLocation: true,
   });
   const t = useTranslations("refine");
   const locale = useLocale();
   const { mutate: updateGoods } = useUpdate();
   const { open } = useNotification();
+
+  const filterOperators = useMemo(
+    () => ({
+      contains: t("filters.operators.contains"),
+      equals: t("filters.operators.equals"),
+      gte: t("filters.operators.gte"),
+      lte: t("filters.operators.lte"),
+    }),
+    [t]
+  );
+
+  const priceParser = useCallback(
+    (value: string | number | boolean | null | undefined) => {
+      if (value === undefined || value === null || value === "") {
+        return undefined;
+      }
+      const numericValue = typeof value === "number" ? value : Number(value);
+      if (Number.isNaN(numericValue)) {
+        return undefined;
+      }
+      return Math.round(numericValue * 100);
+    },
+    []
+  );
+
+  const filterFields = useMemo<MultiFilterFieldConfig[]>(() => {
+    const { contains, equals, gte, lte } = filterOperators;
+    const selectOperators: MultiFilterOperatorOption[] = [
+      { value: "eq", label: equals },
+    ];
+    const numericOperators: MultiFilterOperatorOption[] = [
+      { value: "gte", label: gte },
+      { value: "lte", label: lte },
+    ];
+
+    return [
+      {
+        field: "title",
+        label: t("goods.fields.title"),
+        type: "text",
+        operators: [{ value: "contains", label: contains }],
+        placeholder: t("goods.fields.title"),
+      },
+      {
+        field: "category",
+        label: t("goods.fields.category"),
+        type: "select",
+        operators: selectOperators,
+        options: Object.values(EGoodsCategory).map((category) => ({
+          value: category,
+          label: t(`goods.category.${category}`),
+        })),
+      },
+      {
+        field: "badge",
+        label: t("goods.fields.badge"),
+        type: "select",
+        operators: selectOperators,
+        options: Object.values(EBadgeType).map((badge) => ({
+          value: badge,
+          label: t(`goods.badge.${badge}`),
+        })),
+      },
+      {
+        field: "status",
+        label: t("goods.fields.status"),
+        type: "select",
+        operators: selectOperators,
+        options: Object.values(EProductStatus).map((status) => ({
+          value: status,
+          label: t(`goods.status.${status}`),
+        })),
+      },
+      {
+        field: "price",
+        label: t("goods.fields.price"),
+        type: "number",
+        operators: numericOperators,
+        placeholder: t("goods.fields.price"),
+        valueParser: priceParser,
+      },
+      {
+        field: "discountPrice",
+        label: t("goods.fields.discountPrice"),
+        type: "number",
+        operators: numericOperators,
+        placeholder: t("goods.fields.discountPrice"),
+        valueParser: priceParser,
+      },
+    ];
+  }, [filterOperators, priceParser, t]);
+
+  const filterLabels = useMemo<MultiFilterLabels>(
+    () => ({
+      title: t("filters.title"),
+      add: t("filters.add"),
+      apply: t("filters.apply"),
+      reset: t("filters.reset"),
+      empty: t("filters.empty"),
+      fieldLabel: t("filters.field"),
+      operatorLabel: t("filters.operator"),
+    }),
+    [t]
+  );
 
   const handleProcessRowUpdate = async (
     newRow: GridRowModel,
@@ -108,9 +219,8 @@ export default function GoodsList() {
       flex: 1,
       minWidth: 250,
       valueGetter: (value) => value[locale as keyof LocalizedContent],
-      filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains"
-      ),
+      filterable: false,
+      sortable: false,
     },
     {
       field: "category",
@@ -264,14 +374,25 @@ export default function GoodsList() {
   return (
     <ProtectProvider keyProvider="goods-list">
       <List>
-        <DataGrid
-          {...(dataGridProps as any)}
-          columns={columns}
-          autoHeight
-          rowHeight={120}
-          processRowUpdate={handleProcessRowUpdate}
-          onProcessRowUpdateError={handleProcessRowUpdateError}
-        />
+        <Stack spacing={2}>
+          <DataGridMultiFilter
+            fields={filterFields}
+            filters={filters}
+            labels={filterLabels}
+            onApply={(nextFilters) => setFilters(nextFilters)}
+            isLoading={(dataGridProps as any).loading}
+          />
+          <DataGrid
+            {...(dataGridProps as any)}
+            filterModel={{ items: [] }}
+            columns={columns}
+            autoHeight
+            rowHeight={120}
+            disableColumnFilter
+            processRowUpdate={handleProcessRowUpdate}
+            onProcessRowUpdateError={handleProcessRowUpdateError}
+          />
+        </Stack>
       </List>
     </ProtectProvider>
   );
