@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useDelete } from "@refinedev/core";
+import { useTranslations } from "next-intl";
 import { memo, useState } from "react";
 
 export const FilesPreview = memo(
@@ -33,6 +34,7 @@ export const FilesPreview = memo(
     );
     const [open, setOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
+    const t = useTranslations("refine");
 
     const handleClickOpen = (path: string) => {
       setFileToDelete(path);
@@ -116,16 +118,14 @@ export const FilesPreview = memo(
         </Box>
 
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>{"Підтвердження видалення"}</DialogTitle>
+          <DialogTitle>{t("common.confirm")}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Ви точно хочете видалити цей файл?
-            </DialogContentText>
+            <DialogContentText>{t("common.sure.deleteFile")}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Скасувати</Button>
+            <Button onClick={handleClose}>{t("buttons.cancel")}</Button>
             <Button color="error" onClick={handleDelete} autoFocus>
-              Видалити
+              {t("buttons.delete")}
             </Button>
           </DialogActions>
         </Dialog>

@@ -22,6 +22,7 @@ export default function GoodsCreatePage() {
     formState: { errors },
     watch,
     setValue,
+    getValues,
   } = useForm<IGoodsForm, HttpError, IGoodsForm>({
     resolver: joiResolver(goodsSchema(t)),
   });
@@ -58,6 +59,7 @@ export default function GoodsCreatePage() {
         registerAction={register}
         watch={watch}
         setValueAction={setValue}
+        getValuesAction={getValues}
       />
     </Create>
   );

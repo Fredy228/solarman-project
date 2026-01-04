@@ -13,6 +13,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useDelete } from "@refinedev/core";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { memo, useState } from "react";
 
@@ -32,6 +33,7 @@ export const ImagesPreview = memo(
     );
     const [open, setOpen] = useState(false);
     const [imageToDelete, setImageToDelete] = useState<string | null>(null);
+    const t = useTranslations("refine");
 
     const handleClickOpen = (image: string) => {
       setImageToDelete(image);
@@ -102,17 +104,17 @@ export const ImagesPreview = memo(
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {"Підтвердження видалення"}
+            {t("common.confirm")}
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Ви точно хочете видалити це зображення?
+              {t("common.sure.deleteImage")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Скасувати</Button>
+            <Button onClick={handleClose}>{t("buttons.cancel")}</Button>
             <Button color="error" onClick={handleDelete} autoFocus>
-              Видалити
+              {t("buttons.delete")}
             </Button>
           </DialogActions>
         </Dialog>
