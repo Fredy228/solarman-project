@@ -60,7 +60,7 @@ export const FileUpload = ({
   );
 
   const files = (Array.isArray(value) ? value : value ? [value] : []).filter(
-    (f) => typeof f !== "string"
+    (f): f is File => f instanceof File
   );
 
   const acceptAttr = allowedExtensions

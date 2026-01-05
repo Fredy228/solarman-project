@@ -46,7 +46,7 @@ export const AsyncAutocomplete: FC<Props> = ({
               ) || null
             }
             onChange={(_, newValue) => {
-              field.onChange(newValue ? newValue.id : null);
+              field.onChange(newValue ? newValue.id : "");
             }}
             getOptionLabel={(item) => item.name}
             isOptionEqualToValue={(option, value) => option.id === value.id}

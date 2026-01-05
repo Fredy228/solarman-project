@@ -185,6 +185,11 @@ export class GoodsService {
         },
       };
     }
+    if (brand === null) {
+      updatedBody.brand = {
+        disconnect: true,
+      };
+    }
 
     if (cover && cover[0]) {
       updatedBody['cover'] = await this.fileService.saveImage({
@@ -234,12 +239,18 @@ export class GoodsService {
         ]),
       ];
 
+      console.log('descriptionImageUrlsCurrent:', descriptionImageUrlsCurrent);
+      console.log('descriptionImageUrlsNew:', descriptionImageUrlsNew);
+
       const addedImages = descriptionImageUrlsNew.filter(
         (url) => !descriptionImageUrlsCurrent.includes(url),
       );
       const removedImages = descriptionImageUrlsCurrent.filter(
         (url) => !descriptionImageUrlsNew.includes(url),
       );
+
+      console.log('addedImages:', addedImages);
+      console.log('removedImages:', removedImages);
 
       const urlReplaceMap: Record<string, string> = {};
       await Promise.all(

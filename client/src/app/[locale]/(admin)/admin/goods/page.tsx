@@ -284,7 +284,6 @@ export default function GoodsList() {
       field: "badge",
       headerName: t("goods.fields.badge"),
       width: 170,
-      editable: true,
       align: "center",
       headerAlign: "center",
       type: "singleSelect",

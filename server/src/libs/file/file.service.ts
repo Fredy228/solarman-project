@@ -1,9 +1,4 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import * as path from 'path';
-import { join } from 'path';
-import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
-import { v4 as uuidv4 } from 'uuid';
-import * as process from 'process';
 import {
   ensureDir,
   pathExistsSync,
@@ -11,8 +6,13 @@ import {
   rename,
   writeFile,
 } from 'fs-extra';
-import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 import { unlinkSync } from 'node:fs';
+import * as path from 'path';
+import { join } from 'path';
+import * as process from 'process';
+import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
+import { v4 as uuidv4 } from 'uuid';
+import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 
 type OptionImageType = {
   width: number;
@@ -48,7 +48,7 @@ export class FileService {
 
     const fileUniqueName = `${fileKey}-${splitFileName.join('.')}.${format || extname}`;
     const fullFilePath = path.join(fullFolderPath, fileUniqueName);
-    const dbFilePath = path.join('api', ...filePath, fileUniqueName);
+    const dbFilePath = path.join('/api', ...filePath, fileUniqueName);
     return {
       fileName,
       fileKey,
@@ -146,7 +146,10 @@ export class FileService {
   deleteFiles(filePaths: string[]): void {
     try {
       filePaths.forEach((filePath: string) => {
-        const fullPath = join(process.cwd(), filePath.replace('api/', ''));
+        const fullPath = join(
+          process.cwd(),
+          filePath.replace('/api/', ''),
+        ).split('?')[0];
 
         const isExistFile = pathExistsSync(fullPath);
         if (isExistFile) {
@@ -207,16 +210,18 @@ export class FileService {
     try {
       const destinationFullPath = join(process.cwd(), ...destinationDir);
       await ensureDir(destinationFullPath);
-      const oldPath = join(process.cwd(), filePath.replace(/^api\//, ''));
-      const fileName = path.basename(oldPath);
+      const [oldPath, query] = filePath.replace('/api/', '').split('?');
+      const fullOldPath = join(process.cwd(), oldPath);
+      const fileName = path.basename(fullOldPath);
       const newPath = join(destinationFullPath, fileName);
-      const newDbPath = join('api', ...destinationDir, fileName);
+      let newDbPath = join('/api', ...destinationDir, fileName);
+      if (query) newDbPath += `?${query}`;
 
-      if (pathExistsSync(oldPath)) {
-        await rename(oldPath, newPath);
+      if (pathExistsSync(fullOldPath)) {
+        await rename(fullOldPath, newPath);
         return newDbPath;
       } else {
-        this.logger.warn(`File not found, skipping move: ${oldPath}`);
+        this.logger.warn(`File not found, skipping move: ${fullOldPath}`);
         return null;
       }
     } catch (e) {

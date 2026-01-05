@@ -87,7 +87,6 @@ export default function GoodsEditPage() {
 
   const handleSave = (data: IGoodsForm) => {
     if (Object.keys(dirtyFields).length === 0) return list("goods");
-    console.log(data);
 
     const updatedData = {} as IGoodsForm;
     (Object.keys(dirtyFields) as Array<keyof IGoodsForm>).forEach((key) => {
