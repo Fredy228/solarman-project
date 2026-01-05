@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Button,
   Chip,
   Divider,
   FormControl,
@@ -12,18 +13,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { type FC } from "react";
 import {
   Control,
   Controller,
   FieldErrors,
+  UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import { type FC, useEffect } from "react";
-import Image from "next/image";
-import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
 
 import { ImageUpload } from "@/src/shared/ui/form/ImageUpload";
 
@@ -44,7 +46,7 @@ const BlockNoteEditor = dynamic(
 
   {
     ssr: false,
-  },
+  }
 );
 
 type PortfolioFormProps = {
@@ -53,6 +55,7 @@ type PortfolioFormProps = {
   registerAction: UseFormRegister<IPortfolioForm>;
   watch: UseFormWatch<IPortfolioForm>;
   setValueAction: UseFormSetValue<IPortfolioForm>;
+  getValuesAction: UseFormGetValues<IPortfolioForm>;
   isEdit?: boolean;
   portfolio?: IPortfolio;
 };
@@ -61,22 +64,20 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
   control,
   errors,
   registerAction,
-  watch,
   setValueAction,
+  getValuesAction,
   isEdit = false,
   portfolio,
 }) => {
   const t = useTranslations("refine");
 
-  useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === "titleUk" && value.titleUk) {
-        const slug = generateSlug(value.titleUk);
-        setValueAction("tag", slug, { shouldValidate: true });
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, setValueAction]);
+  const generateTag = () => {
+    const title = getValuesAction("titleUk");
+    if (!title) return;
+    const slug = generateSlug(title);
+    if (!slug) return;
+    setValueAction("tag", slug, { shouldValidate: true });
+  };
 
   return (
     <Box
@@ -182,6 +183,11 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         label={t("portfolio.fields.tag") + " (SEO)"}
         name="tag"
       />
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Button variant="outlined" size="small" onClick={generateTag}>
+          {t("buttons.generate")}
+        </Button>
+      </Box>
       <Divider textAlign="left">
         <Chip label={t("portfolio.fields.type")} size="small" />
       </Divider>

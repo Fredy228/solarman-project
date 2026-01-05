@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  DeleteButton,
-  EditButton,
-  List,
-  ShowButton,
-  useDataGrid,
-} from "@refinedev/mui";
+import { Box, Chip, Stack } from "@mui/material";
 import {
   DataGrid,
   getGridDateOperators,
@@ -15,20 +9,34 @@ import {
   GridColDef,
   GridRowModel,
 } from "@mui/x-data-grid";
-import { Box, Chip, Stack } from "@mui/material";
-import { useLocale, useTranslations } from "next-intl";
 import { useNotification, useUpdate } from "@refinedev/core";
+import {
+  DeleteButton,
+  EditButton,
+  List,
+  ShowButton,
+  useDataGrid,
+} from "@refinedev/mui";
 import dayjs from "dayjs";
+import { useLocale, useTranslations } from "next-intl";
+import { useCallback, useMemo } from "react";
 
-import ProtectProvider from "@/src/providers/protect-provider";
-import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+import {
+  DataGridMultiFilter,
+  type MultiFilterFieldConfig,
+  type MultiFilterLabels,
+  type MultiFilterOperatorOption,
+} from "@/src/shared/ui/data-grid/multi-filter";
+
 import { EPortfolioType } from "@/src/features/portfolio/types/portfolio-type.enum";
-import { EProductStatus } from "@/src/shared/types/product-status.enum";
-import { productStatusConfig } from "@/src/shared/configs/product-status.config";
+import ProtectProvider from "@/src/providers/protect-provider";
 import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
+import { productStatusConfig } from "@/src/shared/configs/product-status.config";
+import { LocalizedContent } from "@/src/shared/types/localized-content.type";
+import { EProductStatus } from "@/src/shared/types/product-status.enum";
 
 export default function PortfolioList() {
-  const { dataGridProps } = useDataGrid({
+  const { dataGridProps, filters, setFilters } = useDataGrid({
     syncWithLocation: true,
   });
   const t = useTranslations("refine");
@@ -36,9 +44,91 @@ export default function PortfolioList() {
   const { mutate: updatePortfolio } = useUpdate();
   const { open } = useNotification();
 
+  const filterOperators = useMemo(
+    () => ({
+      contains: t("filters.operators.contains"),
+      equals: t("filters.operators.equals"),
+      gte: t("filters.operators.gte"),
+      lte: t("filters.operators.lte"),
+    }),
+    [t]
+  );
+
+  const dateParser = useCallback(
+    (value: string | number | boolean | null | undefined) => {
+      if (!value) return undefined;
+      const d = new Date(String(value));
+      if (Number.isNaN(d.getTime())) return undefined;
+      return d.toISOString();
+    },
+    []
+  );
+
+  const filterFields = useMemo<MultiFilterFieldConfig[]>(() => {
+    const { contains, equals, gte, lte } = filterOperators;
+    const selectOps: MultiFilterOperatorOption[] = [
+      { value: "eq", label: equals },
+    ];
+    const dateOps: MultiFilterOperatorOption[] = [
+      { value: "eq", label: equals },
+      { value: "gte", label: gte },
+      { value: "lte", label: lte },
+    ];
+
+    return [
+      {
+        field: "title",
+        label: t("portfolio.fields.title"),
+        type: "text",
+        operators: [{ value: "contains", label: contains }],
+        placeholder: t("portfolio.fields.title"),
+      },
+      {
+        field: "type",
+        label: t("portfolio.fields.type"),
+        type: "select",
+        operators: selectOps,
+        options: Object.values(EPortfolioType).map((type) => ({
+          value: type,
+          label: t(`portfolio.type.${type}`),
+        })),
+      },
+      {
+        field: "date",
+        label: t("portfolio.fields.date"),
+        type: "date",
+        operators: dateOps,
+        valueParser: dateParser,
+      },
+      {
+        field: "status",
+        label: t("portfolio.fields.status"),
+        type: "select",
+        operators: selectOps,
+        options: Object.values(EProductStatus).map((status) => ({
+          value: status,
+          label: t(`portfolio.status.${status}`),
+        })),
+      },
+    ];
+  }, [filterOperators, t, dateParser]);
+
+  const filterLabels = useMemo<MultiFilterLabels>(
+    () => ({
+      title: t("filters.title"),
+      add: t("filters.add"),
+      apply: t("filters.apply"),
+      reset: t("filters.reset"),
+      empty: t("filters.empty"),
+      fieldLabel: t("filters.field"),
+      operatorLabel: t("filters.operator"),
+    }),
+    [t]
+  );
+
   const handleProcessRowUpdate = async (
     newRow: GridRowModel,
-    oldRow: GridRowModel,
+    oldRow: GridRowModel
   ) => {
     if (newRow.status !== oldRow.status) {
       try {
@@ -54,7 +144,7 @@ export default function PortfolioList() {
             {
               onSuccess: () => resolve(true),
               onError: (error) => reject(error),
-            },
+            }
           );
         });
 
@@ -109,7 +199,7 @@ export default function PortfolioList() {
       minWidth: 250,
       valueGetter: (value) => value[locale as keyof LocalizedContent],
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains",
+        (operator) => operator.value === "contains"
       ),
     },
     {
@@ -119,7 +209,7 @@ export default function PortfolioList() {
       align: "center",
       headerAlign: "center",
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is",
+        (operator) => operator.value === "is"
       ),
       type: "singleSelect",
       valueOptions: Object.values(EPortfolioType).map((type) => ({
@@ -153,7 +243,7 @@ export default function PortfolioList() {
       valueFormatter: (value) => value && dayjs(value).format("DD.MM.YYYY"),
       valueGetter: (value) => value && new Date(value),
       filterOperators: getGridDateOperators().filter((operator) =>
-        ["is", "onOrAfter", "onOrBefore"].includes(operator.value),
+        ["is", "onOrAfter", "onOrBefore"].includes(operator.value)
       ),
     },
     {
@@ -170,7 +260,7 @@ export default function PortfolioList() {
       })),
       valueFormatter: (value: string) => t(`portfolio.status.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is",
+        (operator) => operator.value === "is"
       ),
       renderCell: (params) => {
         const config = productStatusConfig[params.value as EProductStatus];
@@ -219,14 +309,24 @@ export default function PortfolioList() {
   return (
     <ProtectProvider keyProvider="portfolio-list">
       <List>
-        <DataGrid
-          {...(dataGridProps as any)}
-          columns={columns}
-          autoHeight
-          rowHeight={120}
-          processRowUpdate={handleProcessRowUpdate}
-          onProcessRowUpdateError={handleProcessRowUpdateError}
-        />
+        <Stack spacing={2}>
+          <DataGridMultiFilter
+            fields={filterFields}
+            filters={filters}
+            labels={filterLabels}
+            onApply={(nextFilters) => setFilters(nextFilters)}
+            isLoading={(dataGridProps as any).loading}
+          />
+          <DataGrid
+            {...(dataGridProps as any)}
+            filterModel={{ items: [] }}
+            columns={columns}
+            autoHeight
+            rowHeight={120}
+            processRowUpdate={handleProcessRowUpdate}
+            onProcessRowUpdateError={handleProcessRowUpdateError}
+          />
+        </Stack>
       </List>
     </ProtectProvider>
   );

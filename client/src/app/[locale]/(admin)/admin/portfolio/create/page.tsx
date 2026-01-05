@@ -1,17 +1,17 @@
 "use client";
 
-import { Create } from "@refinedev/mui";
-import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { HttpError } from "@refinedev/core";
+import { Create } from "@refinedev/mui";
+import { useForm } from "@refinedev/react-hook-form";
 import { useTranslations } from "next-intl";
 
-import { portfolioSchema } from "@/src/validators/portfolio.schema";
 import {
-  IPortfolioForm,
   EPortfolioType,
+  IPortfolioForm,
   PortfolioForm,
 } from "@/src/features/portfolio";
+import { portfolioSchema } from "@/src/validators/portfolio.schema";
 
 export default function PortfolioCreate() {
   const t = useTranslations("validation");
@@ -24,6 +24,7 @@ export default function PortfolioCreate() {
     formState: { errors },
     watch,
     setValue,
+    getValues,
   } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
     resolver: joiResolver(portfolioSchema(t)),
     defaultValues: {
@@ -47,6 +48,7 @@ export default function PortfolioCreate() {
         registerAction={register}
         watch={watch}
         setValueAction={setValue}
+        getValuesAction={getValues}
       />
     </Create>
   );

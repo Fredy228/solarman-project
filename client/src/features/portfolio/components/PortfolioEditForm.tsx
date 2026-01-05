@@ -46,6 +46,7 @@ export const PortfolioEditForm = () => {
     formState: { errors, dirtyFields },
     watch,
     setValue,
+    getValues,
     reset,
   } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
     resolver: joiResolver(portfolioUpdateSchema(t)),
@@ -130,6 +131,7 @@ export const PortfolioEditForm = () => {
         registerAction={register}
         watch={watch}
         setValueAction={setValue}
+        getValuesAction={getValues}
         isEdit={true}
         portfolio={portfolioData}
       />

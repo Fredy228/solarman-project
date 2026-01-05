@@ -22,6 +22,7 @@ import type {
   CrudFilters,
   LogicalFilter,
 } from "@refinedev/core";
+import dayjs from "dayjs";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type {
@@ -143,6 +144,11 @@ const getRuleDisplayValue = (
     return option?.label ?? String(rule.value ?? "");
   }
 
+  if (field.type === "date" && rule.value) {
+    const d = dayjs(String(rule.value));
+    return d.isValid() ? d.format("DD.MM.YYYY") : String(rule.value);
+  }
+
   return String(rule.value ?? "");
 };
 
@@ -172,6 +178,13 @@ export const DataGridMultiFilter = ({
       if (fieldConfig?.type === "number" && typeof filter.value === "number") {
         displayValue = filter.value / 100;
       }
+      if (fieldConfig?.type === "date" && filter.value) {
+        // convert ISO/Date string to input-friendly yyyy-MM-dd
+        const d = dayjs(filter.value as string);
+        displayValue = d.isValid()
+          ? d.format("YYYY-MM-DD")
+          : String(filter.value);
+      }
 
       return {
         id: createRuleId(),
@@ -189,6 +202,12 @@ export const DataGridMultiFilter = ({
       let displayValue: any = filter.value;
       if (fieldConfig?.type === "number" && typeof filter.value === "number") {
         displayValue = filter.value / 100;
+      }
+      if (fieldConfig?.type === "date" && filter.value) {
+        const d = dayjs(filter.value as string);
+        displayValue = d.isValid()
+          ? d.format("YYYY-MM-DD")
+          : String(filter.value);
       }
 
       return {
