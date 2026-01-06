@@ -6,12 +6,12 @@ import {
   defaultBlockSpecs,
   PartialBlock,
 } from "@blocknote/core";
-import { useCreateBlockNote } from "@blocknote/react";
+import { ru, uk } from "@blocknote/core/locales";
 import { BlockNoteView } from "@blocknote/mantine";
-import { type FC, useEffect } from "react";
+import { useCreateBlockNote } from "@blocknote/react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useLocale } from "next-intl";
-import { uk, ru } from "@blocknote/core/locales";
+import { type FC, useEffect } from "react";
 
 import "@blocknote/mantine/style.css";
 
@@ -64,7 +64,7 @@ const BlockNoteEditor: FC<BlockNoteEditorProps> = (props) => {
               "Content-Type": "multipart/form-data",
             },
           });
-        return "/" + data.url;
+        return data.url;
       } catch (error) {
         console.error(error);
         throw new Error("Failed to upload file");

@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "Главная",
+    "about": "О нас",
+    "contact": "Контакты",
+    "products": "Каталог товаров",
+    "projects": "Проекты",
+    "blog": "Блог",
+    "services": "Услуги",
+    "serviceEnterprise": "Для предприятий",
+    "serviceHome": "Для дома",
+    "serviceInvestment": "Для инвестиций",
+    "serviceBackupPower": "Резервное питание",
+    "serviceCrediting": "Кредитование"
+  }
+}

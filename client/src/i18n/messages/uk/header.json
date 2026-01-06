@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "Головна",
+    "about": "Про нас",
+    "contact": "Контакти",
+    "products": "Каталог товарів",
+    "projects": "Проєкти",
+    "blog": "Блог",
+    "services": "Послуги",
+    "serviceEnterprise": "Для підприємств",
+    "serviceHome": "Для дому",
+    "serviceInvestment": "Для інвестицій",
+    "serviceBackupPower": "Резервне живлення",
+    "serviceCrediting": "Кредитування"
+  }
+}

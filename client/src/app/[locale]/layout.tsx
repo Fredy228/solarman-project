@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { use } from "react";
 import { NextIntlClientProvider } from "next-intl";
+import { Montserrat } from "next/font/google";
+import { use } from "react";
 import "./globals.css";
 
 import MuiProvider from "@/src/providers/mui-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -32,9 +29,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${montserrat.variable} antialiased`}>
         <NextIntlClientProvider>
           <MuiProvider locale={locale}>{children}</MuiProvider>
         </NextIntlClientProvider>

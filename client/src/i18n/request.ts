@@ -1,6 +1,6 @@
+import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "./routing";
-import { hasLocale } from "next-intl";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
@@ -8,14 +8,16 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale;
 
+  const basePath = `./messages/${locale}`;
+
   return {
     locale,
     messages: {
-      common: (await import(`./messages/${locale}/common.json`)).default,
-      home: (await import(`./messages/${locale}/home.json`)).default,
-      refine: (await import(`./messages/${locale}/refine.json`)).default,
-      validation: (await import(`./messages/${locale}/validation.json`))
-        .default,
+      common: (await import(`${basePath}/common.json`)).default,
+      home: (await import(`${basePath}/home.json`)).default,
+      header: (await import(`${basePath}/header.json`)).default,
+      refine: (await import(`${basePath}/refine.json`)).default,
+      validation: (await import(`${basePath}/validation.json`)).default,
     },
   };
 });
