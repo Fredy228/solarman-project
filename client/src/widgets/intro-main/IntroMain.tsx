@@ -1,0 +1,54 @@
+import { Box, Button, Container, Typography } from "@mui/material";
+import { Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+
+import IntroImage from "@/src/assets/intro/intro-bg.webp";
+import IntroLinks from "./IntroLink";
+import { introLinkList } from "./introLinkList";
+
+export const IntroMain = () => {
+  const t = useTranslations("home");
+  const tCommon = useTranslations("common");
+
+  return (
+    <Box
+      component="section"
+      className="w-full relative overflow-hidden pt-28 pb-1"
+    >
+      <Box
+        className="absolute flex justify-items-center w-[2200px] h-[1000px] top-[-572px] md:top-[-600px] left-1/2 transform -translate-x-1/2 z-[-1] rounded-[50%] overflow-hidden"
+        sx={{
+          background:
+            "radial-gradient(92.05% 162.69% at 81.46% 7.95%,#fff8de 0%,#dceeff 100%)",
+        }}
+      >
+        <Box className="relative w-full ml-auto mr-auto max-w-[1440px]">
+          <Image
+            src={IntroImage}
+            alt="Intro background"
+            className="w-[500px] h-auto absolute right-0 bottom-[-50px] md:w-[450px] md:right-[150px] sm:w-[400px] sm:right-[280px]"
+          />
+        </Box>
+      </Box>
+      <Container maxWidth="xl">
+        <Typography
+          variant="h1"
+          component="h1"
+          className="pb-2.5 whitespace-pre-line"
+        >
+          {t("intro.title")}
+        </Typography>
+        <Typography variant="subtitle1" className="pb-10 whitespace-pre-line">
+          {t("intro.subtitle")}
+        </Typography>
+
+        <Button variant="contained" size="large" startIcon={<Phone />}>
+          {tCommon("button.getConsultationV1")}
+        </Button>
+
+        <IntroLinks list={introLinkList(t)} />
+      </Container>
+    </Box>
+  );
+};

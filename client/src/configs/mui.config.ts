@@ -11,7 +11,6 @@ import {
   ukUA as pickersUkUA,
 } from "@mui/x-date-pickers/locales";
 
-import { themeConfig } from "@/src/configs/theme.config";
 import { ELocale } from "../i18n/routing";
 
 const translateMui = (locale?: string) => {
@@ -32,15 +31,36 @@ export const theme = (lang?: ELocale) =>
       palette: {
         mode: "light",
         primary: {
-          main: themeConfig.colors.primary.main,
+          main: "#fc7300",
         },
         secondary: {
-          main: themeConfig.colors.secondary.main,
+          main: "#16498a",
         },
       },
       typography: {
-        fontFamily: `${themeConfig.fonts.fontFamily}, sans-serif`,
-        fontWeightRegular: themeConfig.styles.fontWeight,
+        fontFamily: "var(--font-montserrat)",
+        fontWeightRegular: "var(--font-weight-default)",
+        h1: {
+          textTransform: "uppercase",
+          fontWeight: 700,
+          fontSize: "40px",
+          color: "var(--color-secondary)",
+          lineHeight: 1.3,
+          zIndex: 20,
+        },
+        h2: {
+          textTransform: "uppercase",
+          fontWeight: 700,
+          fontSize: "30px",
+          color: "var(--color-secondary)",
+          lineHeight: 1.3,
+        },
+        subtitle1: {
+          fontSize: "18px",
+          color: "var(--color-text-g2)",
+          lineHeight: 1.5,
+          zIndex: 20,
+        },
       },
       components: {
         MuiButton: {
@@ -48,9 +68,10 @@ export const theme = (lang?: ELocale) =>
             root: {
               borderRadius: "9999px",
               textTransform: "none",
+              fontSize: "16px",
             },
             contained: {
-              color: themeConfig.colors.light.text.light,
+              color: "var(--color-text-light)",
             },
           },
         },

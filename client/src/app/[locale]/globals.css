@@ -1,2 +1,34 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+:root {
+  --color-primary: #fc7300;
+  /* --color-primary: var(--mui-palette-primary-main); */
+  --color-secondary: #16498a;
+  /* --color-secondary: var(--mui-palette-secondary-main); */
+  --color-text-light: #ffffff;
+  --color-text-g1: #111827;
+  --color-text-g2: #02244d;
+  --color-text-g3: #505f7c;
+  --color-text-g4: #6b7280;
+  --color-text-g5: #9ca3af;
+  --color-text-g6: #e5e7eb;
+
+  --border-radius-main: 10px;
+
+  --font-weight-default: 500;
+}
+
+@theme {
+  --breakpoint-sm: 600px; /* was 640px */
+  --breakpoint-md: 900px; /* was 768px (iPad) */
+  --breakpoint-lg: 1200px; /* was 1024px */
+  --breakpoint-xl: 1536px; /* was 1280px */
+}
+
+@layer base {
+  img {
+    display: block;
+    height: auto;
+  }
+}

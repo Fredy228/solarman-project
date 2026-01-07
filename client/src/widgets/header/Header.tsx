@@ -1,6 +1,5 @@
 "use client";
 
-import { themeConfig } from "@/src/configs/theme.config";
 import { Link as NavLink, usePathname } from "@/src/i18n/navigation";
 import IconLogoMain from "@/src/shared/ui/icons/IconLogoMain";
 import { LanguageSwitcher } from "@/src/shared/ui/language-switcher/LanguageSwitcher";
@@ -45,8 +44,19 @@ export default function Header() {
   const [expandedMobile, setExpandedMobile] = React.useState<
     Record<number, boolean>
   >({});
+  const [isScrolled, setIsScrolled] = React.useState(false);
   const t = useTranslations("header");
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLElement>,
@@ -67,10 +77,18 @@ export default function Header() {
 
   return (
     <AppBar
-      position="sticky"
+      position="fixed"
       color="inherit"
       elevation={0}
-      sx={{ borderBottom: 1, borderColor: "divider" }}
+      sx={{
+        borderBottom: isScrolled ? 1 : 0,
+        borderColor: "divider",
+        backgroundColor: isScrolled ? "background.paper" : "transparent",
+        transition: theme.transitions.create(
+          ["background-color", "border-bottom-color"],
+          { duration: theme.transitions.duration.shorter }
+        ),
+      }}
     >
       <Container maxWidth="xl">
         <Toolbar
@@ -108,7 +126,7 @@ export default function Header() {
                 return (
                   <Box
                     key={item.label}
-                    color={themeConfig.colors.light.text.g4}
+                    color="var(--color-text-g4)"
                     sx={{
                       position: "relative",
                       display: "flex",
@@ -169,7 +187,7 @@ export default function Header() {
                             elevation={3}
                             onMouseLeave={handleCloseMenu}
                             sx={{
-                              borderRadius: themeConfig.styles.borderRadius,
+                              borderRadius: "var(--border-radius-main)",
                               minWidth: 250,
                             }}
                           >
@@ -184,8 +202,9 @@ export default function Header() {
                                       onClick={handleCloseMenu}
                                       sx={{
                                         gap: 1,
+                                        color: "var(--color-text-g2)",
                                         "&:hover": {
-                                          color: "primary.main",
+                                          color: "var(--color-primary)",
                                         },
                                       }}
                                     >

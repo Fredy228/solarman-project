@@ -1,3 +1,9 @@
 {
-  "greeting": "Привіт!"
+  "button": {
+    "moreDetails": "Детальніше",
+    "getConsultationV1": "Отримати консультацію",
+    "getConsultationV2": "Отримати безкоштовну консультацію",
+    "getConsultationV3": "Замовити консультацію",
+    "getConsultationV4": "Отримати розрахунок"
+  }
 }

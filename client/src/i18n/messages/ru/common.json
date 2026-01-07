@@ -1,3 +1,9 @@
 {
-  "greeting": "Привет!"
+  "button": {
+    "moreDetails": "Подробнее",
+    "getConsultationV1": "Получить консультацию",
+    "getConsultationV2": "Получить бесплатную консультацию",
+    "getConsultationV3": "Заказать консультацию",
+    "getConsultationV4": "Получить расчет"
+  }
 }

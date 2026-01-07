@@ -4,6 +4,18 @@ export const ADMIN_AUTH_ROUTES = {
 
 export const PUBLIC_ROUTES = {
   index: "/",
+  services: {
+    home: "/services/home",
+    enterprise: "/services/enterprise",
+    backupPower: "/services/backup-power",
+    crediting: "/services/crediting",
+    income: "/services/income",
+  },
+  products: "/products",
+  projects: "/projects",
+  blog: "/blog",
+  about: "/about",
+  contact: "/contact",
 };
 
 export const ADMIN_PROTECTED_ROUTES = {

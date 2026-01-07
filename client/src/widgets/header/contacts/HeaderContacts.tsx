@@ -1,4 +1,3 @@
-import { themeConfig } from "@/src/configs/theme.config";
 import {
   Link as MUILink,
   Stack,
@@ -29,8 +28,8 @@ export default function HeaderContacts({ isMobile }: Props) {
           display: "flex",
           alignItems: "center",
           gap: 1,
-          color: themeConfig.colors.light.text.g3,
-          "&:hover": { color: "primary.main" },
+          color: "var(--color-text-g3)",
+          "&:hover": { color: "var(--color-primary)" },
           transition: theme.transitions.create(["color"], {
             duration: theme.transitions.duration.shortest,
           }),
@@ -46,9 +45,9 @@ export default function HeaderContacts({ isMobile }: Props) {
         sx={{
           display: "flex",
           alignItems: "center",
-          color: themeConfig.colors.light.text.g3,
+          color: "var(--color-text-g3)",
           gap: 1,
-          "&:hover": { color: "primary.main" },
+          "&:hover": { color: "var(--color-primary)" },
           transition: theme.transitions.create(["color"], {
             duration: theme.transitions.duration.shortest,
           }),
