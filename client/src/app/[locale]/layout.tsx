@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { Montserrat } from "next/font/google";
 import { use } from "react";
 import "./globals.css";
 
+import { routing } from "@/src/i18n/routing";
 import MuiProvider from "@/src/providers/mui-provider";
+import { notFound } from "next/navigation";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -26,6 +28,9 @@ export default function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = use(params);
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
 
   return (
     <html lang={locale}>

@@ -10,4 +10,8 @@ export const API_ROUTES = {
     refresh: "/auth/refresh",
     logout: "/auth/logout",
   },
+  portfolio: {
+    list: "/portfolio",
+    get: (id: string) => `/portfolio/${id}`,
+  },
 };

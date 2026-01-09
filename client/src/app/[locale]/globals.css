@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 
 :root {
   --color-primary: #fc7300;
@@ -30,5 +33,42 @@
   img {
     display: block;
     height: auto;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-primary) var(--color-text-g6);
+  }
+
+  @supports (scrollbar-width: auto) {
+    .custom-scrollbar {
+      scrollbar-color: var(--color-primary) var(--color-text-g6);
+      scrollbar-width: auto;
+    }
+  }
+
+  @supports selector(::-webkit-scrollbar) {
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: var(--color-text-g6);
+      border-radius: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: var(--color-primary);
+      border-radius: 6px;
+      border: none;
+      cursor: grab;
+    }
+
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+      background-color: var(--color-secondary);
+    }
   }
 }

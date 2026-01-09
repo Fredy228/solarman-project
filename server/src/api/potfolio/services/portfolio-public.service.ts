@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
-import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { Language } from '../../../common/enums/language.enum';
-import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
 import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
+import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
 import { generatePrismaDateFilter } from '../../../helpers/prisma/generate-prisma-date-filter';
 import { generatePrismaPaginateOption } from '../../../helpers/prisma/generate-prisma-paginate-option';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { PortfolioGetManyQueryDto } from '../dto/portfolio-get-many.query.dto';
 
 @Injectable()
@@ -25,13 +25,7 @@ export class PortfolioPublicService {
         PortfolioErrorMessage[lang].NOT_FOUND,
       );
 
-    const { title, description, ...otherFileds } = foundPortfolio;
-
-    return {
-      ...otherFileds,
-      title: title[lang],
-      description: description[lang],
-    };
+    return foundPortfolio;
   }
 
   async getMany(query: PortfolioGetManyQueryDto, lang: Language) {
@@ -71,6 +65,7 @@ export class PortfolioPublicService {
           cover: true,
           type: true,
           status: true,
+          tag: true,
         },
       }),
       this.prisma.portfolio.count({

@@ -1,14 +1,14 @@
 "use client";
 
-import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
 import {
-  Select,
-  MenuItem,
   FormControl,
+  MenuItem,
+  Select,
   SelectChangeEvent,
 } from "@mui/material";
+import { useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 export const LanguageSwitcher = () => {
   const locale = useLocale();

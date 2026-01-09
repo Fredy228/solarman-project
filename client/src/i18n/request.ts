@@ -14,10 +14,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale,
     messages: {
       common: (await import(`${basePath}/common.json`)).default,
-      home: (await import(`${basePath}/home.json`)).default,
       header: (await import(`${basePath}/header.json`)).default,
       refine: (await import(`${basePath}/refine.json`)).default,
       validation: (await import(`${basePath}/validation.json`)).default,
+      home: (await import(`${basePath}/home.json`)).default,
+      portfolio: (await import(`${basePath}/portfolio.json`)).default,
     },
   };
 });

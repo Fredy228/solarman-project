@@ -2,8 +2,8 @@ import { PartialBlock } from "@blocknote/core";
 import { type Dayjs } from "dayjs";
 
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
-import { EPortfolioType } from "./portfolio-type.enum";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
+import { EPortfolioType } from "./portfolio-type.enum";
 
 interface IPortfolioBase {
   id: string;
@@ -19,6 +19,11 @@ export interface IPortfolio extends IPortfolioBase {
   title: LocalizedContent;
   description: LocalizedContent;
 }
+
+export type IPortfolioItem = Pick<
+  IPortfolio,
+  "id" | "date" | "cover" | "title" | "tag"
+>;
 
 export interface IPortfolioLocalized extends IPortfolioBase {
   title: string;

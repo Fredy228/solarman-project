@@ -174,7 +174,7 @@ export default function PortfolioList() {
         return row.cover ? (
           <Box
             component="img"
-            src={"/" + row.cover}
+            src={row.cover}
             alt={row.title}
             sx={{
               width: 170,
