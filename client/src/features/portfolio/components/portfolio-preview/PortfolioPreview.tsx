@@ -1,6 +1,7 @@
 import { PUBLIC_ROUTES } from "@/src/configs/routes.config";
 import type { ELocale } from "@/src/i18n/routing";
 import Section from "@/src/shared/ui/sections/Section";
+import SectionTitle from "@/src/shared/ui/title/SectionTitle";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import type { IPortfolioItem } from "../../types/portfolio.interface";
@@ -18,9 +19,9 @@ export default function PortfolioPreview({ data }: Props) {
   return (
     <Section>
       <Container maxWidth="xl">
-        <Typography variant="h2" component="h2" mb={1} className="text-center">
+        <SectionTitle component="h2" mb={1} className="text-center">
           {t("title")}
-        </Typography>
+        </SectionTitle>
         <Typography
           variant="subtitle1"
           component="p"
@@ -31,7 +32,7 @@ export default function PortfolioPreview({ data }: Props) {
         </Typography>
         <Stack
           direction={"row"}
-          className="overflow-x-auto gap-5 pb-3 custom-scrollbar"
+          className="overflow-x-auto gap-5 pb-5 custom-scrollbar"
         >
           {data.map((item) => (
             <Box

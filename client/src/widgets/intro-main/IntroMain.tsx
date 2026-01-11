@@ -14,10 +14,10 @@ export const IntroMain = () => {
   return (
     <Box
       component="section"
-      className="w-full relative overflow-hidden pt-28 pb-1"
+      className="w-full relative overflow-hidden pt-28 pb-14"
     >
       <Box
-        className="absolute flex justify-items-center w-[2200px] h-[1000px] top-[-572px] md:top-[-600px] left-1/2 transform -translate-x-1/2 z-[-1] rounded-[50%] overflow-hidden"
+        className="absolute flex justify-items-center w-[2200px] h-[1000px] top-[-600px] md:top-[-572px] left-1/2 transform -translate-x-1/2 z-[-1] rounded-[50%] overflow-hidden"
         sx={{
           background:
             "radial-gradient(92.05% 162.69% at 81.46% 7.95%,#fff8de 0%,#dceeff 100%)",
@@ -27,7 +27,7 @@ export const IntroMain = () => {
           <Image
             src={IntroImage}
             alt="Intro background"
-            className="w-[500px] h-auto absolute right-0 bottom-[-50px] md:w-[450px] md:right-[150px] sm:w-[400px] sm:right-[280px]"
+            className="absolute right-[280px] bottom-[-50px] h-auto w-[400px] sm:w-[450px] sm:right-[150px] md:w-[500px] md:right-0"
           />
         </Box>
       </Box>
@@ -36,10 +36,15 @@ export const IntroMain = () => {
           variant="h1"
           component="h1"
           className="pb-2.5 whitespace-pre-line"
+          fontSize={{ xs: "25px", md: "30px", lg: "40px" }}
         >
           {t("intro.title")}
         </Typography>
-        <Typography variant="subtitle1" className="pb-10 whitespace-pre-line">
+        <Typography
+          component={"p"}
+          variant="subtitle1"
+          className="pb-10 whitespace-pre-line"
+        >
           {t("intro.subtitle")}
         </Typography>
 

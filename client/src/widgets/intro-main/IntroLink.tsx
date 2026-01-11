@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
   BanknoteArrowUp,
@@ -28,19 +28,17 @@ export default function IntroLinks({ list }: Props) {
   const theme = useTheme();
 
   return (
-    <Stack
-      component={"li"}
-      direction="row"
-      spacing={2}
-      justifyContent={"space-between"}
-      pt={"80px"}
+    <Box
+      component={"ul"}
+      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10  md:gap-4 lg:gap-5 mt-14"
     >
       {list.map((item) => {
         const IconComponent = LucideIcons[item.ico as keyof typeof LucideIcons];
         return (
           <Box
+            component={"li"}
             key={item.id}
-            className="group relative rounded-[10px] h-60 flex-1 outline-2 outline-transparent outline-solid"
+            className="group relative rounded-[10px] h-48 lg:h-60 outline-2 outline-transparent outline-solid"
             sx={{
               background:
                 "linear-gradient(180deg, rgba(22, 73, 138, 0) 30%,rgba(14, 57, 112, 0.95) 100%)",
@@ -71,9 +69,9 @@ export default function IntroLinks({ list }: Props) {
               <Typography
                 variant="body1"
                 color="var(--color-text-light)"
-                className="uppercase text-center whitespace-pre-line"
+                className="uppercase font-bold  text-center whitespace-pre-line"
                 fontWeight={700}
-                fontSize={"1.25rem"}
+                fontSize={{ sm: "16px", md: "14px", lg: "18px" }}
               >
                 {item.title}
               </Typography>
@@ -81,6 +79,6 @@ export default function IntroLinks({ list }: Props) {
           </Box>
         );
       })}
-    </Stack>
+    </Box>
   );
 }

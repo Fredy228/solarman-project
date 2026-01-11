@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 export default function Section({ children }: { children?: ReactNode }) {
   return (
-    <Box component="section" className="w-full pt-14 pb-14">
+    <Box component="section" className="w-full pt-8 pb-8 md:pt-14 md:pb-14">
       {children}
     </Box>
   );

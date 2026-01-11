@@ -51,7 +51,7 @@ export const theme = (lang?: ELocale) =>
         h2: {
           textTransform: "uppercase",
           fontWeight: 700,
-          fontSize: "30px",
+          // fontSize: { md: "32px" },
           color: "var(--color-secondary)",
           lineHeight: 1.3,
         },

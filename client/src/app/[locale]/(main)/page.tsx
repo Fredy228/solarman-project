@@ -25,7 +25,6 @@ export default async function Home({ params }: Props) {
   const portfolioList: IPortfolioItem[] = portfoliosResponse
     ? await portfoliosResponse.json()
     : null;
-  console.log("portfolioList", portfolioList);
 
   return (
     <>
