@@ -18,7 +18,11 @@ export default function PortfolioCard({
   const locale = useLocale() as ELocale;
 
   return (
-    <Paper elevation={3} className="h-full rounded-(--border-radius-main)">
+    <Paper
+      elevation={3}
+      sx={{ borderRadius: "var(--border-radius-main)" }}
+      className="h-full"
+    >
       <NavLink
         className="group h-full flex flex-col"
         href={`${PUBLIC_ROUTES.projects}/${tag}`}

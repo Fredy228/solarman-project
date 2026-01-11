@@ -6,5 +6,8 @@
     "getConsultationV3": "Заказать консультацию",
     "getConsultationV4": "Получить расчет",
     "viewMore": "Посмотреть больше"
+  },
+  "phrases": {
+    "consultSectionTitle": "Подберем лучший \nвариант для вас"
   }
 }

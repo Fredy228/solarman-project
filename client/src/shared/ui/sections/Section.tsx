@@ -1,9 +1,13 @@
-import { Box } from "@mui/material";
+import { Box, type BoxProps } from "@mui/material";
 import type { ReactNode } from "react";
 
-export default function Section({ children }: { children?: ReactNode }) {
+type Props = BoxProps & {
+  children?: ReactNode;
+};
+
+export default function Section({ children, ...props }: Props) {
   return (
-    <Box component="section" className="w-full pt-8 pb-8 md:pt-14 md:pb-14">
+    <Box component="section" className="w-full pt-12 pb-12" {...props}>
       {children}
     </Box>
   );

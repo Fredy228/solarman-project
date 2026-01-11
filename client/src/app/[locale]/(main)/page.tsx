@@ -6,6 +6,7 @@ import PortfolioPreview from "@/src/features/portfolio/components/portfolio-prev
 import fetchNative from "@/src/libs/fetch-native";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
+import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import { IntroMain } from "@/src/widgets/intro-main/IntroMain";
 import { homeBenefitsList } from "./list-home-benefits";
 
@@ -31,6 +32,7 @@ export default async function Home({ params }: Props) {
       <IntroMain />
       <BenefitsSimple title={t("benefits.title")} items={homeBenefitsList(t)} />
       {portfoliosResponse && <PortfolioPreview data={portfolioList} />}
+      <ConsultSection />
     </>
   );
 }

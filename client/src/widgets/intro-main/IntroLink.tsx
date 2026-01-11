@@ -71,7 +71,7 @@ export default function IntroLinks({ list }: Props) {
                 color="var(--color-text-light)"
                 className="uppercase font-bold  text-center whitespace-pre-line"
                 fontWeight={700}
-                fontSize={{ sm: "16px", md: "14px", lg: "18px" }}
+                fontSize={{ xs: "18px", sm: "18px", md: "14px", lg: "18px" }}
               >
                 {item.title}
               </Typography>
