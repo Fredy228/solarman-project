@@ -27,7 +27,7 @@ export default function ConsultSection() {
             }}
             className="pb-12 md:pb-20 md:pt-20 lg:pt-24 lg:pb-24"
           >
-            <Box className="relative flex-1">
+            <Box className="relative flex-1 flex justify-center">
               <Image
                 src={counsultImg}
                 alt="Man is setting solar panels"

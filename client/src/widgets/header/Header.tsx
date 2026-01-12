@@ -29,26 +29,24 @@ import Popper from "@mui/material/Popper";
 import { useTheme } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import HeaderContacts from "./contacts/HeaderContacts";
 import { navItemList } from "./navigation.list";
 
 export default function Header() {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-  const [open, setOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [activeMenuIndex, setActiveMenuIndex] = React.useState<number | null>(
-    null
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
+  const [expandedMobile, setExpandedMobile] = useState<Record<number, boolean>>(
+    {}
   );
-  const [expandedMobile, setExpandedMobile] = React.useState<
-    Record<number, boolean>
-  >({});
-  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("header");
   const pathname = usePathname();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
     };
