@@ -1,31 +1,33 @@
 "use client";
 
-import React from "react";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import { GlobalStyles } from "@mui/material";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
-import routerProvider from "@refinedev/nextjs-router";
-import { GlobalStyles } from "@mui/material";
 import {
   RefineSnackbarProvider,
   ThemedLayout,
   useNotificationProvider,
 } from "@refinedev/mui";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import { useLocale, useTranslations } from "next-intl";
+import routerProvider from "@refinedev/nextjs-router";
 import {
   Building2,
+  Contact,
   GalleryVerticalEnd,
+  Settings2,
   ShoppingBasket,
   ShoppingCart,
 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import React from "react";
 
-import { usePathname, useRouter } from "@/src/i18n/navigation";
-import { authProvider } from "@/src/providers/authProvider";
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
-import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
-import { dataProvider } from "@/src/providers/dataProvider";
+import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { accessControlProvider } from "@/src/providers/accessControlProvider";
+import { authProvider } from "@/src/providers/authProvider";
+import { dataProvider } from "@/src/providers/dataProvider";
 import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
+import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 
 export default function AdminLayout({
   children,
@@ -111,6 +113,22 @@ export default function AdminLayout({
                   label: t("goods-brand.goods-brand"),
                   parent: "goods-group",
                   icon: <Building2 />,
+                },
+              },
+              {
+                name: "global-param-group",
+                meta: {
+                  label: t("group.global-param"),
+                  icon: <Settings2 />,
+                },
+              },
+              {
+                name: "contacts",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.contacts,
+                meta: {
+                  label: t("contacts.contacts"),
+                  parent: "global-param-group",
+                  icon: <Contact />,
                 },
               },
             ]}

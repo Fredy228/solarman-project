@@ -38,6 +38,7 @@ export const ADMIN_PROTECTED_ROUTES = {
     edit: "/admin/goods-brand/edit/:id",
     show: "/admin/goods-brand/show/:id",
   },
+  contacts: "/admin/contacts",
 };
 
 const ROUTES = {

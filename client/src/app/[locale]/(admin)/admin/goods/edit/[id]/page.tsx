@@ -95,7 +95,7 @@ export default function GoodsEditPage() {
         updatedData["tag"] = data["tag"];
         return;
       }
-      if (["descriptionUk", "descriptionRu", "specs"].includes(key)) {
+      if (["descriptionUk", "descriptionRu"].includes(key)) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         updatedData[key] = JSON.stringify(data[key]);

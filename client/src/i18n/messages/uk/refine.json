@@ -32,6 +32,20 @@
     "showError": "Помилка показування",
     "deleteError": "Помилка видалення"
   },
+  "pages": {
+    "login": {
+      "title": "Увійти до системи",
+      "signin": "Увійти",
+      "fields": {
+        "email": "Електронна пошта",
+        "password": "Пароль"
+      },
+      "errors": {
+        "requiredPassword": "Пароль є обов'язковим",
+        "requiredEmail": "Електронна пошта є обов'язковою"
+      }
+    }
+  },
   "filters": {
     "title": "Фільтри",
     "add": "Додати фільтр",
@@ -61,7 +75,28 @@
     }
   },
   "group": {
-    "goods": "Управління товарами"
+    "goods": "Товари",
+    "portfolio": "Портфоліо",
+    "global-param": "Параметри"
+  },
+  "global-param": {
+    "global-param": "Параметри"
+  },
+  "contacts": {
+    "contacts": "Контакти",
+    "titles": {
+      "edit": "Редагувати контакти"
+    },
+    "fields": {
+      "phone": "Телефон",
+      "email": "Електронна пошта",
+      "address": "Адреса",
+      "link_google_maps": "Посилання адреси на Google Maps",
+      "link_facebook": "Facebook URL",
+      "link_instagram": "Instagram URL",
+      "link_telegram": "Telegram URL",
+      "link_youtube": "YouTube URL"
+    }
   },
   "portfolio": {
     "portfolio": "Портфоліо",

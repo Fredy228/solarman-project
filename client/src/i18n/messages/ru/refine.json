@@ -32,6 +32,20 @@
     "showError": "Ошибка показания",
     "deleteError": "Ошибка удаления"
   },
+  "pages": {
+    "login": {
+      "title": "Войти в систему",
+      "signin": "Войти",
+      "fields": {
+        "email": "Электронная почта",
+        "password": "Пароль"
+      },
+      "errors": {
+        "requiredPassword": "Пароль обязателен",
+        "requiredEmail": "Электронная почта обязательна"
+      }
+    }
+  },
   "filters": {
     "title": "Фильтры",
     "add": "Добавить фильтр",
@@ -61,7 +75,28 @@
     }
   },
   "group": {
-    "goods": "Управление товарами"
+    "goods": "Товары",
+    "portfolio": "Портфолио",
+    "global-param": "Параметры"
+  },
+  "global-param": {
+    "global-param": "Параметры"
+  },
+  "contacts": {
+    "contacts": "Контакты",
+    "titles": {
+      "edit": "Редактировать контакты"
+    },
+    "fields": {
+      "phone": "Телефон",
+      "email": "Электронная почта",
+      "address": "Адрес",
+      "link_google_maps": "Ссылка адреса на Google Maps",
+      "link_facebook": "Facebook URL",
+      "link_instagram": "Instagram URL",
+      "link_telegram": "Telegram URL",
+      "link_youtube": "YouTube URL"
+    }
   },
   "portfolio": {
     "portfolio": "Портфолио",
