@@ -1,8 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
+import { CustomHttpExceptionUtil } from 'src/helpers/custom-http-exection.util';
 import { PrismaService } from '../../libs/prisma/prisma.service';
 import { defaultGlobalParam } from './data/default-global-param';
+import { GlobalParamUpdateDto } from './dto/global-params.dto';
 
 @Injectable()
 export class GlobalParamService implements OnModuleInit {
@@ -43,5 +45,37 @@ export class GlobalParamService implements OnModuleInit {
     } catch (error) {
       this.logger.error('Error initializing Global Params', error.stack);
     }
+  }
+
+  async updateGlobalParam(body: GlobalParamUpdateDto) {
+    const currentParam = await this.getGlobalParamByName(body.name);
+
+    const updatedData: Prisma.GlobalParamUpdateInput = {
+      value: {
+        ...(currentParam.value as unknown as object),
+        ...body.value,
+      } as unknown as Prisma.InputJsonValue,
+    };
+    return this.prisma.globalParam.update({
+      where: {
+        name: body.name,
+      },
+      data: updatedData,
+    });
+  }
+
+  async getGlobalParamByName(name: string) {
+    const param = await this.prisma.globalParam.findUnique({
+      where: {
+        name,
+      },
+    });
+
+    if (!param)
+      throw new CustomHttpExceptionUtil(
+        HttpStatus.NOT_FOUND,
+        'Global param not found',
+      );
+    return param;
   }
 }

@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { GlobalParamService } from './global-param.service';
 import { GlobalParamController } from './global-param.controller';
+import { GlobalParamService } from './global-param.service';
 
 @Module({
-  imports: [],
   providers: [GlobalParamService],
   controllers: [GlobalParamController],
 })
