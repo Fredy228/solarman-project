@@ -1,3 +1,4 @@
+import type { TContacts } from "@/src/features/global-params";
 import {
   Link as MUILink,
   Stack,
@@ -9,9 +10,10 @@ import { Mail, Smartphone } from "lucide-react";
 
 type Props = {
   isMobile?: boolean;
+  contactsData: TContacts;
 };
 
-export default function HeaderContacts({ isMobile }: Props) {
+export default function HeaderContacts({ isMobile, contactsData }: Props) {
   const theme = useTheme();
   const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
   const stackProps: StackProps = isMobile
@@ -21,7 +23,7 @@ export default function HeaderContacts({ isMobile }: Props) {
   return (
     <Stack {...stackProps}>
       <MUILink
-        href="mailto:info@example.com"
+        href={`mailto:${contactsData.email}`}
         underline="none"
         color="inherit"
         sx={{
@@ -36,10 +38,10 @@ export default function HeaderContacts({ isMobile }: Props) {
         }}
       >
         <Mail />
-        {isMobile && <span>info@example.com</span>}
+        {isMobile && <span>{contactsData.email}</span>}
       </MUILink>
       <MUILink
-        href="tel:+1234567890"
+        href={`tel:${contactsData.phone}`}
         underline="none"
         color="inherit"
         sx={{
@@ -54,7 +56,7 @@ export default function HeaderContacts({ isMobile }: Props) {
         }}
       >
         <Smartphone />
-        {(isMobile || isLgUp) && <span>+1 (234) 567-890</span>}
+        {(isMobile || isLgUp) && <span>{contactsData.phone}</span>}
       </MUILink>
     </Stack>
   );

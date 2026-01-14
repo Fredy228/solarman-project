@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import IntroImage from "@/src/assets/intro/intro-bg.webp";
+import PageTitle from "@/src/shared/ui/title/PageTitle";
 import IntroLinks from "./IntroLink";
 import { introLinkList } from "./introLinkList";
 
@@ -32,14 +33,9 @@ export const IntroMain = () => {
         </Box>
       </Box>
       <Container maxWidth="xl">
-        <Typography
-          variant="h1"
-          component="h1"
-          className="pb-2.5 whitespace-pre-line"
-          fontSize={{ xs: "25px", md: "30px", lg: "40px" }}
-        >
+        <PageTitle className="pb-2.5 whitespace-pre-line">
           {t("intro.title")}
-        </Typography>
+        </PageTitle>
         <Typography
           component={"p"}
           variant="subtitle1"

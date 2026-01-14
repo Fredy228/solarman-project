@@ -26,6 +26,7 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
+import dayjs from "dayjs";
 
 import { ImageUpload } from "@/src/shared/ui/form/ImageUpload";
 
@@ -105,7 +106,7 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
       {isEdit && portfolio?.cover && (
         <Box>
           <Image
-            src={"/" + portfolio.cover}
+            src={portfolio.cover}
             alt="cover"
             width={150}
             height={150}
@@ -221,19 +222,20 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         control={control}
         rules={{ required: t("common.required_field") }}
         render={({ field }) => (
-          <DatePicker
-            {...field}
-            label={t("portfolio.fields.date")}
-            format="DD.MM.YYYY"
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                margin: "normal",
-                error: !!errors?.date,
-                helperText: errors?.date?.message,
-              },
-            }}
-          />
+            <DatePicker
+              value={field.value ? dayjs(field.value) : null}
+              onChange={(val) => field.onChange(val)}
+              label={t("portfolio.fields.date")}
+              format="DD.MM.YYYY"
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  margin: "normal",
+                  error: !!errors?.date,
+                  helperText: errors?.date?.message,
+                },
+              }}
+            />
         )}
       />
 

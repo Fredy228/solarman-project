@@ -1,22 +1,22 @@
 "use client";
 
-import { useOne } from "@refinedev/core";
-import { useParams } from "next/navigation";
-import { DateField, Show, TagField } from "@refinedev/mui";
 import { Box, Card, CardMedia, Chip, Stack, Typography } from "@mui/material";
+import { useOne } from "@refinedev/core";
+import { DateField, Show, TagField } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
+import { useParams } from "next/navigation";
 
 import { EPortfolioType, IPortfolio } from "@/src/features/portfolio";
-import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
+import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 
 const BlockNoteView = dynamic(
   () => import("@/src/widgets/refine/BlockNoteView"),
   {
     ssr: false,
     loading: () => <p>Загрузка описания...</p>,
-  },
+  }
 );
 
 export default function PortfolioShow() {
@@ -52,7 +52,7 @@ export default function PortfolioShow() {
               <CardMedia
                 component="img"
                 sx={{ height: "auto", maxHeight: 400, objectFit: "contain" }}
-                image={"/" + record.cover}
+                image={record.cover}
                 alt={record.title[locale as keyof LocalizedContent]}
               />
             </Card>

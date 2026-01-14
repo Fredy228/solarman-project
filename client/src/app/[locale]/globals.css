@@ -17,6 +17,12 @@
   --color-text-g5: #9ca3af;
   --color-text-g6: #e5e7eb;
 
+  --bg-section-gradient: radial-gradient(
+    186.93% 102.34% at 81.46% 7.95%,
+    #fff8de 0%,
+    #dceeff 100%
+  );
+
   --border-radius-main: 10px;
 
   --font-weight-default: 500;
@@ -33,6 +39,7 @@
   img {
     display: block;
     height: auto;
+    max-width: initial;
   }
 }
 

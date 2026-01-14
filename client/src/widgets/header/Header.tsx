@@ -1,5 +1,6 @@
 "use client";
 
+import type { TContacts } from "@/src/features/global-params";
 import { Link as NavLink, usePathname } from "@/src/i18n/navigation";
 import IconLogoMain from "@/src/shared/ui/icons/IconLogoMain";
 import { LanguageSwitcher } from "@/src/shared/ui/language-switcher/LanguageSwitcher";
@@ -29,11 +30,15 @@ import Popper from "@mui/material/Popper";
 import { useTheme } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import HeaderContacts from "./contacts/HeaderContacts";
 import { navItemList } from "./navigation.list";
 
-export default function Header() {
+type Props = {
+  contactsData: TContacts | null;
+};
+
+export default function Header({ contactsData }: Props) {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const [open, setOpen] = useState(false);
@@ -46,7 +51,7 @@ export default function Header() {
   const t = useTranslations("header");
   const pathname = usePathname();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100);
     };
@@ -79,6 +84,7 @@ export default function Header() {
       color="inherit"
       elevation={0}
       sx={{
+        maxWindth: "xl",
         borderBottom: isScrolled ? 1 : 0,
         borderColor: "divider",
         backgroundColor: isScrolled ? "background.paper" : "transparent",
@@ -90,6 +96,7 @@ export default function Header() {
     >
       <Container maxWidth="xl">
         <Toolbar
+          className="p-0!"
           sx={{
             display: "flex",
             justifyContent: "space-between",
@@ -269,7 +276,14 @@ export default function Header() {
           {/* Right: Contacts or menu button on mobile */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {isMdUp ? (
-              <HeaderContacts isMobile={false} />
+              <>
+                {contactsData && (
+                  <HeaderContacts
+                    isMobile={false}
+                    contactsData={contactsData}
+                  />
+                )}
+              </>
             ) : (
               <IconButton
                 edge="end"
@@ -381,7 +395,9 @@ export default function Header() {
               })}
             </List>
             <Divider sx={{ my: 1 }} />
-            <HeaderContacts isMobile={true} />
+            {contactsData && (
+              <HeaderContacts isMobile={true} contactsData={contactsData} />
+            )}
           </Box>
         </Drawer>
       </Container>

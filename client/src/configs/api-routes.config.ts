@@ -14,4 +14,7 @@ export const API_ROUTES = {
     list: "/portfolio",
     get: (id: string) => `/portfolio/${id}`,
   },
+  globalParams: {
+    contacts: "/global-param/contacts",
+  },
 };
