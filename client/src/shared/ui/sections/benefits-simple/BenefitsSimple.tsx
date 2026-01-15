@@ -1,5 +1,12 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
-import { BanknoteArrowUp, HandCoins, PiggyBank, Zap } from "lucide-react";
+import {
+  BanknoteArrowUp,
+  Earth,
+  HandCoins,
+  PiggyBank,
+  Power,
+  Zap,
+} from "lucide-react";
 
 import Section from "@/src/shared/ui/sections/Section";
 import SectionTitle from "../../title/SectionTitle";
@@ -10,10 +17,12 @@ const LucideIcons = {
   HandCoins,
   BanknoteArrowUp,
   PiggyBank,
+  Earth,
+  Power,
 };
 
 type Props = {
-  title: string;
+  title?: string;
   subtitle?: string;
   items: Array<BenefitSimpleItemType>;
 };
@@ -22,17 +31,22 @@ export default function BenefitsSimple({ title, subtitle, items }: Props) {
   return (
     <Section>
       <Container maxWidth="xl">
-        <SectionTitle component="h2" className="text-center mb-2.5">
-          {title}
-        </SectionTitle>
-        {subtitle && (
-          <Typography
-            variant="subtitle1"
-            component="p"
-            className="text-center mb-2.5"
-          >
-            {subtitle}
-          </Typography>
+        {title && (
+          <>
+            <SectionTitle component="h2" className="text-center mb-2.5">
+              {title}
+            </SectionTitle>
+            {subtitle && (
+              <Typography
+                variant="subtitle1"
+                component="p"
+                className="text-center mb-2.5"
+              >
+                {subtitle}
+              </Typography>
+            )}
+            <Box height={20} />
+          </>
         )}
         <Box
           component={"ul"}

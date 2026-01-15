@@ -7,7 +7,7 @@ export default function OurMission() {
   const t = useTranslations("about");
 
   return (
-    <Section>
+    <Section sx={{ paddingBottom: 0 }}>
       <Container maxWidth="xl">
         <Box className="flex gap-10 justify-center items-center flex-col sm:flex-row">
           <Box className="flex items-center justify-center">
