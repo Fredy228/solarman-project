@@ -53,7 +53,7 @@ export default function Header({ contactsData }: Props) {
 
   useLayoutEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 30);
     };
 
     handleScroll();

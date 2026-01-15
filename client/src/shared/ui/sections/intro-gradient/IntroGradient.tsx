@@ -26,7 +26,7 @@ export default function IntroGradient({
     >
       <Container maxWidth="xl">
         <Box className="flex flex-col md:flex-row">
-          <Box className="flex-1 pr-8">
+          <Box className="flex-1 pr-0 md:pr-8">
             <PageTitle className="z-10" mb={2}>
               {title}
             </PageTitle>
