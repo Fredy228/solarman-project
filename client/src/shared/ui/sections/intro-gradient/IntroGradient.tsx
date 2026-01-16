@@ -39,6 +39,7 @@ export default function IntroGradient({
             <Image
               src={imageSrc}
               alt="Intro Image"
+              priority
               className="absolute z-0 w-[300px] sm:w-[450px] md:w-[400px] lg:w-[560px] h-auto top-4 right-0"
             />
           </Box>
