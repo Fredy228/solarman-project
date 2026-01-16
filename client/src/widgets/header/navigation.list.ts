@@ -1,3 +1,4 @@
+import { PUBLIC_ROUTES } from "@/src/configs/routes.config";
 import type { TranslatorType } from "@/src/i18n/types";
 import { BanknoteArrowUp, BatteryFull, Building2, House } from "lucide-react";
 import type { ElementType } from "react";
@@ -16,26 +17,30 @@ export const navItemList = (t: TranslatorType): NavItemType[] => [
     children: [
       {
         label: t("nav.serviceEnterprise"),
-        href: "/services/enterprise",
+        href: PUBLIC_ROUTES.services.enterprise,
         icon: Building2,
       },
-      { label: t("nav.serviceHome"), href: "/services/home", icon: House },
+      {
+        label: t("nav.serviceHome"),
+        href: PUBLIC_ROUTES.services.home,
+        icon: House,
+      },
       //   { label: t("nav.serviceInvestment"), href: "/services/investment" },
       {
         label: t("nav.serviceBackupPower"),
-        href: "/services/backup-power",
+        href: PUBLIC_ROUTES.services.backupPower,
         icon: BatteryFull,
       },
       {
         label: t("nav.serviceCrediting"),
-        href: "/services/crediting",
+        href: PUBLIC_ROUTES.services.crediting,
         icon: BanknoteArrowUp,
       },
     ],
   },
-  { label: t("nav.products"), href: "/products" },
-  { label: t("nav.projects"), href: "/projects" },
-  { label: t("nav.blog"), href: "/blog" },
-  { label: t("nav.about"), href: "/about" },
-  { label: t("nav.contact"), href: "/contact" },
+  { label: t("nav.products"), href: PUBLIC_ROUTES.products },
+  { label: t("nav.projects"), href: PUBLIC_ROUTES.projects },
+  { label: t("nav.blog"), href: PUBLIC_ROUTES.blog },
+  { label: t("nav.about"), href: PUBLIC_ROUTES.about },
+  { label: t("nav.contact"), href: PUBLIC_ROUTES.contacts },
 ];

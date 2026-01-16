@@ -10,10 +10,10 @@ export default async function MainLayout({
 }>) {
   const contacts = await getContacts();
   return (
-    <>
+    <Box className="flex flex-col min-h-screen">
       <Header contactsData={contacts?.value || null} />
       <Box component="main">{children}</Box>
       <Footer contactsData={contacts?.value || null} />
-    </>
+    </Box>
   );
 }

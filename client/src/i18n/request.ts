@@ -20,6 +20,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       home: (await import(`${basePath}/home.json`)).default,
       portfolio: (await import(`${basePath}/portfolio.json`)).default,
       about: (await import(`${basePath}/about.json`)).default,
+      contacts: (await import(`${basePath}/contacts.json`)).default,
     },
   };
 });

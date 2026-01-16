@@ -15,7 +15,7 @@ type Props = {
 
 export default function Footer({ contactsData }: Props) {
   return (
-    <Box component={"footer"} className="pt-5 pb-5">
+    <Box component={"footer"} className="pt-5 pb-5 mt-auto">
       <Container maxWidth="xl">
         <Box className="flex flex-col-reverse gap-4 sm:flex-row sm:justify-between sm:items-center">
           <Box className="flex items-center justify-between gap-4 sm:justify-start">

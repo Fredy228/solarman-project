@@ -158,6 +158,9 @@ export default function Header({ contactsData }: Props) {
                             gap: "6px",
                             borderBottom: "2px solid transparent",
                             pb: "6px",
+                            borderBottomColor: isActive
+                              ? "primary.main"
+                              : "transparent",
                             color: isActive ? "secondary.main" : "inherit",
                             fontWeight: isActive ? 700 : 500,
                             transition: theme.transitions.create(
@@ -242,6 +245,9 @@ export default function Header({ contactsData }: Props) {
                           gap: 1,
                           borderBottom: "2px solid transparent",
                           pb: "6px",
+                          borderBottomColor: isActive
+                            ? "primary.main"
+                            : "transparent",
                           color: isActive ? "secondary.main" : "inherit",
                           fontWeight: isActive ? 700 : 500,
                           transition: theme.transitions.create(

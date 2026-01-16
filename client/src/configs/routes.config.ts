@@ -15,7 +15,7 @@ export const PUBLIC_ROUTES = {
   projects: "/projects",
   blog: "/blog",
   about: "/about",
-  contact: "/contact",
+  contacts: "/contacts",
 };
 
 export const ADMIN_PROTECTED_ROUTES = {
