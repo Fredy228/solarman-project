@@ -1,3 +1,4 @@
+import type { TContacts } from "@/src/features/global-params";
 import IconLogoFooter from "@/src/shared/ui/icons/IconLogoFooter";
 import { Box, Container, Link as MUILink, Typography } from "@mui/material";
 import { Smartphone } from "lucide-react";
@@ -8,7 +9,11 @@ const getCurrentYear = () => {
   return now.getFullYear();
 };
 
-export default function Footer() {
+type Props = {
+  contactsData: TContacts | null;
+};
+
+export default function Footer({ contactsData }: Props) {
   return (
     <Box component={"footer"} className="pt-5 pb-5">
       <Container maxWidth="xl">
@@ -26,25 +31,27 @@ export default function Footer() {
               {getCurrentYear()} © Solar Man
             </Typography>
           </Box>
-          <Box className="flex flex-row justify-between items-center sm:justify-start gap-4">
-            <MUILink
-              href="tel:+1234567890"
-              underline="none"
-              color="inherit"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                color: "var(--color-text-g3)",
-                gap: 1,
-                "&:hover": { color: "var(--color-primary)" },
-                transition: "color 200ms",
-              }}
-            >
-              <Smartphone color="var(--color-primary)" />
-              <span>+1 (234) 567-890</span>
-            </MUILink>
-            <SocialsLinks />
-          </Box>
+          {contactsData && (
+            <Box className="flex flex-row justify-between items-center sm:justify-start gap-4">
+              <MUILink
+                href={`tel:${contactsData.phone}`}
+                underline="none"
+                color="inherit"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "var(--color-text-g3)",
+                  gap: 1,
+                  "&:hover": { color: "var(--color-primary)" },
+                  transition: "color 200ms",
+                }}
+              >
+                <Smartphone color="var(--color-primary)" />
+                <span>{contactsData.phone}</span>
+              </MUILink>
+              <SocialsLinks contactsData={contactsData} />
+            </Box>
+          )}
         </Box>
       </Container>
     </Box>

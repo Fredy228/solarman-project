@@ -11,11 +11,36 @@ export const globalParamContactsSchema = (t: TranslatorType) =>
       uk: Joi.string().min(1).max(500).optional(),
       ru: Joi.string().min(1).max(500).optional(),
     }).optional(),
-    link_google_maps: Joi.string().uri().empty("").allow(null).optional(),
-    link_facebook: Joi.string().uri().empty("").allow(null).optional(),
-    link_instagram: Joi.string().uri().empty("").allow(null).optional(),
-    link_telegram: Joi.string().uri().empty("").allow(null).optional(),
-    link_youtube: Joi.string().uri().empty("").allow(null).optional(),
+    link_google_maps: Joi.string()
+      .uri()
+      .empty("")
+      .allow(null)
+      .default(null)
+      .optional(),
+    link_facebook: Joi.string()
+      .uri()
+      .empty("")
+      .allow(null)
+      .default(null)
+      .optional(),
+    link_instagram: Joi.string()
+      .uri()
+      .empty("")
+      .allow(null)
+      .default(null)
+      .optional(),
+    link_telegram: Joi.string()
+      .uri()
+      .empty("")
+      .allow(null)
+      .default(null)
+      .optional(),
+    link_youtube: Joi.string()
+      .uri()
+      .empty("")
+      .allow(null)
+      .default(null)
+      .optional(),
   });
 
 export const globalParamExchangeRateSchema = Joi.object({

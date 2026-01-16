@@ -6,7 +6,9 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { HttpError, useOne } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
 import { ContactsForm } from "@/src/features/global-params/components/ContactsForm";
+import { revalidateCache } from "@/src/libs/revalidateCache";
 import { globalParamContactsSchema } from "@/src/validators/global-param-items.schema";
 import { Edit } from "@refinedev/mui";
 import { useTranslations } from "next-intl";
@@ -78,7 +80,9 @@ export default function ContactsAdminPage() {
     void onFinish({
       name: "contacts",
       value: updatedData,
-    } as unknown as TContacts);
+    } as unknown as TContacts).then(async () => {
+      await revalidateCache(CACHE_TAGS.contacts);
+    });
   };
 
   return (

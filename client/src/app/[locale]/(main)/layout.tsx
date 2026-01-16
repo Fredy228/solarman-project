@@ -13,7 +13,7 @@ export default async function MainLayout({
     <>
       <Header contactsData={contacts?.value || null} />
       <Box component="main">{children}</Box>
-      <Footer />
+      <Footer contactsData={contacts?.value || null} />
     </>
   );
 }
