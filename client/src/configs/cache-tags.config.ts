@@ -1,4 +1,4 @@
 export const CACHE_TAGS = {
-  portfolioLast: "portfolio-last",
+  portfolioList: "portfolio-list",
   contacts: "global-params-contacts",
 };

@@ -13,7 +13,8 @@ model Portfolio {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  portfolioHashtags PortfolioHashtag[]
+  hashtagIds String[]  @db.ObjectId
+  hashtags   Hashtag[] @relation(fields: [hashtagIds], references: [id])
 
   @@map("portfolio")
 }

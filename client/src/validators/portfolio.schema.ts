@@ -1,4 +1,3 @@
-import { EPortfolioType } from "@/src/features/portfolio";
 import Joi from "joi";
 
 import { TranslatorType } from "../i18n/types";
@@ -55,6 +54,33 @@ export const portfolioSchema = (t: TranslatorType) =>
           t("tag.name") + t("common.max") + " 300 " + t("common.symbol"),
       }),
 
+    hashtags: Joi.array()
+      .items(
+        Joi.string()
+          .trim()
+          .min(5)
+          .max(300)
+          .required()
+          .messages({
+            "string.empty": t("hashtags.name") + t("common.required"),
+            "any.required": t("hashtags.name") + t("common.required"),
+            "string.min":
+              t("hashtags.name") + t("common.min") + " 5 " + t("common.symbol"),
+            "string.max":
+              t("hashtags.name") +
+              t("common.max") +
+              " 300 " +
+              t("common.symbol"),
+          }),
+      )
+      .min(1)
+      .required()
+      .messages({
+        "array.base": t("hashtags.name") + t("common.required"),
+        "array.min": t("hashtags.name") + t("common.required"),
+        "any.required": t("hashtags.name") + t("common.required"),
+      }),
+
     date: Joi.any()
       .custom((value, helpers) => {
         if (!value) {
@@ -69,13 +95,6 @@ export const portfolioSchema = (t: TranslatorType) =>
       .messages({
         "any.required": t("date.name") + t("common.required"),
         "date.base": t("date.base"),
-      }),
-
-    type: Joi.string()
-      .required()
-      .valid(...Object.values(EPortfolioType))
-      .messages({
-        "any.required": t("type.name") + t("common.required"),
       }),
 
     descriptionUk: Joi.array()

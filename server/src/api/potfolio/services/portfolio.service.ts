@@ -39,7 +39,15 @@ export class PortfolioService {
         `Портфоліо з тегом ${body.tag} вже існує`,
       );
 
-    const { titleUk, titleRu, descriptionRu, descriptionUk, tag, date } = body;
+    const {
+      titleUk,
+      titleRu,
+      descriptionRu,
+      descriptionUk,
+      tag,
+      date,
+      hashtags,
+    } = body;
 
     const newId = new ObjectId().toString();
 
@@ -72,6 +80,9 @@ export class PortfolioService {
         date,
         cover: coverPath,
         images: imagesPath,
+        hashtags: {
+          connect: hashtags.map((id) => ({ id })),
+        },
       },
     });
   }
@@ -80,6 +91,9 @@ export class PortfolioService {
     const portfolio = await this.prisma.portfolio.findUnique({
       where: {
         id,
+      },
+      include: {
+        hashtags: true,
       },
     });
 
@@ -112,6 +126,14 @@ export class PortfolioService {
       ),
       date: body?.date,
       status: body?.status,
+      hashtags: {
+        connect: body.hashtags
+          .filter((id) => !portfolio.hashtagIds.includes(id))
+          .map((id) => ({ id })),
+        disconnect: portfolio.hashtagIds
+          .filter((id) => !body.hashtags.includes(id))
+          .map((id) => ({ id })),
+      },
     };
 
     if (files?.cover && files.cover[0]) {

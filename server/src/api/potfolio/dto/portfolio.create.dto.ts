@@ -15,6 +15,9 @@ export class PortfolioCreateDto {
   @JoiSchema(portfolioSchema.extract('tag').required())
   tag: string;
 
+  @JoiSchema(portfolioSchema.extract('hashtags').optional().default([]))
+  hashtags: string[];
+
   @JoiSchema(portfolioSchema.extract('description').required())
   descriptionUk: string;
 

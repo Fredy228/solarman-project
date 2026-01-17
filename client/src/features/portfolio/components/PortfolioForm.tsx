@@ -31,6 +31,7 @@ import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 
 import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 
+import { AsyncAutocomplete } from "@/src/widgets/refine/AsyncAutocomplete";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const BlockNoteEditor = dynamic(
@@ -38,7 +39,7 @@ const BlockNoteEditor = dynamic(
 
   {
     ssr: false,
-  }
+  },
 );
 
 type PortfolioFormProps = {
@@ -204,6 +205,18 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
             }}
           />
         )}
+      />
+
+      <Divider textAlign="left">
+        <Chip label={t("portfolio.fields.hashtags")} size="small" />
+      </Divider>
+      <AsyncAutocomplete
+        control={control as unknown as Control}
+        errors={errors}
+        name="hashtags"
+        multiple={true}
+        label={t("portfolio.fields.hashtags")}
+        resource="hashtag"
       />
 
       <Divider textAlign="left">

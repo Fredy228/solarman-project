@@ -6,7 +6,6 @@ import { DeleteButton, EditButton, List, useDataGrid } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
 
 import ProtectProvider from "@/src/providers/protect-provider";
-import type { LocalizedContent } from "@/src/shared/types/localized-content.type";
 
 export default function HashtagList() {
   const { dataGridProps } = useDataGrid();
@@ -19,7 +18,6 @@ export default function HashtagList() {
       headerName: t("hashtag.fields.name"),
       flex: 1,
       minWidth: 250,
-      valueGetter: (value) => value[locale as keyof LocalizedContent],
       filterOperators: getGridStringOperators().filter(
         (operator) => operator.value === "contains",
       ),

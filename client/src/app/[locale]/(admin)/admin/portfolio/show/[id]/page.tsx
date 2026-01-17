@@ -1,14 +1,13 @@
 "use client";
 
-import { Box, Card, CardMedia, Chip, Stack, Typography } from "@mui/material";
+import { Box, Card, CardMedia, Stack, Typography } from "@mui/material";
 import { useOne } from "@refinedev/core";
 import { DateField, Show, TagField } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 
-import { EPortfolioType, IPortfolio } from "@/src/features/portfolio";
-import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
+import { IPortfolio } from "@/src/features/portfolio";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 
 const BlockNoteView = dynamic(
@@ -16,7 +15,7 @@ const BlockNoteView = dynamic(
   {
     ssr: false,
     loading: () => <p>Загрузка описания...</p>,
-  }
+  },
 );
 
 export default function PortfolioShow() {
@@ -92,24 +91,30 @@ export default function PortfolioShow() {
           </Typography>
           <TagField value={record?.tag} />
         </Stack>
+        <Stack direction="column" gap={2}>
+          <Typography variant="body1" fontWeight="bold">
+            {t("portfolio.fields.hashtags")}:
+          </Typography>
+          <Stack
+            gap={1}
+            flexWrap={"wrap"}
+            direction="row"
+            justifyItems={"flex-start"}
+          >
+            {record?.hashtags?.map((hashtag) => (
+              <TagField
+                key={hashtag.id}
+                value={hashtag.name[locale as keyof LocalizedContent]}
+                sx={{}}
+              />
+            ))}
+          </Stack>
+        </Stack>
         <Stack direction="row" gap={2} alignItems="center">
           <Typography variant="body1" fontWeight="bold">
             {t("portfolio.fields.date")}:
           </Typography>
           <DateField value={record?.date} format="DD.MM.YYYY" />
-        </Stack>
-        <Stack direction="row" gap={2} alignItems="center">
-          <Typography variant="body1" fontWeight="bold">
-            {t("portfolio.fields.type")}:
-          </Typography>
-          <Chip
-            label={t(`portfolio.type.${record?.type}`)}
-            color={portfolioTypeConfig[record?.type as EPortfolioType]?.color}
-            icon={portfolioTypeConfig[record?.type as EPortfolioType]?.icon}
-            variant="filled"
-            size="small"
-            sx={{ minWidth: "100px", justifyContent: "flex-start" }}
-          />
         </Stack>
         <Stack gap={1}>
           <Typography variant="body1" fontWeight="bold">

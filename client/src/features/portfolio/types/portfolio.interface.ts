@@ -3,6 +3,7 @@ import { type Dayjs } from "dayjs";
 
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
+import type { IHashtag } from "../../hashtag";
 
 interface IPortfolioBase {
   id: string;
@@ -10,7 +11,9 @@ interface IPortfolioBase {
   images: string[];
   cover: string;
   tag: string;
+  hashtagIds: string[];
   status: EProductStatus;
+  hashtags?: IHashtag[];
 }
 
 export interface IPortfolio extends IPortfolioBase {
@@ -37,4 +40,5 @@ export interface IPortfolioForm {
   descriptionUk: PartialBlock[];
   descriptionRu: PartialBlock[];
   tag: string;
+  hashtags: string[];
 }

@@ -35,7 +35,10 @@ export class HashtagPublicService {
     ]);
 
     return {
-      data: hashtags,
+      data: hashtags.map((hashtag) => ({
+        ...hashtag,
+        name: hashtag.name[lang],
+      })),
       total,
     };
   }

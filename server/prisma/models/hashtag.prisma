@@ -4,7 +4,8 @@ model Hashtag {
     tag  String           @unique
     name LocalizedContent
 
-    portfolioHashtags PortfolioHashtag[]
+    portfolioIds String[]    @db.ObjectId
+    portfolio    Portfolio[] @relation(fields: [portfolioIds], references: [id])
 
     @@map("hashtag")
 }

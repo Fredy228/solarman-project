@@ -1,21 +1,19 @@
 "use client";
 
-import { Edit } from "@refinedev/mui";
-import { HttpError, useNavigation, useOne } from "@refinedev/core";
-import { useForm } from "@refinedev/react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import { HttpError, useNavigation, useOne } from "@refinedev/core";
+import { Edit } from "@refinedev/mui";
+import { useForm } from "@refinedev/react-hook-form";
+import dayjs from "dayjs";
+import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useTranslations } from "next-intl";
-import dayjs from "dayjs";
 
-import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
+import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 import { PortfolioForm } from "@/src/features/portfolio/components/PortfolioForm";
-import {
-  EPortfolioType,
-  IPortfolio,
-  IPortfolioForm,
-} from "@/src/features/portfolio";
+import { revalidateCache } from "@/src/libs/revalidateCache";
+import { portfolioUpdateSchema } from "@/src/validators/portfolio.schema";
 
 export const PortfolioEditForm = () => {
   const { id } = useParams<{ id: string }>();
@@ -56,17 +54,6 @@ export const PortfolioEditForm = () => {
       action: "edit",
       redirect: "show",
     },
-    defaultValues: {
-      titleUk: "",
-      titleRu: "",
-      tag: "",
-      descriptionUk: undefined,
-      descriptionRu: undefined,
-      date: null,
-      cover: null,
-      images: null,
-      type: EPortfolioType.HOME,
-    },
   });
 
   useEffect(() => {
@@ -75,6 +62,7 @@ export const PortfolioEditForm = () => {
         titleUk: portfolioData.title.uk,
         titleRu: portfolioData.title.ru,
         tag: portfolioData.tag,
+        hashtags: portfolioData.hashtagIds,
         descriptionUk: portfolioData.description?.uk
           ? JSON.parse(portfolioData.description.uk)
           : undefined,
@@ -114,7 +102,9 @@ export const PortfolioEditForm = () => {
       }
     });
 
-    void onFinish(updatedData as IPortfolioForm);
+    void onFinish(updatedData as IPortfolioForm).then(async () => {
+      await revalidateCache(CACHE_TAGS.portfolioList);
+    });
   };
 
   return (
