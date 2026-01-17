@@ -36,7 +36,11 @@ export const ADMIN_PROTECTED_ROUTES = {
     list: "/admin/goods-brand",
     create: "/admin/goods-brand/create",
     edit: "/admin/goods-brand/edit/:id",
-    show: "/admin/goods-brand/show/:id",
+  },
+  hashtag: {
+    list: "/admin/hashtag",
+    create: "/admin/hashtag/create",
+    edit: "/admin/hashtag/edit/:id",
   },
   contacts: "/admin/contacts",
 };

@@ -3,7 +3,6 @@ import { type Dayjs } from "dayjs";
 
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
-import { EPortfolioType } from "./portfolio-type.enum";
 
 interface IPortfolioBase {
   id: string;
@@ -12,7 +11,6 @@ interface IPortfolioBase {
   cover: string;
   tag: string;
   status: EProductStatus;
-  type: EPortfolioType;
 }
 
 export interface IPortfolio extends IPortfolioBase {
@@ -39,5 +37,4 @@ export interface IPortfolioForm {
   descriptionUk: PartialBlock[];
   descriptionRu: PartialBlock[];
   tag: string;
-  type: EPortfolioType;
 }

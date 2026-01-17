@@ -1,0 +1,12 @@
+model PortfolioHashtag {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+    portfolioId String    @db.ObjectId
+
+    hashtag   Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+    hashtagId String  @db.ObjectId
+
+    @@unique([portfolioId, hashtagId])
+    @@map("portfolio_hashtag")
+}

@@ -6,11 +6,7 @@ import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { useTranslations } from "next-intl";
 
-import {
-  EPortfolioType,
-  IPortfolioForm,
-  PortfolioForm,
-} from "@/src/features/portfolio";
+import { IPortfolioForm, PortfolioForm } from "@/src/features/portfolio";
 import { portfolioSchema } from "@/src/validators/portfolio.schema";
 
 export default function PortfolioCreate() {
@@ -36,7 +32,6 @@ export default function PortfolioCreate() {
       descriptionRu: undefined,
       images: null,
       date: null,
-      type: EPortfolioType.HOME,
     },
   });
 

@@ -50,7 +50,6 @@ export class PortfolioPublicService {
         },
       },
       date: generatePrismaDateFilter({ date, date_gte, date_lte }),
-      type: query?.type,
       status: query?.status,
     };
 
@@ -63,7 +62,6 @@ export class PortfolioPublicService {
           title: true,
           date: true,
           cover: true,
-          type: true,
           status: true,
           tag: true,
         },

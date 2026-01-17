@@ -1,0 +1,10 @@
+model Hashtag {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    tag  String           @unique
+    name LocalizedContent
+
+    portfolioHashtags PortfolioHashtag[]
+
+    @@map("hashtag")
+}

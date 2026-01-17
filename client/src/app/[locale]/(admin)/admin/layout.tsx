@@ -14,6 +14,8 @@ import {
   Building2,
   Contact,
   GalleryVerticalEnd,
+  Hash,
+  Images,
   Settings2,
   ShoppingBasket,
   ShoppingCart,
@@ -76,6 +78,13 @@ export default function AdminLayout({
                 },
               },
               {
+                name: "portfolio-group",
+                meta: {
+                  label: t("group.portfolio"),
+                  icon: <GalleryVerticalEnd />,
+                },
+              },
+              {
                 name: "portfolio",
                 list: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.list,
                 create: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.create,
@@ -83,7 +92,19 @@ export default function AdminLayout({
                 show: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.show,
                 meta: {
                   label: t("portfolio.portfolio"),
-                  icon: <GalleryVerticalEnd />,
+                  icon: <Images />,
+                  parent: "portfolio-group",
+                },
+              },
+              {
+                name: "hashtag",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.edit,
+                meta: {
+                  label: t("hashtag.hashtag"),
+                  parent: "portfolio-group",
+                  icon: <Hash />,
                 },
               },
               {

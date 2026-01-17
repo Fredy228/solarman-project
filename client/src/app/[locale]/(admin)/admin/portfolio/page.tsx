@@ -28,9 +28,7 @@ import {
   type MultiFilterOperatorOption,
 } from "@/src/shared/ui/data-grid/multi-filter";
 
-import { EPortfolioType } from "@/src/features/portfolio/types/portfolio-type.enum";
 import ProtectProvider from "@/src/providers/protect-provider";
-import { portfolioTypeConfig } from "@/src/shared/configs/portfolio-type.config";
 import { productStatusConfig } from "@/src/shared/configs/product-status.config";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
@@ -51,7 +49,7 @@ export default function PortfolioList() {
       gte: t("filters.operators.gte"),
       lte: t("filters.operators.lte"),
     }),
-    [t]
+    [t],
   );
 
   const dateParser = useCallback(
@@ -61,7 +59,7 @@ export default function PortfolioList() {
       if (Number.isNaN(d.getTime())) return undefined;
       return d.toISOString();
     },
-    []
+    [],
   );
 
   const filterFields = useMemo<MultiFilterFieldConfig[]>(() => {
@@ -82,16 +80,6 @@ export default function PortfolioList() {
         type: "text",
         operators: [{ value: "contains", label: contains }],
         placeholder: t("portfolio.fields.title"),
-      },
-      {
-        field: "type",
-        label: t("portfolio.fields.type"),
-        type: "select",
-        operators: selectOps,
-        options: Object.values(EPortfolioType).map((type) => ({
-          value: type,
-          label: t(`portfolio.type.${type}`),
-        })),
       },
       {
         field: "date",
@@ -123,12 +111,12 @@ export default function PortfolioList() {
       fieldLabel: t("filters.field"),
       operatorLabel: t("filters.operator"),
     }),
-    [t]
+    [t],
   );
 
   const handleProcessRowUpdate = async (
     newRow: GridRowModel,
-    oldRow: GridRowModel
+    oldRow: GridRowModel,
   ) => {
     if (newRow.status !== oldRow.status) {
       try {
@@ -144,7 +132,7 @@ export default function PortfolioList() {
             {
               onSuccess: () => resolve(true),
               onError: (error) => reject(error),
-            }
+            },
           );
         });
 
@@ -199,40 +187,8 @@ export default function PortfolioList() {
       minWidth: 250,
       valueGetter: (value) => value[locale as keyof LocalizedContent],
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains"
+        (operator) => operator.value === "contains",
       ),
-    },
-    {
-      field: "type",
-      headerName: t("portfolio.fields.type"),
-      width: 170,
-      align: "center",
-      headerAlign: "center",
-      filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is"
-      ),
-      type: "singleSelect",
-      valueOptions: Object.values(EPortfolioType).map((type) => ({
-        value: type,
-        label: t(`portfolio.type.${type}`),
-      })),
-      valueFormatter: (value: string) => t(`portfolio.type.${value}`),
-      renderCell: (params) => {
-        const config = portfolioTypeConfig[params.value as EPortfolioType];
-        if (!config) {
-          return params.value;
-        }
-        return (
-          <Chip
-            label={t(`portfolio.type.${params.value}`)}
-            color={config.color}
-            icon={config.icon}
-            variant="filled"
-            size="small"
-            sx={{ minWidth: "100px", justifyContent: "flex-start" }}
-          />
-        );
-      },
     },
     {
       field: "date",
@@ -243,7 +199,7 @@ export default function PortfolioList() {
       valueFormatter: (value) => value && dayjs(value).format("DD.MM.YYYY"),
       valueGetter: (value) => value && new Date(value),
       filterOperators: getGridDateOperators().filter((operator) =>
-        ["is", "onOrAfter", "onOrBefore"].includes(operator.value)
+        ["is", "onOrAfter", "onOrBefore"].includes(operator.value),
       ),
     },
     {
@@ -260,7 +216,7 @@ export default function PortfolioList() {
       })),
       valueFormatter: (value: string) => t(`portfolio.status.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is"
+        (operator) => operator.value === "is",
       ),
       renderCell: (params) => {
         const config = productStatusConfig[params.value as EProductStatus];

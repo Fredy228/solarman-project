@@ -5,7 +5,6 @@ model Portfolio {
   title       LocalizedContent
   description LocalizedContent
   date        DateTime
-  type        PortfolioType    @default(HOME)
   status      ProductStatus    @default(DRAFT)
 
   cover  String
@@ -14,10 +13,7 @@ model Portfolio {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("portfolio")
-}
+  portfolioHashtags PortfolioHashtag[]
 
-enum PortfolioType {
-  ENTERPRISES
-  HOME
+  @@map("portfolio")
 }

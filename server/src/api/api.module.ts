@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { GoodsModule } from './goods/goods.module';
-import { PortfolioModule } from './potfolio/portfolio.module';
-import { GoodsBrandModule } from './goods-brand/goods-brand.module';
 import { GlobalParamModule } from './global-param/global-param.module';
+import { GoodsBrandModule } from './goods-brand/goods-brand.module';
+import { GoodsModule } from './goods/goods.module';
+import { HashtagModule } from './hashtag/hashtag.module';
+import { PortfolioModule } from './potfolio/portfolio.module';
 import { UploadModule } from './upload/upload.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UploadModule } from './upload/upload.module';
     GoodsModule,
     GoodsBrandModule,
     UploadModule,
+    HashtagModule,
   ],
 })
 export class ApiModule {}

@@ -2,14 +2,14 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Portfolio, Prisma } from '@prisma/client';
 import { ObjectId } from 'bson';
 
-import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
-import { PrismaService } from '../../../libs/prisma/prisma.service';
-import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
-import { FileService } from '../../../libs/file/file.service';
-import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
-import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
 import { Language } from '../../../common/enums/language.enum';
+import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
+import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
 import { prepareLocalizedUpdate } from '../../../helpers/prisma/prepare-localized-update';
+import { FileService } from '../../../libs/file/file.service';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
+import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
+import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
 
 @Injectable()
 export class PortfolioService {
@@ -112,7 +112,6 @@ export class PortfolioService {
       ),
       date: body?.date,
       status: body?.status,
-      type: body?.type,
     };
 
     if (files?.cover && files.cover[0]) {

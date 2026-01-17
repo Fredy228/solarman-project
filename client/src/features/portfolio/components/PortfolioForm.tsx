@@ -5,14 +5,10 @@ import {
   Button,
   Chip,
   Divider,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -26,7 +22,6 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-import dayjs from "dayjs";
 
 import { ImageUpload } from "@/src/shared/ui/form/ImageUpload";
 
@@ -34,11 +29,7 @@ import { generateSlug } from "@/src/libs/slug";
 
 import { ImagesPreview } from "@/src/widgets/refine/ImagesPreview";
 
-import {
-  EPortfolioType,
-  IPortfolio,
-  IPortfolioForm,
-} from "@/src/features/portfolio";
+import { IPortfolio, IPortfolioForm } from "@/src/features/portfolio";
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
@@ -189,30 +180,6 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
           {t("buttons.generate")}
         </Button>
       </Box>
-      <Divider textAlign="left">
-        <Chip label={t("portfolio.fields.type")} size="small" />
-      </Divider>
-      <Controller
-        name="type"
-        control={control}
-        defaultValue={portfolio?.type || EPortfolioType.HOME}
-        rules={{ required: t("common.required_field") }}
-        render={({ field }) => (
-          <FormControl fullWidth error={!!errors.type}>
-            <InputLabel>{t("portfolio.fields.type")}</InputLabel>
-            <Select {...field} label={t("portfolio.fields.type")}>
-              {Object.values(EPortfolioType).map((type: EPortfolioType) => (
-                <MenuItem key={type} value={type}>
-                  {t(`portfolio.type.${type}`)}
-                </MenuItem>
-              ))}
-            </Select>
-            {errors.type && (
-              <FormHelperText>{errors.type.message}</FormHelperText>
-            )}
-          </FormControl>
-        )}
-      />
 
       <Divider textAlign="left">
         <Chip label={t("portfolio.fields.date")} size="small" />
@@ -222,20 +189,20 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         control={control}
         rules={{ required: t("common.required_field") }}
         render={({ field }) => (
-            <DatePicker
-              value={field.value ? dayjs(field.value) : null}
-              onChange={(val) => field.onChange(val)}
-              label={t("portfolio.fields.date")}
-              format="DD.MM.YYYY"
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  margin: "normal",
-                  error: !!errors?.date,
-                  helperText: errors?.date?.message,
-                },
-              }}
-            />
+          <DatePicker
+            value={field.value ? dayjs(field.value) : null}
+            onChange={(val) => field.onChange(val)}
+            label={t("portfolio.fields.date")}
+            format="DD.MM.YYYY"
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                margin: "normal",
+                error: !!errors?.date,
+                helperText: errors?.date?.message,
+              },
+            }}
+          />
         )}
       />
 
