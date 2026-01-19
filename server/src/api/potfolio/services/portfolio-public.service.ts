@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, ProductStatus } from '@prisma/client';
 
 import { Language } from '../../../common/enums/language.enum';
 import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
@@ -17,6 +17,7 @@ export class PortfolioPublicService {
     const foundPortfolio = await this.prisma.portfolio.findUnique({
       where: {
         tag,
+        status: ProductStatus.PUBLISHED,
       },
     });
     if (!foundPortfolio)

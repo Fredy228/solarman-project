@@ -2,6 +2,7 @@ import { API_LIMITS_ITEMS } from "@/src/configs/api-routes.config";
 import { getHashtagsList } from "@/src/features/hashtag/api/get-hashtag-list.api";
 import { getPortfolio } from "@/src/features/portfolio/api/get-portfolio.api";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
+import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import Projects from "@/src/widgets/projects/Projects";
 import Box from "@mui/material/Box/Box";
 
@@ -38,6 +39,8 @@ export default async function ProjectsPage({ searchParams }: Props) {
         count={Math.ceil(totalCount / API_LIMITS_ITEMS.portfolio)}
         page={page}
       />
+      <Box height={"40px"}></Box>
+      <ConsultSection />
     </>
   );
 }

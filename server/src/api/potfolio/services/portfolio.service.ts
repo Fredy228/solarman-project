@@ -126,15 +126,17 @@ export class PortfolioService {
       ),
       date: body?.date,
       status: body?.status,
-      hashtags: {
+    };
+
+    if (body.hashtags)
+      updatedBody.hashtags = {
         connect: body.hashtags
           .filter((id) => !portfolio.hashtagIds.includes(id))
           .map((id) => ({ id })),
         disconnect: portfolio.hashtagIds
           .filter((id) => !body.hashtags.includes(id))
           .map((id) => ({ id })),
-      },
-    };
+      };
 
     if (files?.cover && files.cover[0]) {
       updatedBody['cover'] = await this.fileService.saveImage({

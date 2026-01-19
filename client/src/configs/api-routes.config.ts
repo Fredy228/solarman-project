@@ -20,6 +20,7 @@ export const API_ROUTES = {
   portfolio: {
     list: "/portfolio",
     get: (id: string) => `/portfolio/${id}`,
+    getByTag: (tag: string) => `/portfolio/tag/${tag}`,
   },
   globalParams: {
     contacts: "/global-param/contacts",

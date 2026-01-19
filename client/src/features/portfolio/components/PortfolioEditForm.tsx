@@ -102,9 +102,13 @@ export const PortfolioEditForm = () => {
       }
     });
 
-    void onFinish(updatedData as IPortfolioForm).then(async () => {
-      await revalidateCache(CACHE_TAGS.portfolioList);
-      await revalidateCache(CACHE_TAGS.hashtags);
+    console.log(data);
+    console.log(updatedData);
+
+    void onFinish(updatedData as IPortfolioForm).then(() => {
+      revalidateCache(CACHE_TAGS.portfolioId(data.tag));
+      revalidateCache(CACHE_TAGS.portfolioList);
+      revalidateCache(CACHE_TAGS.hashtags);
     });
   };
 

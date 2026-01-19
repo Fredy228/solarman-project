@@ -1,29 +1,28 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { parseImageUrl } from "@/src/libs/parse-image-url";
+import CircleIcon from "@mui/icons-material/Circle";
 import {
-  Typography,
   Box,
+  Checkbox,
+  Link,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Checkbox,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Paper,
+  Typography,
 } from "@mui/material";
-import CircleIcon from "@mui/icons-material/Circle";
-import { parseImageUrl } from "@/src/libs/parse-image-url";
+import Image from "next/image";
 
-// --- ТИПЫ (Упрощенные для BlockNote) ---
 type StyledText = {
   type: "text" | "link";
   text: string;
   href?: string;
+  content?: StyledText[];
   styles: {
     bold?: boolean;
     italic?: boolean;
@@ -51,52 +50,64 @@ const InlineContent = ({ content }: { content: StyledText[] }) => {
   return (
     <>
       {content.map((segment, index) => {
+        if (!segment || typeof segment !== "object") return null;
+
+        const safeStyles = segment.styles ?? {};
+
         // Базовые стили через sx
         const style: any = {
-          fontWeight: segment.styles.bold ? "bold" : "normal",
-          fontStyle: segment.styles.italic ? "italic" : "normal",
+          fontWeight: safeStyles.bold ? 700 : "inherit",
+          fontStyle: safeStyles.italic ? "italic" : "inherit",
           textDecoration: [
-            segment.styles.underline ? "underline" : "",
-            segment.styles.strike ? "line-through" : "",
+            safeStyles.underline ? "underline" : "",
+            safeStyles.strike ? "line-through" : "",
           ]
             .filter(Boolean)
             .join(" "),
-          color: segment.styles.textColor || "inherit",
-          backgroundColor: segment.styles.backgroundColor || "transparent",
+          color: "inherit",
+          backgroundColor: safeStyles.backgroundColor || "transparent",
         };
 
         // Если это Inline Code
-        if (segment.styles.code) {
+        if (safeStyles.code) {
           style.fontFamily = "monospace";
           style.backgroundColor = "#f0f0f0";
           style.padding = "2px 4px";
           style.borderRadius = "4px";
         }
 
+        const hasText =
+          typeof segment.text === "string" && segment.text.trim().length > 0;
+        const displayText = hasText ? segment.text : (segment.href ?? "");
+
         const textElement = (
           <Box component="span" sx={style} key={index}>
-            {segment.text}
+            {displayText}
           </Box>
         );
 
-        // Если это ссылка
-        if (segment.href) {
+        // Если это ссылка (BlockNote может хранить текст в segment.content)
+        if (segment.type === "link" && segment.href) {
           return (
-            <Link key={index} href={segment.href} passHref legacyBehavior>
-              <Box
-                component="a"
-                sx={{
-                  ...style,
-                  color: "primary.main",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  "&:hover": { opacity: 0.8 },
-                }}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {segment.text}
-              </Box>
+            <Link
+              key={index}
+              href={segment.href}
+              sx={{
+                ...style,
+                display: "inline",
+                color: "primary.main",
+                textDecoration: "underline",
+                cursor: "pointer",
+                "&:hover": { opacity: 0.8 },
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {segment.content && Array.isArray(segment.content) ? (
+                <InlineContent content={segment.content} />
+              ) : (
+                displayText
+              )}
             </Link>
           );
         }
@@ -112,6 +123,15 @@ const BlockRenderer = ({ block }: { block: Block }) => {
   // Общие пропсы для выравнивания текста
   const alignment = block.props.textAlignment || "left";
 
+  const headingSizes: Record<
+    number,
+    { xs: string; sm?: string; md?: string; lg?: string }
+  > = {
+    1: { xs: "25px", md: "30px", lg: "40px" },
+    2: { xs: "22px", sm: "25px", lg: "30px" },
+    3: { xs: "20px", sm: "22px", lg: "25px" },
+  };
+
   // Отступы для вложенности (если BlockNote не использует children для отступа)
   const marginLeft = block.props.indent
     ? `${block.props.indent * 20}px`
@@ -123,7 +143,7 @@ const BlockRenderer = ({ block }: { block: Block }) => {
         <Typography
           variant="body1"
           align={alignment}
-          sx={{ mb: 2, minHeight: "1.5em", ml: marginLeft }}
+          sx={{ mb: 2, minHeight: "1.5em", ml: marginLeft, color: "inherit" }}
         >
           {block.content && block.content.length > 0 ? (
             <InlineContent content={block.content} />
@@ -146,7 +166,14 @@ const BlockRenderer = ({ block }: { block: Block }) => {
         <Typography
           variant={variant}
           align={alignment}
-          sx={{ mt: 4, mb: 2, fontWeight: "bold", ml: marginLeft }}
+          sx={{
+            mt: 4,
+            mb: 2,
+            fontWeight: 700,
+            ml: marginLeft,
+            color: "inherit",
+            fontSize: headingSizes[block.props.level],
+          }}
         >
           <InlineContent content={block.content} />
         </Typography>
@@ -156,13 +183,19 @@ const BlockRenderer = ({ block }: { block: Block }) => {
       return (
         <Box sx={{ ml: marginLeft }}>
           <List dense disablePadding>
-            <ListItem alignItems="flex-start" sx={{ pl: 0 }}>
-              <ListItemIcon sx={{ minWidth: "24px", mt: "8px" }}>
-                <CircleIcon sx={{ fontSize: 8 }} />
+            <ListItem alignItems="center" sx={{ pl: 0 }}>
+              <ListItemIcon
+                sx={{ minWidth: "24px", mt: 0, alignSelf: "center" }}
+              >
+                <CircleIcon sx={{ fontSize: 8, color: "primary.main" }} />
               </ListItemIcon>
               <ListItemText
                 primary={
-                  <Typography variant="body1" component="div">
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    sx={{ color: "inherit" }}
+                  >
                     <InlineContent content={block.content} />
                   </Typography>
                 }
@@ -189,7 +222,7 @@ const BlockRenderer = ({ block }: { block: Block }) => {
           <Typography sx={{ mr: 1, fontWeight: "bold" }}>•</Typography>{" "}
           {/* Или использовать index если доступен */}
           <Box>
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{ color: "inherit" }}>
               <InlineContent content={block.content} />
             </Typography>
             {block.children && (
@@ -221,6 +254,7 @@ const BlockRenderer = ({ block }: { block: Block }) => {
               sx={{
                 textDecoration: block.props.checked ? "line-through" : "none",
                 opacity: block.props.checked ? 0.6 : 1,
+                color: "inherit",
               }}
               primary={<InlineContent content={block.content} />}
             />
@@ -282,9 +316,8 @@ const BlockRenderer = ({ block }: { block: Block }) => {
           {block.props.caption && (
             <Typography
               variant="caption"
-              color="text.secondary"
               align="center"
-              sx={{ mt: 1, display: "block" }}
+              sx={{ mt: 1, display: "block", color: "inherit" }}
             >
               {block.props.caption}
             </Typography>
@@ -307,10 +340,19 @@ const BlockRenderer = ({ block }: { block: Block }) => {
                   {row.cells.map((cell: any, cIndex: number) => (
                     <TableCell
                       key={cIndex}
-                      sx={{ borderRight: 1, borderColor: "divider" }}
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        textAlign: cell?.props?.textAlignment || "left",
+                        backgroundColor:
+                          cell?.props?.backgroundColor !== "default"
+                            ? cell?.props?.backgroundColor
+                            : "inherit",
+                        color: "inherit",
+                      }}
                     >
-                      {/* Ячейка содержит массив StyledText, как обычный блок */}
-                      <InlineContent content={cell} />
+                      {/* Ячейка содержит массив StyledText внутри cell.content */}
+                      <InlineContent content={cell?.content || []} />
                     </TableCell>
                   ))}
                 </TableRow>
@@ -320,6 +362,7 @@ const BlockRenderer = ({ block }: { block: Block }) => {
         </TableContainer>
       );
 
+    case "quote":
     case "blockquote": // Цитаты
       return (
         <Box
@@ -333,10 +376,42 @@ const BlockRenderer = ({ block }: { block: Block }) => {
             borderRadius: "0 4px 4px 0",
           }}
         >
-          <Typography variant="body1" sx={{ fontStyle: "italic" }}>
+          <Typography
+            variant="body1"
+            sx={{ fontStyle: "italic", color: "inherit" }}
+          >
             <InlineContent content={block.content} />
           </Typography>
         </Box>
+      );
+
+    case "codeBlock":
+      return (
+        <Box
+          component={Paper}
+          variant="outlined"
+          sx={{ p: 2, my: 2, bgcolor: "grey.50", overflowX: "auto" }}
+        >
+          <Typography
+            component="pre"
+            sx={{
+              m: 0,
+              fontFamily: "monospace",
+              fontSize: 14,
+              color: "inherit",
+            }}
+          >
+            <InlineContent content={block.content} />
+          </Typography>
+        </Box>
+      );
+
+    case "divider":
+      return (
+        <Box
+          component="hr"
+          sx={{ my: 3, border: 0, borderTop: 1, borderColor: "divider" }}
+        />
       );
 
     default:
@@ -345,7 +420,6 @@ const BlockRenderer = ({ block }: { block: Block }) => {
   }
 };
 
-// --- ГЛАВНЫЙ ЭКСПОРТ ---
 interface ViewerProps {
   content: Block[] | null;
 }
@@ -354,7 +428,12 @@ export default function MuiBlockNoteViewer({ content }: ViewerProps) {
   if (!content) return null;
 
   return (
-    <Box sx={{ width: "100%", maxWidth: "800px", mx: "auto", p: 2 }}>
+    <Box
+      sx={{
+        width: "100%",
+        color: "var(--color-text-g2)",
+      }}
+    >
       {content.map((block) => (
         <BlockRenderer key={block.id} block={block} />
       ))}
