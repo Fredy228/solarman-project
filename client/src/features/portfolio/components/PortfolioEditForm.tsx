@@ -104,6 +104,7 @@ export const PortfolioEditForm = () => {
 
     void onFinish(updatedData as IPortfolioForm).then(async () => {
       await revalidateCache(CACHE_TAGS.portfolioList);
+      await revalidateCache(CACHE_TAGS.hashtags);
     });
   };
 

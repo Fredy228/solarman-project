@@ -28,6 +28,8 @@ import {
   type MultiFilterOperatorOption,
 } from "@/src/shared/ui/data-grid/multi-filter";
 
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
+import { revalidateCache } from "@/src/libs/revalidateCache";
 import ProtectProvider from "@/src/providers/protect-provider";
 import { productStatusConfig } from "@/src/shared/configs/product-status.config";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
@@ -135,6 +137,9 @@ export default function PortfolioList() {
             },
           );
         });
+
+        await revalidateCache(CACHE_TAGS.portfolioList);
+        await revalidateCache(CACHE_TAGS.hashtags);
 
         return newRow;
       } catch (error) {

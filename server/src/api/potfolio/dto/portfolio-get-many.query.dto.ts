@@ -11,6 +11,9 @@ export class PortfolioGetManyQueryDto extends BaseQueryGetManyDto {
   @JoiSchema(portfolioSchema.extract('title').allow('').empty('').optional())
   title_like?: string;
 
+  @JoiSchema(portfolioSchema.extract('tag').allow('').empty('').optional())
+  hashtag?: string;
+
   @JoiSchema(portfolioSchema.extract('status').allow('').empty('').optional())
   status?: ProductStatus;
 

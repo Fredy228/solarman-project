@@ -21,6 +21,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       portfolio: (await import(`${basePath}/portfolio.json`)).default,
       about: (await import(`${basePath}/about.json`)).default,
       contacts: (await import(`${basePath}/contacts.json`)).default,
+      projects: (await import(`${basePath}/projects.json`)).default,
     },
   };
 });

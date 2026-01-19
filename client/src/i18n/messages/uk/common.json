@@ -5,7 +5,8 @@
     "getConsultationV2": "Отримати безкоштовну консультацію",
     "getConsultationV3": "Замовити консультацію",
     "getConsultationV4": "Отримати розрахунок",
-    "viewMore": "Переглянути більше"
+    "viewMore": "Переглянути більше",
+    "All": "Всі"
   },
   "phrases": {
     "consultSectionTitle": "Підберемо найкращий \nваріант для вас"

@@ -11,7 +11,7 @@ export async function getLastPortfolio(): Promise<IPortfolioItem[] | null> {
     false,
     {
       method: "GET",
-      next: { revalidate: 1000, tags: [CACHE_TAGS.portfolioList] },
+      next: { revalidate: 3600, tags: [CACHE_TAGS.portfolioList] },
     },
   );
 

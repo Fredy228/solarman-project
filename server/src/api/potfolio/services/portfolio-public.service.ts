@@ -38,6 +38,7 @@ export class PortfolioPublicService {
       date,
       date_gte,
       date_lte,
+      hashtag,
     } = query;
 
     const whereOption: Prisma.PortfolioWhereInput = {
@@ -52,6 +53,27 @@ export class PortfolioPublicService {
       date: generatePrismaDateFilter({ date, date_gte, date_lte }),
       status: query?.status,
     };
+    if (hashtag) {
+      const hashtagRecord = await this.prisma.hashtag.findUnique({
+        where: {
+          tag: hashtag,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!hashtagRecord) {
+        return {
+          data: [],
+          total: 0,
+        };
+      }
+
+      whereOption.hashtagIds = {
+        has: hashtagRecord.id,
+      };
+    }
 
     const [portfolios, total] = await this.prisma.$transaction([
       this.prisma.portfolio.findMany({
