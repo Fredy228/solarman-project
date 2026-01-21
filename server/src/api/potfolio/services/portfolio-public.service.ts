@@ -19,6 +19,9 @@ export class PortfolioPublicService {
         tag,
         status: ProductStatus.PUBLISHED,
       },
+      include: {
+        hashtags: true,
+      },
     });
     if (!foundPortfolio)
       throw new CustomHttpExceptionUtil(

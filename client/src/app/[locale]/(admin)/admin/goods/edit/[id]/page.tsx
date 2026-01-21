@@ -67,9 +67,6 @@ export default function GoodsEditPage() {
         descriptionRu: goodsData.description?.ru
           ? JSON.parse(goodsData.description.ru)
           : undefined,
-        images: null,
-        cover: null,
-        instructions: null,
         specs: goodsData.specs,
         category: goodsData.category,
         currency: goodsData.currency,
@@ -103,7 +100,7 @@ export default function GoodsEditPage() {
       }
       if (key === "specs") {
         updatedData["specs"] = JSON.stringify(
-          specsWatch
+          specsWatch,
         ) as unknown as IGoodsForm["specs"];
         return;
       }

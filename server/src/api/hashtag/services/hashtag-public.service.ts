@@ -11,7 +11,7 @@ export class HashtagPublicService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getMany(query: HashtagGetManyQueryDto, lang: Language) {
-    const { _start, _end, _sort, _order, name_like } = query;
+    const { _start, _end, _sort, _order, name_like, id } = query;
 
     const whereOption: Prisma.HashtagWhereInput = {
       name: {
@@ -23,6 +23,10 @@ export class HashtagPublicService {
         },
       },
     };
+
+    if (id) {
+      whereOption.id = Array.isArray(id) ? { in: id } : id;
+    }
 
     const [hashtags, total] = await this.prisma.$transaction([
       this.prisma.hashtag.findMany({

@@ -29,7 +29,7 @@ export const ImagesPreview = memo(
   }) => {
     const { mutate: deleteImage } = useDelete();
     const [savedImages, setSavedImages] = useState<string[]>(
-      (images as string[]) || []
+      (images as string[]) || [],
     );
     const [open, setOpen] = useState(false);
     const [imageToDelete, setImageToDelete] = useState<string | null>(null);
@@ -59,11 +59,11 @@ export const ImagesPreview = memo(
         {
           onSuccess: async () => {
             setSavedImages((prev) =>
-              prev.filter((item) => item !== imageToDelete)
+              prev.filter((item) => item !== imageToDelete),
             );
             handleClose();
           },
-        }
+        },
       );
     };
 
@@ -76,7 +76,7 @@ export const ImagesPreview = memo(
             return (
               <Box key={image} sx={{ position: "relative" }}>
                 <Image
-                  src={"/" + image}
+                  src={image}
                   alt="portfolio image"
                   width={150}
                   height={150}
@@ -120,7 +120,7 @@ export const ImagesPreview = memo(
         </Dialog>
       </>
     );
-  }
+  },
 );
 
 ImagesPreview.displayName = "ImagesPreview";

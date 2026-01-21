@@ -217,6 +217,7 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
         multiple={true}
         label={t("portfolio.fields.hashtags")}
         resource="hashtag"
+        defaultValues={isEdit ? portfolio?.hashtagIds : undefined}
       />
 
       <Divider textAlign="left">

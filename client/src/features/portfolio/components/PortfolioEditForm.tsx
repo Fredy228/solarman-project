@@ -57,24 +57,26 @@ export const PortfolioEditForm = () => {
   });
 
   useEffect(() => {
-    if (portfolioData) {
-      reset({
-        titleUk: portfolioData.title.uk,
-        titleRu: portfolioData.title.ru,
-        tag: portfolioData.tag,
-        hashtags: portfolioData.hashtagIds,
-        descriptionUk: portfolioData.description?.uk
-          ? JSON.parse(portfolioData.description.uk)
-          : undefined,
-        descriptionRu: portfolioData.description?.ru
-          ? JSON.parse(portfolioData.description.ru)
-          : undefined,
-        date: dayjs(portfolioData.date),
-        images: null,
-        cover: null,
-      });
+    if (!portfolioData || formLoading) {
+      return;
     }
-  }, [portfolioData, reset]);
+
+    reset({
+      titleUk: portfolioData.title.uk,
+      titleRu: portfolioData.title.ru,
+      tag: portfolioData.tag,
+      hashtags: portfolioData.hashtagIds ?? [],
+      descriptionUk: portfolioData.description?.uk
+        ? JSON.parse(portfolioData.description.uk)
+        : undefined,
+      descriptionRu: portfolioData.description?.ru
+        ? JSON.parse(portfolioData.description.ru)
+        : undefined,
+      date: dayjs(portfolioData.date),
+      images: null,
+      cover: null,
+    });
+  }, [portfolioData, formLoading, reset]);
 
   const handleSave = (data: IPortfolioForm) => {
     if (Object.keys(dirtyFields).length === 0) {
@@ -106,9 +108,11 @@ export const PortfolioEditForm = () => {
     console.log(updatedData);
 
     void onFinish(updatedData as IPortfolioForm).then(() => {
-      revalidateCache(CACHE_TAGS.portfolioId(data.tag));
-      revalidateCache(CACHE_TAGS.portfolioList);
-      revalidateCache(CACHE_TAGS.hashtags);
+      revalidateCache([
+        CACHE_TAGS.portfolioId(data.tag),
+        CACHE_TAGS.portfolioList,
+        CACHE_TAGS.hashtags,
+      ]);
     });
   };
 

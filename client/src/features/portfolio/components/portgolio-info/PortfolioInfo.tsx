@@ -10,7 +10,7 @@ type Props = {
 
 export function PortfolioInfo({ data, locale }: Props) {
   return (
-    <Box>
+    <Box mt={3}>
       <Container maxWidth="xl">
         <MuiBlockNoteViewer content={JSON.parse(data.description[locale])} />
       </Container>

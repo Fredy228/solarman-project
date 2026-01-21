@@ -9,4 +9,7 @@ import { BaseQueryGetManyDto } from '../../../common/dto/base-query-get-many.dto
 export class HashtagGetManyQueryDto extends BaseQueryGetManyDto {
   @JoiSchema(hashtagSchema.extract('name').optional().allow(''))
   name_like?: string;
+
+  @JoiSchema(hashtagSchema.extract('id').optional().allow('').empty(''))
+  id?: string | string[];
 }

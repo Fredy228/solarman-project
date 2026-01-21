@@ -75,7 +75,7 @@ export default function PortfolioShow() {
                     <CardMedia
                       component="img"
                       sx={{ height: 250, objectFit: "contain" }}
-                      image={"/" + image}
+                      image={image}
                       alt={`${record?.title || ""} - ${index}`}
                     />
                   </Card>
