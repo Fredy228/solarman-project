@@ -1,15 +1,21 @@
 "use client";
 
-import { Box } from "@mui/material";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Box, GlobalStyles } from "@mui/material";
+import type { LightGallery as LightGalleryInstance } from "lightgallery/lightgallery";
+import lgFullscreen from "lightgallery/plugins/fullscreen";
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import LightGallery from "lightgallery/react";
+import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import Image from "next/image";
 import { useRef } from "react";
-import { FreeMode, Navigation, Pagination } from "swiper/modules";
+import { FreeMode, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import "lightgallery/css/lg-fullscreen.css";
+import "lightgallery/css/lg-thumbnail.css";
+import "lightgallery/css/lightgallery.css";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 type Props = {
   images: string[];
@@ -18,39 +24,16 @@ type Props = {
 export default function ImageSlider({ images }: Props) {
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
+  const galleryRef = useRef<LightGalleryInstance | null>(null);
 
   return (
     <Box
       className="w-full"
       sx={(theme) => ({
         position: "relative",
-        ".swiper": {
-          "--swiper-pagination-bullet-size": "10px",
-          "--swiper-pagination-bullet-horizontal-gap": "6px",
-        },
-        ".swiper-button-prev, .swiper-button-next": {
-          display: "none",
-        },
-        ".swiper-pagination": {
-          display: "inline-flex",
-          alignItems: "center",
-          width: "auto",
-          left: "50%",
-          right: "auto",
-          transform: "translateX(-50%)",
-          padding: "3px 6px",
-          borderRadius: "20px",
-          backgroundColor: "var(--color-text-light)",
-          //   backdropFilter: "blur(6px)",
-        },
-        ".swiper-pagination-bullet": {
-          backgroundColor: theme.palette.secondary.main,
-        },
-        ".swiper-pagination-bullet-active": {
-          backgroundColor: theme.palette.primary.main,
-        },
         ".image-slider-nav": {
           position: "absolute",
+          cursor: "pointer",
           top: "50%",
           transform: "translateY(-50%)",
           zIndex: 2,
@@ -78,8 +61,53 @@ export default function ImageSlider({ images }: Props) {
         ".image-slider-next": {
           right: theme.spacing(1),
         },
+        ".image-slider-slide": {
+          position: "relative",
+        },
+        ".image-slider-zoom": {
+          position: "absolute",
+          cursor: "pointer",
+          top: 8,
+          right: 8,
+          zIndex: 2,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 34,
+          height: 34,
+          borderRadius: "10px",
+          backgroundColor: "var(--color-text-light)",
+          color: theme.palette.primary.main,
+          boxShadow: theme.shadows[2],
+          transition: "transform 0.2s ease, opacity 0.2s ease",
+          "&:hover": {
+            transform: "scale(1.05)",
+          },
+        },
       })}
     >
+      <GlobalStyles
+        styles={(theme) => ({
+          ".lg-container, .lg-outer, .lg-backdrop": {
+            zIndex: theme.zIndex.modal + 10,
+          },
+          "body.lg-on": {
+            overflow: "hidden",
+          },
+        })}
+      />
+      <LightGallery
+        dynamic
+        dynamicEl={images.map((src) => ({ src, thumb: src }))}
+        plugins={[lgFullscreen, lgThumbnail]}
+        onInit={(detail) => {
+          galleryRef.current = detail.instance;
+        }}
+        download={false}
+        thumbnail={true}
+        // showThumbByDefault={true}
+        hideScrollbar={true}
+      />
       <button
         ref={prevRef}
         type="button"
@@ -98,7 +126,7 @@ export default function ImageSlider({ images }: Props) {
       </button>
       <Swiper
         init={true}
-        modules={[FreeMode, Navigation, Pagination]}
+        modules={[FreeMode, Navigation]}
         spaceBetween={8}
         navigation={true}
         onBeforeInit={(swiper) => {
@@ -109,7 +137,6 @@ export default function ImageSlider({ images }: Props) {
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
         }}
-        pagination={{ clickable: true }}
         freeMode={true}
         slidesPerView="auto"
         breakpoints={{
@@ -128,8 +155,19 @@ export default function ImageSlider({ images }: Props) {
         {images.map((image, index) => (
           <SwiperSlide
             key={index}
-            className="w-full sm:w-auto! h-auto sm:h-full"
+            className="image-slider-slide w-full sm:w-auto! h-auto sm:h-full"
           >
+            <button
+              type="button"
+              className="image-slider-zoom"
+              aria-label="Open fullscreen"
+              onClick={(event) => {
+                event.stopPropagation();
+                galleryRef.current?.openGallery(index);
+              }}
+            >
+              <Maximize2 size={18} />
+            </button>
             <Image
               src={image}
               alt={`Image ${index + 1}`}
