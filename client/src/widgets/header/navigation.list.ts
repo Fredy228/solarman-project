@@ -1,6 +1,12 @@
 import { PUBLIC_ROUTES } from "@/src/configs/routes.config";
 import type { TranslatorType } from "@/src/i18n/types";
-import { BanknoteArrowUp, BatteryFull, Building2, House } from "lucide-react";
+import {
+  BanknoteArrowUp,
+  BatteryFull,
+  Building2,
+  ChartNoAxesCombined,
+  House,
+} from "lucide-react";
 import type { ElementType } from "react";
 
 type NavItemType = {
@@ -25,7 +31,11 @@ export const navItemList = (t: TranslatorType): NavItemType[] => [
         href: PUBLIC_ROUTES.services.home,
         icon: House,
       },
-      //   { label: t("nav.serviceInvestment"), href: "/services/investment" },
+      {
+        label: t("nav.serviceIncome"),
+        href: PUBLIC_ROUTES.services.income,
+        icon: ChartNoAxesCombined,
+      },
       {
         label: t("nav.serviceBackupPower"),
         href: PUBLIC_ROUTES.services.backupPower,

@@ -11,10 +11,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
   Box,
+  ClickAwayListener,
   Collapse,
   Container,
   Divider,
   Drawer,
+  Grow,
   IconButton,
   List,
   ListItem,
@@ -45,7 +47,7 @@ export default function Header({ contactsData }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
   const [expandedMobile, setExpandedMobile] = useState<Record<number, boolean>>(
-    {}
+    {},
   );
   const [isScrolled, setIsScrolled] = useState(false);
   const t = useTranslations("header");
@@ -63,7 +65,7 @@ export default function Header({ contactsData }: Props) {
 
   const handleOpenMenu = (
     event: React.MouseEvent<HTMLElement>,
-    index: number
+    index: number,
   ) => {
     setAnchorEl(event.currentTarget);
     setActiveMenuIndex(index);
@@ -90,7 +92,7 @@ export default function Header({ contactsData }: Props) {
         backgroundColor: isScrolled ? "background.paper" : "transparent",
         transition: theme.transitions.create(
           ["background-color", "border-bottom-color"],
-          { duration: theme.transitions.duration.shorter }
+          { duration: theme.transitions.duration.shorter },
         ),
       }}
     >
@@ -167,7 +169,7 @@ export default function Header({ contactsData }: Props) {
                               ["color", "border-bottom-color"],
                               {
                                 duration: theme.transitions.duration.shortest,
-                              }
+                              },
                             ),
                             "&:hover": {
                               color: "secondary.main",
@@ -184,6 +186,7 @@ export default function Header({ contactsData }: Props) {
                           anchorEl={anchorEl}
                           placement="bottom"
                           disablePortal
+                          transition
                           modifiers={[
                             {
                               name: "offset",
@@ -191,45 +194,60 @@ export default function Header({ contactsData }: Props) {
                             },
                           ]}
                         >
-                          <Paper
-                            elevation={3}
-                            onMouseLeave={handleCloseMenu}
-                            sx={{
-                              borderRadius: "var(--border-radius-main)",
-                              minWidth: 250,
-                            }}
-                          >
-                            <List sx={{ py: 0 }}>
-                              {item.children.map((child) => {
-                                const ChildIcon = child.icon;
-                                return (
-                                  <ListItem key={child.label} disablePadding>
-                                    <ListItemButton
-                                      component={NavLink}
-                                      href={child.href}
-                                      onClick={handleCloseMenu}
-                                      sx={{
-                                        gap: 1,
-                                        color: "var(--color-text-g2)",
-                                        "&:hover": {
-                                          color: "var(--color-primary)",
-                                        },
-                                      }}
-                                    >
-                                      {ChildIcon ? (
-                                        <ChildIcon
-                                          size={24}
-                                          className="child-icon"
-                                          color="currentColor"
-                                        />
-                                      ) : null}
-                                      <ListItemText primary={child.label} />
-                                    </ListItemButton>
-                                  </ListItem>
-                                );
-                              })}
-                            </List>
-                          </Paper>
+                          {({ TransitionProps }) => (
+                            <Grow {...TransitionProps} timeout={150}>
+                              <Box>
+                                <ClickAwayListener
+                                  onClickAway={handleCloseMenu}
+                                >
+                                  <Paper
+                                    elevation={3}
+                                    onMouseLeave={handleCloseMenu}
+                                    sx={{
+                                      borderRadius: "var(--border-radius-main)",
+                                      minWidth: 250,
+                                    }}
+                                  >
+                                    <List sx={{ py: 0 }}>
+                                      {item?.children?.map((child) => {
+                                        const ChildIcon = child.icon;
+                                        return (
+                                          <ListItem
+                                            key={child.label}
+                                            disablePadding
+                                          >
+                                            <ListItemButton
+                                              component={NavLink}
+                                              href={child.href}
+                                              onClick={handleCloseMenu}
+                                              sx={{
+                                                gap: 1,
+                                                color: "var(--color-text-g2)",
+                                                "&:hover": {
+                                                  color: "var(--color-primary)",
+                                                },
+                                              }}
+                                            >
+                                              {ChildIcon ? (
+                                                <ChildIcon
+                                                  size={24}
+                                                  className="child-icon"
+                                                  color="currentColor"
+                                                />
+                                              ) : null}
+                                              <ListItemText
+                                                primary={child.label}
+                                              />
+                                            </ListItemButton>
+                                          </ListItem>
+                                        );
+                                      })}
+                                    </List>
+                                  </Paper>
+                                </ClickAwayListener>
+                              </Box>
+                            </Grow>
+                          )}
                         </Popper>
                       </>
                     ) : (
@@ -254,7 +272,7 @@ export default function Header({ contactsData }: Props) {
                             ["color", "border-bottom-color"],
                             {
                               duration: theme.transitions.duration.shortest,
-                            }
+                            },
                           ),
                           "&:hover": {
                             color: "secondary.main",

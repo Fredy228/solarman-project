@@ -28,13 +28,13 @@ services:
   db:
     restart: no
 
-  nginx:
-    ports:
-      - "${NGINX_PORT}:80"
-    command: >
-      sh -c "
-      envsubst '$${PORT_SERVER}'
-      < /etc/nginx/templates/nginx.dev.conf > /etc/nginx/nginx.conf
-      && nginx -g 'daemon off;'
-      "
-    restart: no
+  # nginx:
+  #   ports:
+  #     - "${NGINX_PORT}:80"
+  #   command: >
+  #     sh -c "
+  #     envsubst '$${PORT_SERVER}'
+  #     < /etc/nginx/templates/nginx.dev.conf > /etc/nginx/nginx.conf
+  #     && nginx -g 'daemon off;'
+  #     "
+  #   restart: no

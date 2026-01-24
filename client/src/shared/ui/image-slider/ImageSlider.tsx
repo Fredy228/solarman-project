@@ -150,7 +150,7 @@ export default function ImageSlider({ images }: Props) {
           },
         }}
         watchSlidesProgress={true}
-        className="h-[350px]"
+        className="h-[350px] sm:h-[250px] md:h-[350px]"
       >
         {images.map((image, index) => (
           <SwiperSlide

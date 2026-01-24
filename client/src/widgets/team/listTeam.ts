@@ -1,6 +1,7 @@
 import type { StaticImageData } from "next/image";
 
 import imageTeamAnatoliy from "@/src/assets/team/team-anatoliy.png";
+import imageTeamDenis from "@/src/assets/team/team-denis.png";
 import imageTeamMax from "@/src/assets/team/team-max.png";
 import imageTeamPavlo from "@/src/assets/team/team-pavlo.png";
 import type { TranslatorType } from "@/src/i18n/types";
@@ -34,5 +35,19 @@ export const listTeam = (t: TranslatorType): Array<TeamItemType> => [
     position: t("team.team.item3.position"),
     photoSrc: imageTeamMax,
     ico: "BicepsFlexed",
+  },
+  {
+    id: 4,
+    name: t("team.team.item4.name"),
+    position: t("team.team.item4.position"),
+    photoSrc: imageTeamMax,
+    ico: "BicepsFlexed",
+  },
+  {
+    id: 5,
+    name: t("team.team.item5.name"),
+    position: t("team.team.item5.position"),
+    photoSrc: imageTeamDenis,
+    ico: "Zap",
   },
 ];

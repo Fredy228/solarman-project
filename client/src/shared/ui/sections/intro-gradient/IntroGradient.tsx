@@ -7,14 +7,14 @@ type Props = {
   title: string;
   description: string;
   imageSrc: StaticImport;
-  isShowButtom?: boolean;
+  buttonText?: string;
 };
 
 export default function IntroGradient({
   title,
   description,
   imageSrc,
-  isShowButtom,
+  buttonText,
 }: Props) {
   return (
     <Box
@@ -33,7 +33,11 @@ export default function IntroGradient({
             <Typography component={"p"} variant="subtitle1" className="z-10">
               {description}
             </Typography>
-            {isShowButtom && <Button></Button>}
+            {buttonText && (
+              <Button className="mt-4!" variant="contained">
+                {buttonText}
+              </Button>
+            )}
           </Box>
           <Box className="relative h-[100px] sm:h-[150px] md:h-auto md:w-[400px] lg:w-[560px]">
             <Image

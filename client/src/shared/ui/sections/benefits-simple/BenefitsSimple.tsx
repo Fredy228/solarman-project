@@ -5,7 +5,17 @@ import {
   HandCoins,
   PiggyBank,
   Power,
+  RefreshCw,
+  Scale,
+  ShieldCheck,
+  Smile,
+  Sun,
+  TrendingUp,
+  VolumeX,
   Zap,
+  Wrench,
+  Globe,
+  BatteryCharging,
 } from "lucide-react";
 
 import Section from "@/src/shared/ui/sections/Section";
@@ -19,6 +29,16 @@ const LucideIcons = {
   PiggyBank,
   Earth,
   Power,
+  Smile,
+  ShieldCheck,
+  RefreshCw,
+  Sun,
+  Scale,
+  VolumeX,
+  TrendingUp,
+  Wrench,
+  Globe,
+  BatteryCharging,
 };
 
 type Props = {
@@ -45,7 +65,7 @@ export default function BenefitsSimple({ title, subtitle, items }: Props) {
                 {subtitle}
               </Typography>
             )}
-            <Box height={20} />
+            {/* <Box height={20} /> */}
           </>
         )}
         <Box

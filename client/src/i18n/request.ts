@@ -22,6 +22,16 @@ export default getRequestConfig(async ({ requestLocale }) => {
       about: (await import(`${basePath}/about.json`)).default,
       contacts: (await import(`${basePath}/contacts.json`)).default,
       projects: (await import(`${basePath}/projects.json`)).default,
+      servicesHome: (await import(`${basePath}/services/home.json`)).default,
+      servicesEnterprise: (await import(`${basePath}/services/enterprise.json`))
+        .default,
+      servicesBackupPower: (
+        await import(`${basePath}/services/backup-power.json`)
+      ).default,
+      servicesCrediting: (await import(`${basePath}/services/crediting.json`))
+        .default,
+      servicesIncome: (await import(`${basePath}/services/income.json`))
+        .default,
     },
   };
 });

@@ -1,0 +1,19 @@
+services:
+  nginx:
+    image: nginx:1.29.4
+    ports:
+      - "${NGINX_PORT}:80"
+    command: >
+      sh -c "
+      envsubst '$${PORT_SERVER}'
+      < /etc/nginx/templates/nginx.dev.conf > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'
+      "
+    env_file:
+      - .env
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    depends_on:
+      - server
+      - client
+    restart: no

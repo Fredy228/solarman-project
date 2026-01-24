@@ -43,13 +43,3 @@ services:
     volumes:
       - ./database:/data/db
       - ./keys:/data/keyfile
-
-  nginx:
-    image: nginx:stable
-    env_file:
-      - .env
-    volumes:
-      - ./nginx:/etc/nginx/templates
-    depends_on:
-      - server
-      - client

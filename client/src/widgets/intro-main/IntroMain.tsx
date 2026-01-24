@@ -28,6 +28,7 @@ export const IntroMain = () => {
           <Image
             src={IntroImage}
             alt="Intro background"
+            priority
             className="absolute right-[280px] bottom-[-50px] h-auto w-[400px] sm:w-[450px] sm:right-[150px] md:w-[500px] md:right-0"
           />
         </Box>
