@@ -61,7 +61,7 @@ export default function Team() {
                     className="block w-full h-full object-cover max-w-[200px] max-h-[200px] rounded-full"
                   />
                   <Box className="absolute bottom-6 bg-(--color-text-light) rounded-full w-12 h-12 flex items-center justify-center left-1/2 -translate-x-1/2">
-                    <IconComponent size={25} color="var(--color-secondary)" />
+                    <IconComponent size={25} color="var(--color-primary)" />
                   </Box>
                 </Box>
                 <Typography

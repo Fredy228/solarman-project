@@ -1,7 +1,9 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import {
   BanknoteArrowUp,
+  BatteryCharging,
   Earth,
+  Globe,
   HandCoins,
   PiggyBank,
   Power,
@@ -12,10 +14,8 @@ import {
   Sun,
   TrendingUp,
   VolumeX,
-  Zap,
   Wrench,
-  Globe,
-  BatteryCharging,
+  Zap,
 } from "lucide-react";
 
 import Section from "@/src/shared/ui/sections/Section";
@@ -53,26 +53,22 @@ export default function BenefitsSimple({ title, subtitle, items }: Props) {
       <Container maxWidth="xl">
         {title && (
           <>
-            <SectionTitle component="h2" className="text-center mb-2.5">
+            <SectionTitle component="h2" className="text-center">
               {title}
             </SectionTitle>
             {subtitle && (
               <Typography
                 variant="subtitle1"
                 component="p"
-                className="text-center mb-2.5"
+                className="text-center"
               >
                 {subtitle}
               </Typography>
             )}
-            {/* <Box height={20} /> */}
+            <Box height={40} />
           </>
         )}
-        <Box
-          component={"ul"}
-          mt={4}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-7"
-        >
+        <Box component={"ul"} className="grid grid-cols-1 lg:grid-cols-2 gap-7">
           {items.map(({ id, title, text, ico }) => {
             const IconComponent = LucideIcons[ico as keyof typeof LucideIcons];
             return (

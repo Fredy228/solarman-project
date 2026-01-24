@@ -13,6 +13,7 @@ export default function SectionTitle({ children, ...props }: Props) {
         sm: "25px",
         lg: "30px",
       }}
+      mb={1}
       {...props}
     >
       {children}

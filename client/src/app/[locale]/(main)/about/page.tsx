@@ -1,4 +1,4 @@
-import imageIntro from "@/src/assets/services/enterprise-intro.webp";
+import imageIntro from "@/src/assets/intro/services/enterprise-intro.webp";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import IntroGradient from "@/src/shared/ui/sections/intro-gradient/IntroGradient";
