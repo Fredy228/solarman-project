@@ -3,6 +3,7 @@ import {
   BanknoteArrowUp,
   BatteryCharging,
   Earth,
+  FileStack,
   Globe,
   HandCoins,
   PiggyBank,
@@ -16,6 +17,9 @@ import {
   VolumeX,
   Wrench,
   Zap,
+  ChevronsRight,
+  Goal,
+  Landmark,
 } from "lucide-react";
 
 import Section from "@/src/shared/ui/sections/Section";
@@ -39,6 +43,10 @@ const LucideIcons = {
   Wrench,
   Globe,
   BatteryCharging,
+  FileStack,
+  ChevronsRight,
+  Goal,
+  Landmark,
 };
 
 type Props = {

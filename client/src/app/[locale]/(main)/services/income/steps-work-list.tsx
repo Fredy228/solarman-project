@@ -24,18 +24,18 @@ export const stepsWorkList = (t: TranslatorType): StepperItem[] => [
     id: 4,
     title: t("stepsWork.item4.title"),
     text: t("stepsWork.item4.text"),
-    icon: "Calculator",
+    icon: "Hammer",
   },
   {
     id: 5,
     title: t("stepsWork.item5.title"),
     text: t("stepsWork.item5.text"),
-    icon: "ClipboardPen",
+    icon: "Files",
   },
   {
     id: 6,
     title: t("stepsWork.item6.title"),
     text: t("stepsWork.item6.text"),
-    icon: "Hammer",
+    icon: "MonitorCog",
   },
 ];

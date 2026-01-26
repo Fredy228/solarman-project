@@ -1,7 +1,11 @@
 import IntroGradient from "@/src/shared/ui/sections/intro-gradient/IntroGradient";
 
 import IntroImage from "@/src/assets/intro/services/debit-intro.webp";
+import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
+import Stepper from "@/src/shared/ui/stepper/Stepper";
 import { getTranslations } from "next-intl/server";
+import { benefitsList } from "./benefits-list";
+import { stepsWorkList } from "./steps-work-list";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -16,6 +20,12 @@ export default async function ServiceCreditingPage({ params }: Props) {
         description={t("intro.description")}
         imageSrc={IntroImage}
         buttonText={t("intro.button")}
+      />
+      <BenefitsSimple title={t("benefits.title")} items={benefitsList(t)} />
+      <Stepper
+        title={t("stepsWork.title")}
+        subtitle={t("stepsWork.subtitle")}
+        steps={stepsWorkList(t)}
       />
     </>
   );

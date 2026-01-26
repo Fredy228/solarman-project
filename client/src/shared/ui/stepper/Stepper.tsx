@@ -11,7 +11,18 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { LayoutTemplate, Settings, Truck } from "lucide-react";
+import {
+  Calculator,
+  ClipboardPen,
+  FileChartColumnIncreasing,
+  Hammer,
+  LayoutTemplate,
+  Search,
+  Settings,
+  Truck,
+  MonitorCog,
+  Files,
+} from "lucide-react";
 import Section from "../sections/Section";
 import SectionTitle from "../title/SectionTitle";
 import type { StepperItem } from "./stepper-item.type";
@@ -20,6 +31,13 @@ const IconLucide = {
   Truck,
   LayoutTemplate,
   Settings,
+  FileChartColumnIncreasing,
+  Calculator,
+  Hammer,
+  ClipboardPen,
+  Search,
+  MonitorCog,
+  Files,
 };
 
 type Props = {

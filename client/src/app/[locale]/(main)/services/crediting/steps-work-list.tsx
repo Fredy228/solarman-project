@@ -6,13 +6,13 @@ export const stepsWorkList = (t: TranslatorType): StepperItem[] => [
     id: 1,
     title: t("stepsWork.item1.title"),
     text: t("stepsWork.item1.text"),
-    icon: "FileChartColumnIncreasing",
+    icon: "Calculator",
   },
   {
     id: 2,
     title: t("stepsWork.item2.title"),
     text: t("stepsWork.item2.text"),
-    icon: "LayoutTemplate",
+    icon: "Files",
   },
   {
     id: 3,
@@ -32,10 +32,10 @@ export const stepsWorkList = (t: TranslatorType): StepperItem[] => [
     text: t("stepsWork.item5.text"),
     icon: "ClipboardPen",
   },
-  {
-    id: 6,
-    title: t("stepsWork.item6.title"),
-    text: t("stepsWork.item6.text"),
-    icon: "Hammer",
-  },
+  // {
+  //   id: 6,
+  //   title: t("stepsWork.item6.title"),
+  //   text: t("stepsWork.item6.text"),
+  //   icon: "Hammer",
+  // },
 ];
