@@ -4,6 +4,7 @@ import IntroImage from "@/src/assets/intro/services/enterprise-intro.webp";
 import { STATIC_HASHTAGS } from "@/src/features/hashtag/list-static-hashtag-tag";
 import { getLastPortfolio } from "@/src/features/portfolio/api/get-last-portfolio.api";
 import PortfolioPreview from "@/src/features/portfolio/components/portfolio-preview/PortfolioPreview";
+import AreasApplication from "@/src/shared/ui/sections/areas-application/AreasApplication";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import Stepper from "@/src/shared/ui/stepper/Stepper";
@@ -28,13 +29,17 @@ export default async function ServiceEnterprisePage({ params }: Props) {
         buttonText={t("intro.button")}
       />
       <BenefitsSimple title={t("benefits.title")} items={benefitsList(t)} />
+      <AreasApplication
+        title={t("areasApplication.title")}
+        description={t("areasApplication.description")}
+        list={t.raw("areasApplication.list") as string[]}
+      />
       {portfolioList && (
         <PortfolioPreview
           data={portfolioList}
           hashtags={[STATIC_HASHTAGS.ENTERPRISE]}
         />
       )}
-
       <Stepper
         title={t("stepsWork.title")}
         subtitle={t("stepsWork.subtitle")}
