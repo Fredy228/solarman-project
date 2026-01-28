@@ -35,12 +35,15 @@ export default function HashtagChips({
   const locale = useLocale();
   const t = useTranslations("common");
 
-  const activeTag = searchParams.get(paramName) || "";
+  const activeTags = useMemo(
+    () => searchParams.getAll(paramName).filter(Boolean),
+    [paramName, searchParams],
+  );
   const maxVisible = 6;
   const [manualShowAll, setManualShowAll] = useState<boolean | null>(null);
   const activeIndex = useMemo(
-    () => hashtags.findIndex((hashtag) => hashtag.tag === activeTag),
-    [activeTag, hashtags],
+    () => hashtags.findIndex((hashtag) => activeTags.includes(hashtag.tag)),
+    [activeTags, hashtags],
   );
   const autoShowAll = activeIndex >= maxVisible;
   const showAll = manualShowAll ?? autoShowAll;
@@ -59,7 +62,15 @@ export default function HashtagChips({
     const nextParams = new URLSearchParams(searchParams.toString());
 
     if (value) {
-      nextParams.set(paramName, value);
+      const existing = nextParams.getAll(paramName);
+      const hasValue = existing.includes(value);
+
+      nextParams.delete(paramName);
+      const nextValues = hasValue
+        ? existing.filter((item) => item !== value)
+        : [...existing, value];
+
+      nextValues.forEach((item) => nextParams.append(paramName, item));
     } else {
       nextParams.delete(paramName);
     }
@@ -71,18 +82,19 @@ export default function HashtagChips({
     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }} margin={"15px 0"}>
       <Chip
         label={t("button.All")}
-        variant={!activeTag ? "filled" : "outlined"}
-        color={!activeTag ? "primary" : "default"}
+        variant={activeTags.length === 0 ? "filled" : "outlined"}
+        color={activeTags.length === 0 ? "primary" : "default"}
         onClick={() => setParam(undefined)}
         sx={{
           "& .MuiChip-label": {
-            color: !activeTag ? "var(--color-text-light)" : undefined,
+            color:
+              activeTags.length === 0 ? "var(--color-text-light)" : undefined,
           },
         }}
       />
 
       {visibleHashtags.map((hashtag) => {
-        const isActive = activeTag === hashtag.tag;
+        const isActive = activeTags.includes(hashtag.tag);
         return (
           <Chip
             key={hashtag.tag}

@@ -2,6 +2,7 @@ import IntroGradient from "@/src/shared/ui/sections/intro-gradient/IntroGradient
 
 import IntroImage from "@/src/assets/intro/services/income-intro.webp";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
+import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import Stepper from "@/src/shared/ui/stepper/Stepper";
 import { getTranslations } from "next-intl/server";
 import { benefitsList } from "./benefits-list";
@@ -27,6 +28,7 @@ export default async function ServiceIncomePage({ params }: Props) {
         subtitle={t("stepsWork.subtitle")}
         steps={stepsWorkList(t)}
       />
+      <ConsultSection />
     </>
   );
 }

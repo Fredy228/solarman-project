@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, type OnModuleInit } from '@nestjs/common';
 import { Hashtag } from '@prisma/client';
 
 import { prepareLocalizedUpdate } from 'src/helpers/prisma/prepare-localized-update';
@@ -8,10 +8,34 @@ import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.u
 import { PrismaService } from '../../../libs/prisma/prisma.service';
 import { HashtagCreateDto } from '../dto/hashtag.create.dto';
 import { HashtagUpdateDto } from '../dto/hashtag.update.dto';
+import { STATIC_HASHTAGS } from '../static-hashtags.config';
 
 @Injectable()
-export class HashtagService {
+export class HashtagService implements OnModuleInit {
   constructor(private readonly prisma: PrismaService) {}
+
+  async onModuleInit() {
+    await this.createStaticHashtagsIfMissing();
+  }
+
+  private async createStaticHashtagsIfMissing() {
+    for (const ht of STATIC_HASHTAGS) {
+      const existHashtag = await this.prisma.hashtag.findUnique({
+        where: { tag: ht.tag },
+      });
+      if (!existHashtag) {
+        await this.prisma.hashtag.create({
+          data: {
+            tag: ht.tag,
+            name: {
+              uk: ht.nameUk,
+              ru: ht.nameRu,
+            },
+          },
+        });
+      }
+    }
+  }
 
   async create(
     { nameRu, nameUk, tag }: HashtagCreateDto,

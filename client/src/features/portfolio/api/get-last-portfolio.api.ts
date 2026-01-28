@@ -4,10 +4,18 @@ import fetchNative from "@/src/libs/fetch-native";
 import { EProductStatus } from "@/src/shared/types/product-status.enum";
 import type { IPortfolioItem } from "../types/portfolio.interface";
 
-export async function getLastPortfolio(): Promise<IPortfolioItem[] | null> {
+export async function getLastPortfolio(
+  hashtags?: string[],
+): Promise<IPortfolioItem[] | null> {
+  let hashtagQuery = `?_sort=date&_order=desc&_start=0&_end=4&status=${EProductStatus.PUBLISHED}`;
+  if (hashtags) {
+    for (const tag of hashtags) {
+      hashtagQuery += `&hashtag=${tag}`;
+    }
+  }
+
   const portfoliosResponse = await fetchNative.fetchAPI(
-    API_ROUTES.portfolio.list +
-      `?_sort=date&_order=desc&_start=0&_end=4&status=${EProductStatus.PUBLISHED}`,
+    API_ROUTES.portfolio.list + hashtagQuery,
     false,
     {
       method: "GET",

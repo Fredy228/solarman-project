@@ -3,14 +3,14 @@
 import { Stack } from "@mui/material";
 import { DataGrid, getGridStringOperators, GridColDef } from "@mui/x-data-grid";
 import { DeleteButton, EditButton, List, useDataGrid } from "@refinedev/mui";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
+import { STATIC_HASHTAGS } from "@/src/features/hashtag/list-static-hashtag-tag";
 import ProtectProvider from "@/src/providers/protect-provider";
 
 export default function HashtagList() {
   const { dataGridProps } = useDataGrid();
   const t = useTranslations("refine");
-  const locale = useLocale();
 
   const columns: GridColDef[] = [
     {
@@ -33,6 +33,9 @@ export default function HashtagList() {
       field: "actions",
       headerName: t("actions.actions"),
       renderCell: function render({ row }) {
+        if (Object.values(STATIC_HASHTAGS).includes(row.tag)) {
+          return null;
+        }
         return (
           <Stack
             direction="row"

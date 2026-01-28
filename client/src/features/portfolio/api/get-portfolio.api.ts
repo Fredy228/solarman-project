@@ -6,12 +6,12 @@ import type { IPortfolioItem } from "../types/portfolio.interface";
 
 type ResponseParams = {
   page?: number;
-  hashtag?: string;
+  hashtags?: string[] | string;
 };
 
 export async function getPortfolio({
   page = 1,
-  hashtag,
+  hashtags,
 }: ResponseParams): Promise<[IPortfolioItem[], number] | null> {
   const start = (page - 1) * API_LIMITS_ITEMS.portfolio;
   const end = start + API_LIMITS_ITEMS.portfolio;
@@ -20,7 +20,15 @@ export async function getPortfolio({
     API_ROUTES.portfolio.list +
     `?_sort=date&_order=desc&_start=${start}&_end=${end}&status=${EProductStatus.PUBLISHED}`;
 
-  if (hashtag) url += `&hashtag=${hashtag}`;
+  if (hashtags) {
+    if (Array.isArray(hashtags)) {
+      for (const tag of hashtags) {
+        url += `&hashtag=${tag}`;
+      }
+    } else {
+      url += `&hashtag=${hashtags}`;
+    }
+  }
 
   const portfoliosResponse = await fetchNative.fetchAPI(url, false, {
     method: "GET",

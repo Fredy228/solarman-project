@@ -14,14 +14,18 @@ import {
 import {
   Calculator,
   ClipboardPen,
+  FileBadge,
   FileChartColumnIncreasing,
+  FileCheck,
+  Files,
   Hammer,
+  Headset,
+  Landmark,
   LayoutTemplate,
+  MonitorCog,
   Search,
   Settings,
   Truck,
-  MonitorCog,
-  Files,
 } from "lucide-react";
 import Section from "../sections/Section";
 import SectionTitle from "../title/SectionTitle";
@@ -38,6 +42,10 @@ const IconLucide = {
   Search,
   MonitorCog,
   Files,
+  Landmark,
+  FileBadge,
+  Headset,
+  FileCheck,
 };
 
 type Props = {

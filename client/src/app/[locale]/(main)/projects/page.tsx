@@ -21,11 +21,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
   const portfolioResponse = await getPortfolio({
     page,
-    hashtag: searchParamsResolved.hashtag
-      ? Array.isArray(searchParamsResolved.hashtag)
-        ? searchParamsResolved.hashtag[0]
-        : searchParamsResolved.hashtag
-      : undefined,
+    hashtags: searchParamsResolved.hashtag,
   });
   const hashtags = await getHashtagsList();
 

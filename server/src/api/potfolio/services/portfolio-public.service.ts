@@ -58,25 +58,50 @@ export class PortfolioPublicService {
       status: query?.status,
     };
     if (hashtag) {
-      const hashtagRecord = await this.prisma.hashtag.findUnique({
-        where: {
-          tag: hashtag,
-        },
-        select: {
-          id: true,
-        },
-      });
+      if (Array.isArray(hashtag)) {
+        const hashtagRecords = await this.prisma.hashtag.findMany({
+          where: {
+            tag: {
+              in: hashtag,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
 
-      if (!hashtagRecord) {
-        return {
-          data: [],
-          total: 0,
+        const hashtagIds = hashtagRecords.map((ht) => ht.id);
+        if (hashtagIds.length === 0) {
+          return {
+            data: [],
+            total: 0,
+          };
+        }
+
+        whereOption.hashtagIds = {
+          hasSome: hashtagIds,
+        };
+      } else {
+        const hashtagRecord = await this.prisma.hashtag.findUnique({
+          where: {
+            tag: hashtag,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (!hashtagRecord) {
+          return {
+            data: [],
+            total: 0,
+          };
+        }
+
+        whereOption.hashtagIds = {
+          has: hashtagRecord.id,
         };
       }
-
-      whereOption.hashtagIds = {
-        has: hashtagRecord.id,
-      };
     }
 
     const [portfolios, total] = await this.prisma.$transaction([
