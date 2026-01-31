@@ -1,30 +1,34 @@
 "use client";
 
-import type { TContacts } from "@/src/features/global-params";
+import type {
+  TCalculatorProfit,
+  TCalculatorProfitForm,
+} from "@/src/features/global-params";
 import type { IGlobalParam } from "@/src/shared/types/global-param.interface";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { HttpError, useOne } from "@refinedev/core";
 import { useForm } from "@refinedev/react-hook-form";
 
 import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
-import { ContactsForm } from "@/src/features/global-params/components/ContactsForm";
+import { CalculatorProfitForm } from "@/src/features/global-params/components/CalculatorProfitForm";
 import { revalidateCache } from "@/src/libs/revalidateCache";
-import { globalParamContactsSchema } from "@/src/validators/global-param-items.schema";
+import { EGlobalParam } from "@/src/shared/types/global-param.enum";
+import { globalParamCalculatorProfitSchema } from "@/src/validators/global-param-items.schema";
 import { Edit } from "@refinedev/mui";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 
-export default function ContactsAdminPage() {
+export default function CalculatorProfitAdminPage() {
   const t = useTranslations("validation");
 
   const {
     query: { data, isLoading },
-  } = useOne<IGlobalParam<TContacts>>({
+  } = useOne<IGlobalParam<TCalculatorProfit>>({
     resource: "global-param",
-    id: "contacts",
+    id: EGlobalParam.CALCULATOR_PROFIT,
   });
 
-  const contactsData: TContacts | undefined = useMemo(() => {
+  const calculatorProfitData: TCalculatorProfit | undefined = useMemo(() => {
     if (!data?.data?.value) {
       return undefined;
     }
@@ -36,13 +40,12 @@ export default function ContactsAdminPage() {
     refineCore: { onFinish, formLoading },
     saveButtonProps,
     reset,
-    watch,
     control,
     register,
     handleSubmit,
     formState: { errors, dirtyFields },
-  } = useForm<TContacts, HttpError, TContacts>({
-    resolver: joiResolver(globalParamContactsSchema(t)),
+  } = useForm<TCalculatorProfit, HttpError, TCalculatorProfitForm>({
+    resolver: joiResolver(globalParamCalculatorProfitSchema(t)),
     refineCoreProps: {
       resource: "global-param",
       action: "edit",
@@ -50,36 +53,34 @@ export default function ContactsAdminPage() {
     },
   });
 
-  const addressWatch = watch("address");
-
   useEffect(() => {
-    if (contactsData) {
-      reset(contactsData);
+    if (calculatorProfitData) {
+      reset(calculatorProfitData as unknown as TCalculatorProfitForm);
     }
-  }, [contactsData, reset]);
+  }, [calculatorProfitData, reset]);
 
-  const handleSave = (data: TContacts) => {
+  const handleSave = (data: TCalculatorProfitForm) => {
     if (Object.keys(dirtyFields).length === 0) {
       return;
     }
 
-    const updatedData = {} as TContacts;
+    const updatedData = {} as TCalculatorProfitForm;
 
-    (Object.keys(dirtyFields) as Array<keyof TContacts>).forEach((key) => {
-      if (key === "address") {
-        updatedData["address"] = addressWatch;
-        return;
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      updatedData[key] = data[key];
-    });
+    (Object.keys(dirtyFields) as Array<keyof TCalculatorProfitForm>).forEach(
+      (key) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        updatedData[key] = data[key];
+      },
+    );
+
+    console.log("Updated Data:", updatedData);
 
     void onFinish({
-      name: "contacts",
+      name: EGlobalParam.CALCULATOR_PROFIT,
       value: updatedData,
-    } as unknown as TContacts).then(async () => {
-      await revalidateCache(CACHE_TAGS.contacts);
+    } as unknown as TCalculatorProfitForm).then(async () => {
+      await revalidateCache(CACHE_TAGS.calculatorProfit);
     });
   };
 
@@ -93,7 +94,7 @@ export default function ContactsAdminPage() {
         onClick: handleSubmit(handleSave, (err) => console.error(err)),
       }}
     >
-      <ContactsForm
+      <CalculatorProfitForm
         control={control}
         errors={errors}
         registerAction={register}

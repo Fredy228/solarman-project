@@ -47,3 +47,67 @@ export const globalParamExchangeRateSchema = Joi.object({
   UAH: Joi.number().optional(),
   EUR: Joi.number().optional(),
 });
+
+export const globalParamCalculatorProfitSchema = (t: TranslatorType) =>
+  Joi.object({
+    min_max_range_power: Joi.object({
+      HYBRID: Joi.object({
+        min: Joi.number().required(),
+        max: Joi.number().required(),
+      }).required(),
+      NETWORK: Joi.object({
+        min: Joi.number().required(),
+        max: Joi.number().required(),
+      }).required(),
+    }).optional(),
+    range_power: Joi.object({
+      HYBRID: Joi.array()
+        .items(
+          Joi.object({
+            breakPoint: Joi.number().required(),
+            step: Joi.number().required(),
+          }),
+        )
+        .required(),
+      NETWORK: Joi.array()
+        .items(
+          Joi.object({
+            breakPoint: Joi.number().required(),
+            step: Joi.number().required(),
+          }),
+        )
+        .required(),
+    }).optional(),
+    range_rate_per_kwh: Joi.object({
+      HYBRID: Joi.array()
+        .items(
+          Joi.object({
+            breakPoint: Joi.number().required(),
+            rate: Joi.number().required(),
+          }),
+        )
+        .required(),
+      NETWORK: Joi.array()
+        .items(
+          Joi.object({
+            breakPoint: Joi.number().required(),
+            rate: Joi.number().required(),
+          }),
+        )
+        .required(),
+    }).optional(),
+    station_operating_time: Joi.object({
+      HYBRID: Joi.object({
+        min: Joi.number().required(),
+        max: Joi.number().required(),
+      }).required(),
+      NETWORK: Joi.object({
+        min: Joi.number().required(),
+        max: Joi.number().required(),
+      }).required(),
+    }).optional(),
+    tariff: Joi.object({
+      min: Joi.number().required(),
+      max: Joi.number().required(),
+    }).optional(),
+  });

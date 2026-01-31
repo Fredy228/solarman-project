@@ -12,6 +12,7 @@ import {
 import routerProvider from "@refinedev/nextjs-router";
 import {
   Building2,
+  Calculator,
   Contact,
   GalleryVerticalEnd,
   Hash,
@@ -150,6 +151,15 @@ export default function AdminLayout({
                   label: t("contacts.contacts"),
                   parent: "global-param-group",
                   icon: <Contact />,
+                },
+              },
+              {
+                name: "calculator-profit",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.calculatorProfit,
+                meta: {
+                  label: t("calculator-profit.calculator_profit"),
+                  parent: "global-param-group",
+                  icon: <Calculator />,
                 },
               },
             ]}

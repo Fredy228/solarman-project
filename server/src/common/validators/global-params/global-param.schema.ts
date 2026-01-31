@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { EGlobalParam } from 'src/common/enums/global-param/global-param.enum';
 import {
+  globalParamCalculatorProfitSchema,
   globalParamContactsSchema,
   globalParamExchangeRateSchema,
 } from './global-param-items.schema';
@@ -18,6 +19,10 @@ export const globalParamSchema = Joi.object({
       {
         is: EGlobalParam.CONTACTS,
         then: globalParamContactsSchema,
+      },
+      {
+        is: EGlobalParam.CALCULATOR_PROFIT,
+        then: globalParamCalculatorProfitSchema,
       },
     ],
     otherwise: Joi.forbidden(),

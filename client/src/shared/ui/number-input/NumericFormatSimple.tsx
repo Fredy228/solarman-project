@@ -6,6 +6,7 @@ import { NumericFormat } from "react-number-format";
 type Props = {
   id?: string;
   suffix?: string;
+  prefix?: string;
   label?: string;
   error?: boolean;
   helperText?: ReactNode;

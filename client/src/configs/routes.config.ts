@@ -43,6 +43,7 @@ export const ADMIN_PROTECTED_ROUTES = {
     edit: "/admin/hashtag/edit/:id",
   },
   contacts: "/admin/contacts",
+  calculatorProfit: "/admin/calculator-profit",
 };
 
 const ROUTES = {

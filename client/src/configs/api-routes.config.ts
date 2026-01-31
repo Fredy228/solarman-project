@@ -1,3 +1,4 @@
+import { EGlobalParam } from "../shared/types/global-param.enum";
 import envConfig from "./env.config";
 
 export const API_URL_BASE = `${envConfig.SERVER_PROTOCOL}://${envConfig.SERVER_HOST}`;
@@ -23,6 +24,7 @@ export const API_ROUTES = {
     getByTag: (tag: string) => `/portfolio/tag/${tag}`,
   },
   globalParams: {
-    contacts: "/global-param/contacts",
+    contacts: `/global-param/${EGlobalParam.CONTACTS}`,
+    calculatorProfit: `/global-param/${EGlobalParam.CALCULATOR_PROFIT}`,
   },
 };

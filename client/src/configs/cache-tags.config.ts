@@ -3,4 +3,5 @@ export const CACHE_TAGS = {
   portfolioId: (tag: string) => `portfolio-tag-${tag}`,
   hashtags: "hashtags",
   contacts: "global-params-contacts",
+  calculatorProfit: "global-params-calculator-profit",
 };

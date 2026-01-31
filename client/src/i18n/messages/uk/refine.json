@@ -12,6 +12,7 @@
     "edit": "Редагувати",
     "show": "Показати",
     "delete": "Видалити",
+    "add": "Додати",
     "save": "Зберегти",
     "refresh": "Оновити",
     "cancel": "Відмінити",
@@ -96,6 +97,34 @@
       "link_instagram": "Instagram URL",
       "link_telegram": "Telegram URL",
       "link_youtube": "YouTube URL"
+    }
+  },
+  "calculator-profit": {
+    "calculator_profit": "Калькулятор",
+    "titles": {
+      "edit": "Редагувати параметри калькулятора прибутку"
+    },
+    "types": {
+      "NETWORK": "Мережева станція",
+      "HYBRID": "Гібридна станція"
+    },
+    "sections": {
+      "min_max_range_power": "Мінімальна та максимальна потужність системи (кВт)",
+      "range_power": "Діапазони та шаги потужності для повзунка (кВт)",
+      "range_rate_per_kwh": "Діапазони та ставка за 1 кВт для повзунка ($)",
+      "station_operating_time": "Мінімальна та максимальна тривалість роботи станції (роки)",
+      "tariff": "Мінімальний та максимальний тариф за 1 кВт (грн)"
+    },
+    "fields": {
+      "min_range_power": "Мінімальна потужність системи (кВт)",
+      "max_range_power": "Максимальна потужність системи (кВт)",
+      "break_range_power": "Точка перелому (кВт)",
+      "power_step": "Крок потужності",
+      "rate_per_kWh": "Ставка за 1 кВт ($)",
+      "min_operating_time": "Мінімальна тривалість роботи станції (роки)",
+      "max_operating_time": "Максимальна тривалість роботи станції (роки)",
+      "min_tariff": "Мінімальний тариф за 1 кВт (грн)",
+      "max_tariff": "Максимальний тариф за 1 кВт (грн)"
     }
   },
   "portfolio": {
@@ -207,7 +236,8 @@
       "watt": "Вт",
       "kilowatts": "кВт",
       "ampereHour": "Аг",
-      "volt": "В"
+      "volt": "В",
+      "years": "роки"
     },
     "specs": {
       "panelType": {
