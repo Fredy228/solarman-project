@@ -44,6 +44,7 @@ export const ADMIN_PROTECTED_ROUTES = {
   },
   contacts: "/admin/contacts",
   calculatorProfit: "/admin/calculator-profit",
+  exchangeRate: "/admin/exchange-rate",
 };
 
 const ROUTES = {

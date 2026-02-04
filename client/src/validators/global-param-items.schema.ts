@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { EPageType, EStationType } from "../features/global-params";
 import type { TranslatorType } from "../i18n/types";
+import { ECurrency } from "../shared/types/currency.enum";
 
 export const globalParamContactsSchema = (t: TranslatorType) =>
   Joi.object({
@@ -44,10 +45,11 @@ export const globalParamContactsSchema = (t: TranslatorType) =>
       .optional(),
   });
 
-export const globalParamExchangeRateSchema = Joi.object({
-  UAH: Joi.number().optional(),
-  EUR: Joi.number().optional(),
-});
+export const globalParamExchangeRateSchema = (t: TranslatorType) =>
+  Joi.object({
+    [ECurrency.UAH]: Joi.number().optional(),
+    [ECurrency.EUR]: Joi.number().optional(),
+  });
 
 const calculatorMinMaxRangeSchema = Joi.object({
   min: Joi.number().required(),

@@ -1,3 +1,4 @@
+import { ECurrency } from '@prisma/client';
 import Joi from 'joi';
 import {
   EPageType,
@@ -19,8 +20,8 @@ export const globalParamContactsSchema = Joi.object({
 });
 
 export const globalParamExchangeRateSchema = Joi.object({
-  UAH: Joi.number().optional(),
-  EUR: Joi.number().optional(),
+  [ECurrency.UAH]: Joi.number().optional(),
+  [ECurrency.EUR]: Joi.number().optional(),
 });
 
 const calculatorMinMaxRangeSchema = Joi.object({

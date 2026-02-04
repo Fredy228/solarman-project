@@ -99,6 +99,16 @@
       "link_youtube": "YouTube URL"
     }
   },
+  "exchange-rate": {
+    "exchange_rate": "Курс обміну",
+    "titles": {
+      "edit": "Редагувати курс обміну"
+    },
+    "fields": {
+      "UAH": "Гривня (UAH)",
+      "EUR": "Євро (EUR)"
+    }
+  },
   "calculator-profit": {
     "calculator_profit": "Калькулятор",
     "titles": {

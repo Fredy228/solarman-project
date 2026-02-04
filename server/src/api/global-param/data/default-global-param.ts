@@ -23,8 +23,8 @@ interface GlobalParamType {
 export const defaultGlobalParam: GlobalParamType = {
   [EGlobalParam.EXCHANGE_RATE]: {
     value: {
-      [ECurrency.UAH]: 1,
-      [ECurrency.EUR]: 1,
+      [ECurrency.UAH]: 42,
+      [ECurrency.EUR]: 0.85,
     },
     title: {
       uk: 'Курс валюти',

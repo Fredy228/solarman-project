@@ -13,6 +13,7 @@ import routerProvider from "@refinedev/nextjs-router";
 import {
   Building2,
   Calculator,
+  CircleDollarSign,
   Contact,
   GalleryVerticalEnd,
   Hash,
@@ -160,6 +161,15 @@ export default function AdminLayout({
                   label: t("calculator-profit.calculator_profit"),
                   parent: "global-param-group",
                   icon: <Calculator />,
+                },
+              },
+              {
+                name: "exchange-rate",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.exchangeRate,
+                meta: {
+                  label: t("exchange-rate.exchange_rate"),
+                  parent: "global-param-group",
+                  icon: <CircleDollarSign />,
                 },
               },
             ]}
