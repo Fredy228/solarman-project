@@ -26,5 +26,6 @@ export const API_ROUTES = {
   globalParams: {
     contacts: `/global-param/${EGlobalParam.CONTACTS}`,
     calculatorProfit: `/global-param/${EGlobalParam.CALCULATOR_PROFIT}`,
+    exchangeRate: `/global-param/${EGlobalParam.EXCHANGE_RATE}`,
   },
 };

@@ -1,6 +1,9 @@
 import { ECurrency, LocalizedContent } from '@prisma/client';
 
-import type { TCalculatorProfit } from 'src/common/types/global-param/calculator-profit.type';
+import {
+  EPageType,
+  type TCalculatorProfit,
+} from 'src/common/types/global-param/calculator-profit.type';
 import type { TContacts } from 'src/common/types/global-param/contacts.type';
 import type { TExchangeRates } from 'src/common/types/global-param/exchange-rate.type';
 import { EGlobalParam } from '../../../common/enums/global-param/global-param.enum';
@@ -66,8 +69,22 @@ export const defaultGlobalParam: GlobalParamType = {
     },
     value: {
       min_max_range_power: {
-        HYBRID: { min: 3, max: 40 },
-        NETWORK: { min: 3, max: 300 },
+        [EPageType.DEFAULT]: {
+          HYBRID: { min: 3, max: 40 },
+          NETWORK: { min: 5, max: 300 },
+        },
+        [EPageType.ENTERPRISE]: {
+          HYBRID: { min: 3, max: 40 },
+          NETWORK: { min: 30, max: 300 },
+        },
+        [EPageType.HOME]: {
+          HYBRID: { min: 3, max: 30 },
+          NETWORK: { min: 3, max: 30 },
+        },
+        [EPageType.INCOME]: {
+          HYBRID: { min: 3, max: 40 },
+          NETWORK: { min: 30, max: 300 },
+        },
       },
       range_power: {
         HYBRID: [

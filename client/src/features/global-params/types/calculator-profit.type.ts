@@ -3,6 +3,13 @@ export enum EStationType {
   NETWORK = "NETWORK",
 }
 
+export enum EPageType {
+  DEFAULT = "DEFAULT",
+  ENTERPRISE = "ENTERPRISE",
+  HOME = "HOME",
+  INCOME = "INCOME",
+}
+
 export type TRangePower = {
   breakPoint: number;
   step: number;
@@ -20,7 +27,9 @@ export type TMinMaxRange = {
 
 export type TCalculatorProfit = {
   min_max_range_power: {
-    [key in keyof typeof EStationType]: TMinMaxRange;
+    [key in keyof typeof EPageType]: {
+      [key in keyof typeof EStationType]: TMinMaxRange;
+    };
   };
   range_power: {
     [key in keyof typeof EStationType]: TRangePower[];
@@ -51,7 +60,9 @@ export type TMinMaxRangeForm = {
 
 export type TCalculatorProfitForm = {
   min_max_range_power: {
-    [key in keyof typeof EStationType]: TMinMaxRangeForm;
+    [key in keyof typeof EPageType]: {
+      [key in keyof typeof EStationType]: TMinMaxRangeForm;
+    };
   };
   range_power: {
     [key in keyof typeof EStationType]: TRangePowerForm[];

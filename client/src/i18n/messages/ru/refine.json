@@ -99,10 +99,16 @@
       "link_youtube": "YouTube URL"
     }
   },
-  "calculator_profit": {
+  "calculator-profit": {
     "calculator_profit": "Калькулятор",
     "titles": {
       "edit": "Редактировать параметры калькулятора прибыли"
+    },
+    "page_types": {
+      "DEFAULT": "По умолчанию",
+      "ENTERPRISE": "Для предприятия",
+      "HOME": "Для дома",
+      "INCOME": "Для дохода"
     },
     "types": {
       "NETWORK": "Сетевая станция",
@@ -163,13 +169,13 @@
       "name": "Название"
     }
   },
-  "hash-tags": {
-    "hash-tags": "Теги",
+  "hashtag": {
+    "hashtag": "Хэштег",
     "titles": {
-      "list": "Список тегов",
-      "create": "Создать тег",
-      "edit": "Редактировать тег",
-      "show": "Тег"
+      "list": "Список хэштегов",
+      "create": "Создать хэштег",
+      "edit": "Редактировать хэштег",
+      "show": "Хэштег"
     },
     "fields": {
       "name": "Название",

@@ -4,4 +4,5 @@ export const CACHE_TAGS = {
   hashtags: "hashtags",
   contacts: "global-params-contacts",
   calculatorProfit: "global-params-calculator-profit",
+  exchangeRate: "global-params-exchange-rate",
 };

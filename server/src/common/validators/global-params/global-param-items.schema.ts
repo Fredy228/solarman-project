@@ -1,4 +1,8 @@
 import Joi from 'joi';
+import {
+  EPageType,
+  EStationType,
+} from 'src/common/types/global-param/calculator-profit.type';
 
 export const globalParamContactsSchema = Joi.object({
   phone: Joi.string().min(5).max(30).optional(),
@@ -19,19 +23,25 @@ export const globalParamExchangeRateSchema = Joi.object({
   EUR: Joi.number().optional(),
 });
 
+const calculatorMinMaxRangeSchema = Joi.object({
+  min: Joi.number().required(),
+  max: Joi.number().required(),
+});
+
+const calculatorMinMaxRangePowerSchema = Joi.object({
+  [EStationType.HYBRID]: calculatorMinMaxRangeSchema.required(),
+  [EStationType.NETWORK]: calculatorMinMaxRangeSchema.required(),
+});
+
 export const globalParamCalculatorProfitSchema = Joi.object({
   min_max_range_power: Joi.object({
-    HYBRID: Joi.object({
-      min: Joi.number().required(),
-      max: Joi.number().required(),
-    }).required(),
-    NETWORK: Joi.object({
-      min: Joi.number().required(),
-      max: Joi.number().required(),
-    }).required(),
+    [EPageType.DEFAULT]: calculatorMinMaxRangePowerSchema.required(),
+    [EPageType.ENTERPRISE]: calculatorMinMaxRangePowerSchema.required(),
+    [EPageType.HOME]: calculatorMinMaxRangePowerSchema.required(),
+    [EPageType.INCOME]: calculatorMinMaxRangePowerSchema.required(),
   }).optional(),
   range_power: Joi.object({
-    HYBRID: Joi.array()
+    [EStationType.HYBRID]: Joi.array()
       .items(
         Joi.object({
           breakPoint: Joi.number().required(),
@@ -39,7 +49,7 @@ export const globalParamCalculatorProfitSchema = Joi.object({
         }),
       )
       .required(),
-    NETWORK: Joi.array()
+    [EStationType.NETWORK]: Joi.array()
       .items(
         Joi.object({
           breakPoint: Joi.number().required(),
@@ -49,7 +59,7 @@ export const globalParamCalculatorProfitSchema = Joi.object({
       .required(),
   }).optional(),
   range_rate_per_kwh: Joi.object({
-    HYBRID: Joi.array()
+    [EStationType.HYBRID]: Joi.array()
       .items(
         Joi.object({
           breakPoint: Joi.number().required(),
@@ -57,7 +67,7 @@ export const globalParamCalculatorProfitSchema = Joi.object({
         }),
       )
       .required(),
-    NETWORK: Joi.array()
+    [EStationType.NETWORK]: Joi.array()
       .items(
         Joi.object({
           breakPoint: Joi.number().required(),
@@ -67,17 +77,8 @@ export const globalParamCalculatorProfitSchema = Joi.object({
       .required(),
   }).optional(),
   station_operating_time: Joi.object({
-    HYBRID: Joi.object({
-      min: Joi.number().required(),
-      max: Joi.number().required(),
-    }).required(),
-    NETWORK: Joi.object({
-      min: Joi.number().required(),
-      max: Joi.number().required(),
-    }).required(),
+    [EStationType.HYBRID]: calculatorMinMaxRangeSchema.required(),
+    [EStationType.NETWORK]: calculatorMinMaxRangeSchema.required(),
   }).optional(),
-  tariff: Joi.object({
-    min: Joi.number().required(),
-    max: Joi.number().required(),
-  }).optional(),
+  tariff: calculatorMinMaxRangeSchema.optional(),
 });

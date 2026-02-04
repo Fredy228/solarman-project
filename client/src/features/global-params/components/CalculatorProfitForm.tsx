@@ -1,8 +1,16 @@
 "use client";
 
-import { Box, Chip, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import {
   Control,
   Controller,
@@ -12,6 +20,7 @@ import {
 
 import { NumericFormatSimple } from "@/src/shared/ui/number-input/NumericFormatSimple";
 import type { TCalculatorProfitForm } from "../types/calculator-profit.type";
+import { EPageType } from "../types/calculator-profit.type";
 import RangePowerForm from "./parts/RangePowerForm";
 import RangeRatePerKwhForm from "./parts/RangeratePerKwhForm";
 
@@ -27,6 +36,7 @@ export const CalculatorProfitForm: FC<CalculatorProfitFormProps> = ({
   control,
 }) => {
   const t = useTranslations("refine");
+  const [pageType, setPageType] = useState<EPageType>(EPageType.DEFAULT);
 
   return (
     <Box
@@ -40,36 +50,66 @@ export const CalculatorProfitForm: FC<CalculatorProfitFormProps> = ({
           size="small"
         />
       </Divider>
+      <Tabs
+        value={pageType}
+        onChange={(_event, value: EPageType) => setPageType(value)}
+        variant="scrollable"
+        allowScrollButtonsMobile
+      >
+        <Tab
+          label={t("calculator-profit.page_types.DEFAULT")}
+          value={EPageType.DEFAULT}
+        />
+        <Tab
+          label={t("calculator-profit.page_types.ENTERPRISE")}
+          value={EPageType.ENTERPRISE}
+        />
+        <Tab
+          label={t("calculator-profit.page_types.HOME")}
+          value={EPageType.HOME}
+        />
+        <Tab
+          label={t("calculator-profit.page_types.INCOME")}
+          value={EPageType.INCOME}
+        />
+      </Tabs>
+
       <Typography>{t("calculator-profit.types.NETWORK")}</Typography>
       <Stack direction={"row"} gap={5}>
         <Controller
-          name="min_max_range_power.NETWORK.min"
+          key={`min-max-network-min-${pageType}`}
+          name={`min_max_range_power.${pageType}.NETWORK.min`}
           control={control}
-          // defaultValue={defaultValues?.power}
           rules={{ required: t("common.required_field") }}
           render={({ field }) => (
             <NumericFormatSimple
               {...field}
+              value={field.value ?? ""}
               suffix={` ${t("goods.measurements.kilowatts")}`}
               label={t("calculator-profit.fields.min_range_power")}
-              error={!!errors?.min_max_range_power?.NETWORK?.min}
-              helperText={errors?.min_max_range_power?.NETWORK?.min?.message}
+              error={!!errors?.min_max_range_power?.[pageType]?.NETWORK?.min}
+              helperText={
+                errors?.min_max_range_power?.[pageType]?.NETWORK?.min?.message
+              }
               fullWidth
             />
           )}
         />
         <Controller
-          name="min_max_range_power.NETWORK.max"
+          key={`min-max-network-max-${pageType}`}
+          name={`min_max_range_power.${pageType}.NETWORK.max`}
           control={control}
-          // defaultValue={defaultValues?.power}
           rules={{ required: t("common.required_field") }}
           render={({ field }) => (
             <NumericFormatSimple
               {...field}
+              value={field.value ?? ""}
               suffix={` ${t("goods.measurements.kilowatts")}`}
               label={t("calculator-profit.fields.max_range_power")}
-              error={!!errors?.min_max_range_power?.NETWORK?.max}
-              helperText={errors?.min_max_range_power?.NETWORK?.max?.message}
+              error={!!errors?.min_max_range_power?.[pageType]?.NETWORK?.max}
+              helperText={
+                errors?.min_max_range_power?.[pageType]?.NETWORK?.max?.message
+              }
               fullWidth
             />
           )}
@@ -78,33 +118,39 @@ export const CalculatorProfitForm: FC<CalculatorProfitFormProps> = ({
       <Typography>{t("calculator-profit.types.HYBRID")}</Typography>
       <Stack direction={"row"} gap={5}>
         <Controller
-          name="min_max_range_power.HYBRID.min"
+          key={`min-max-hybrid-min-${pageType}`}
+          name={`min_max_range_power.${pageType}.HYBRID.min`}
           control={control}
-          // defaultValue={defaultValues?.power}
           rules={{ required: t("common.required_field") }}
           render={({ field }) => (
             <NumericFormatSimple
               {...field}
+              value={field.value ?? ""}
               suffix={` ${t("goods.measurements.kilowatts")}`}
               label={t("calculator-profit.fields.min_range_power")}
-              error={!!errors?.min_max_range_power?.HYBRID?.min}
-              helperText={errors?.min_max_range_power?.HYBRID?.min?.message}
+              error={!!errors?.min_max_range_power?.[pageType]?.HYBRID?.min}
+              helperText={
+                errors?.min_max_range_power?.[pageType]?.HYBRID?.min?.message
+              }
               fullWidth
             />
           )}
         />
         <Controller
-          name="min_max_range_power.HYBRID.max"
+          key={`min-max-hybrid-max-${pageType}`}
+          name={`min_max_range_power.${pageType}.HYBRID.max`}
           control={control}
-          // defaultValue={defaultValues?.power}
           rules={{ required: t("common.required_field") }}
           render={({ field }) => (
             <NumericFormatSimple
               {...field}
+              value={field.value ?? ""}
               suffix={` ${t("goods.measurements.kilowatts")}`}
               label={t("calculator-profit.fields.max_range_power")}
-              error={!!errors?.min_max_range_power?.HYBRID?.max}
-              helperText={errors?.min_max_range_power?.HYBRID?.max?.message}
+              error={!!errors?.min_max_range_power?.[pageType]?.HYBRID?.max}
+              helperText={
+                errors?.min_max_range_power?.[pageType]?.HYBRID?.max?.message
+              }
               fullWidth
             />
           )}

@@ -75,7 +75,16 @@ export const theme = (lang?: ELocale) =>
             },
           },
         },
+        MuiTextField: {
+          styleOverrides: {
+            root: {
+              "& .MuiInputBase-root": {
+                borderRadius: "10px",
+              },
+            },
+          },
+        },
       },
     },
-    ...translateMui(lang)
+    ...translateMui(lang),
   );

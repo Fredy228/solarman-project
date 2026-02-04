@@ -7,6 +7,7 @@ type Props = {
   id?: string;
   suffix?: string;
   prefix?: string;
+  size?: "small" | "medium";
   label?: string;
   error?: boolean;
   helperText?: ReactNode;

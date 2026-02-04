@@ -10,5 +10,32 @@
   },
   "phrases": {
     "consultSectionTitle": "Підберемо найкращий \nваріант для вас"
+  },
+  "measurements": {
+    "years": "р"
+  },
+  "currency": {
+    "UAH": "грн"
+  },
+  "stationTypes": {
+    "NETWORK": "Мережева станція",
+    "HYBRID": "Гібридна станція"
+  },
+  "calculator": {
+    "title": "Розрахунок прибутковості станції",
+    "description": "Оберіть потрібну потужність",
+    "fields": {
+      "stationType": "Тип станції",
+      "tariff": "Тариф за електроенергію (грн)",
+      "operatingTime": "Плановий термін експлуатації (роки)"
+    },
+    "results": {
+      "costInstalledStation": "Вартість встановлення станції",
+      "profitEntirePeriodOperation": "Прибуток за весь період експлуатації",
+      "paybackPeriodStation": "Окупність станції",
+      "averageSavingsPerKw": "Середня економія на 1 кВт",
+      "returnOnInvestment": "Рентабельність інвестицій",
+      "averageElectricityGeneration": "Середній виробіток електроенергії"
+    }
   }
 }
