@@ -23,19 +23,31 @@ type Props = {
 
 const ItemResult = ({ children }: { children?: ReactNode }) => {
   return (
-    <Box className="flex items-center p-2.5 rounded-(--border-radius-main) border-2 border-(--color-secondary)">
+    <Box
+      sx={{ backgroundColor: "#16488a16" }}
+      className="flex items-center gap-3  flex-col-reverse sm:flex-row p-2.5 rounded-(--border-radius-main) border-2 border-(--color-secondary)"
+    >
       {children}
     </Box>
   );
 };
 
 const ItemResultWrapper = ({ children }: { children?: ReactNode }) => {
-  return <Box className="flex-1">{children}</Box>;
+  return (
+    <Box className="flex-1 flex flex-col w-full justify-between sm:justify-normal">
+      {children}
+    </Box>
+  );
 };
 
 const ItemResultLabel = ({ children }: { children?: ReactNode }) => {
   return (
-    <Typography color="var(--color-text-g4)" fontSize={15}>
+    <Typography
+      color="var(--color-text-g4)"
+      fontSize={15}
+      textAlign={"left"}
+      width={"100%"}
+    >
       {children}
     </Typography>
   );
@@ -43,7 +55,13 @@ const ItemResultLabel = ({ children }: { children?: ReactNode }) => {
 
 const ItemResultValue = ({ children }: { children?: ReactNode }) => {
   return (
-    <Typography color="var(--color-secondary)" fontSize={22} fontWeight={700}>
+    <Typography
+      width={"100%"}
+      color="var(--color-secondary)"
+      fontSize={22}
+      fontWeight={700}
+      textAlign={"left"}
+    >
       {children}
     </Typography>
   );
@@ -53,7 +71,7 @@ export default function CalculatorResults({ results }: Props) {
   const t = useTranslations("common");
 
   return (
-    <Box className="grid grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
+    <Box className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 auto-rows-fr">
       <ItemResult>
         <ItemResultWrapper>
           <ItemResultLabel>
@@ -124,7 +142,7 @@ export default function CalculatorResults({ results }: Props) {
             {t("calculator.results.averageElectricityGeneration")}
           </ItemResultLabel>
           <ItemResultValue>
-            {results.averageElectricityGeneration}
+            {results.averageElectricityGeneration} {t("measurements.kw")}
           </ItemResultValue>
         </ItemResultWrapper>
         <Image

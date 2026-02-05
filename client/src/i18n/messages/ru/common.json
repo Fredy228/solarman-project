@@ -12,7 +12,8 @@
     "consultSectionTitle": "Подберем лучший \nвариант для вас"
   },
   "measurements": {
-    "years": "р"
+    "years": "годы",
+    "kw": "кВт"
   },
   "currency": {
     "UAH": "грн"
@@ -26,16 +27,21 @@
     "description": "Выберите необходимую мощность",
     "fields": {
       "stationType": "Тип станции",
-      "tariff": "Тариф за электроэнергию (грн)",
+      "tariff": "Ожидаемый средний тариф (грн)",
       "operatingTime": "Плановый срок эксплуатации (лет)"
+    },
+    "helperText": {
+      "tariff": "Рекомендуемый средний тариф за весь срок эксплуатации:",
+      "useHome": "для дома",
+      "useEnterprise": "для предприятия"
     },
     "results": {
       "costInstalledStation": "Стоимость установки станции",
       "profitEntirePeriodOperation": "Прибыль за весь период эксплуатации",
       "paybackPeriodStation": "Окупаемость станции",
       "averageSavingsPerKw": "Средняя экономия на 1 кВт",
-      "returnOnInvestment": "Рентабельность инвестиций",
-      "averageElectricityGeneration": "Средний выработок электроэнергии"
+      "returnOnInvestment": "Годовая рентабельность инвестиций",
+      "averageElectricityGeneration": "Средний выработок электроэнергии (в месяц)"
     }
   }
 }

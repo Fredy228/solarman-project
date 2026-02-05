@@ -2,19 +2,19 @@ import { EStationType } from "@/src/features/global-params";
 import { NumericFormatSimple } from "@/src/shared/ui/number-input/NumericFormatSimple";
 import { Box, MenuItem, Paper, TextField } from "@mui/material";
 import { useTranslations } from "next-intl";
-import {
-  Controller,
-  type Control,
-  type UseFormRegister,
-} from "react-hook-form";
+import type { ReactNode } from "react";
+import { Controller, type Control } from "react-hook-form";
 import type { TCalculatorForm } from "../types/calculator-form.type";
 
 type Props = {
-  registerAction: UseFormRegister<TCalculatorForm>;
+  helperTextTariff?: ReactNode | null;
   control: Control<TCalculatorForm>;
 };
 
-export default function CalculatorSettings({ control }: Props) {
+export default function CalculatorSettings({
+  control,
+  helperTextTariff,
+}: Props) {
   const t = useTranslations("common");
 
   return (
@@ -55,22 +55,6 @@ export default function CalculatorSettings({ control }: Props) {
       />
 
       <Controller
-        name="tariff"
-        control={control}
-        render={({ field }) => (
-          <Box>
-            <NumericFormatSimple
-              {...field}
-              label={t("calculator.fields.tariff")}
-              suffix={` ${t("currency.UAH")}`}
-              fullWidth
-              size="small"
-            />
-          </Box>
-        )}
-      />
-
-      <Controller
         name="operatingTime"
         control={control}
         render={({ field }) => (
@@ -81,6 +65,23 @@ export default function CalculatorSettings({ control }: Props) {
               suffix={` ${t("measurements.years")}`}
               fullWidth
               size="small"
+            />
+          </Box>
+        )}
+      />
+
+      <Controller
+        name="tariff"
+        control={control}
+        render={({ field }) => (
+          <Box>
+            <NumericFormatSimple
+              {...field}
+              label={t("calculator.fields.tariff")}
+              suffix={` ${t("currency.UAH")}`}
+              fullWidth
+              size="small"
+              helperText={helperTextTariff}
             />
           </Box>
         )}

@@ -30,6 +30,8 @@ export default async function Home({ params }: Props) {
           data={calculatorProfit.value}
           exchangeRate={exchangeRate.value}
           pageType={EPageType.DEFAULT}
+          defaultTariff={16}
+          defaultOperatingTime={10}
         />
       )}
       {portfolioList && <PortfolioPreview data={portfolioList} />}

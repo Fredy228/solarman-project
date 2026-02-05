@@ -8,53 +8,49 @@ import {
 } from "@/src/features/global-params";
 import Section from "@/src/shared/ui/sections/Section";
 import SectionTitle from "@/src/shared/ui/title/SectionTitle";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 import { Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useDebouncedCallback } from "use-debounce";
 import CalculatorResults from "./parts/CalculatorResults";
 import CalculatorSettings from "./parts/CalculatorSettings";
 import CalculatorSlider from "./parts/CalculatorSlider";
+import {
+  calcAverageSavingsPerKw,
+  calcCostElectricityGenerated,
+  calcCostInstalledStation,
+  calcInvestmentProfitabilityPerYear,
+  calcMonthlyOutputOfStation,
+  calcPaybackPeriodStation,
+  calcProfitEntirePeriodOperation,
+  calcYearlyOutputOfStation,
+} from "./parts/formulas";
 import type { TCalculatorForm } from "./types/calculator-form.type";
 
 type Props = {
   data: TCalculatorProfit;
   exchangeRate: TExchangeRates;
   pageType: EPageType;
+  defaultTariff?: number;
+  defaultOperatingTime?: number;
 };
 
 export default function CalculatorProfit({
   data,
   exchangeRate,
   pageType,
+  defaultOperatingTime = 10,
+  defaultTariff = 16,
 }: Props) {
   const exchangeRateUAH = exchangeRate.UAH;
   const t = useTranslations("common");
 
-  const [costInstalledStation, setCostInstalledStation] = useState<
-    string | null
-  >(null);
-  const [profitEntirePeriodOperation, setProfitEntirePeriodOperation] =
-    useState<string | null>(null);
-  const [paybackPeriodStation, setPaybackPeriodStation] = useState<
-    string | null
-  >(null);
-  const [averageSavingsPerKw, setAverageSavingsPerKw] = useState<string | null>(
-    null,
-  );
-  const [returnOnInvestment, setReturnOnInvestment] = useState<string | null>(
-    null,
-  );
-  const [averageElectricityGeneration, setAverageElectricityGeneration] =
-    useState<string | null>(null);
-
-  const { register, control } = useForm<TCalculatorForm>({
+  const { control } = useForm<TCalculatorForm>({
     defaultValues: {
       stationType: EStationType.NETWORK,
-      tariff: "4.3",
-      operatingTime: "10",
+      tariff: String(defaultTariff),
+      operatingTime: String(defaultOperatingTime),
     },
   });
 
@@ -73,100 +69,133 @@ export default function CalculatorProfit({
     name: "operatingTime",
   });
 
-  const calcFunctionDebounced = useDebouncedCallback(() => {
+  // Хелпер для форматирования валюты (стабильный для SSR)
+  const formatCurrency = (amount: number, decimals = 2) => {
+    const formatted = amount.toLocaleString("uk-UA", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+    return `${formatted} ₴`;
+  };
+
+  // Вычисляем средние тарифы
+  const averageTariffs = useMemo(() => {
+    if (!operatingTimeValue) {
+      return {
+        home: "0",
+        enterprise: "0",
+      };
+    }
+
+    const averageTariffHomeResult =
+      ((4.32 * 1.25 ** (Number(operatingTimeValue) - 1)) / 2) * 100;
+    const averageTariffEnterpriseResult =
+      ((10 * 1.25 ** (Number(operatingTimeValue) - 1)) / 2) * 100;
+
+    return {
+      home: formatCurrency(averageTariffHomeResult / 100),
+      enterprise: formatCurrency(averageTariffEnterpriseResult / 100),
+    };
+  }, [operatingTimeValue]);
+
+  // Основные вычисления калькулятора
+  const calculatedResults = useMemo(() => {
     if (
       !currentPower ||
       !stationTypeValue ||
       !tariffValue ||
       !operatingTimeValue
-    )
-      return;
-    console.log("Calculation...");
+    ) {
+      return {
+        costInstalledStation: "0",
+        profitEntirePeriodOperation: "0",
+        paybackPeriodStation: "0",
+        averageSavingsPerKw: "0",
+        returnOnInvestment: "0",
+        averageElectricityGeneration: "0",
+      };
+    }
+
+    // Ставка за 1 кВт (копійки)
     const ratePerKwCalc =
-      data.range_rate_per_kwh[stationTypeValue].find(
-        (r) => r.breakPoint >= currentPower,
-      )?.rate ||
+      [...data.range_rate_per_kwh[stationTypeValue]]
+        .reverse()
+        .find((r) => r.breakPoint <= currentPower)?.rate ||
       data.range_rate_per_kwh[stationTypeValue][0]?.rate ||
-      1; // Ставка за 1 кВт (копійки)
+      1;
 
-    const costInstalledStationResult = ratePerKwCalc * currentPower * 41; // Вартість встановленій станції (копійки) exchangeRateUAH
-
-    const monthlyOutputOfStationForMonth =
-      Math.round(23 * 4.270833333 * 1000 * currentPower) / 1000; // Середнії виробіток електроенергіг за допомогою СЕС за місяць
-
-    const monthlyOutputOfStation = monthlyOutputOfStationForMonth * 12; // Середнії виробіток електроенергіг за допомогою СЕС за рік
-
-    const costElectricityGenerated =
-      monthlyOutputOfStation *
-      Number(operatingTimeValue) *
-      (Number(tariffValue) * 100); // Вартість електроенергії, яку згенерує станція на ринку за період експлуатації, (копійки)
-
-    const profitEntirePeriodOperationResult =
-      costElectricityGenerated - costInstalledStationResult; // Прибуток від станції за весь срок експлуатації (копійки)
-
-    const paybackPeriodStationResult =
-      costInstalledStationResult /
-      (Number(tariffValue) * 100 * monthlyOutputOfStation); // Окупність станції (років)
-
-    const averageSavingsPerKwResult =
-      costInstalledStationResult /
-      (Number(operatingTimeValue) * monthlyOutputOfStation); // Середня економія за 1 кВт (копійки)
-
-    const returnOnInvestmentResult =
-      profitEntirePeriodOperationResult /
-      costInstalledStationResult /
-      Number(operatingTimeValue); // Рентабельність інвестицій (%)
-
-    setCostInstalledStation(
-      (costInstalledStationResult / 100).toLocaleString("uk-UA", {
-        style: "currency",
-        currency: "UAH",
-        maximumFractionDigits: 0,
-      }),
+    // Вартість встановленої станції (копійки)
+    const costInstalledStationResult = calcCostInstalledStation(
+      ratePerKwCalc * exchangeRateUAH * 100,
+      currentPower,
     );
-    setProfitEntirePeriodOperation(
-      Math.round(profitEntirePeriodOperationResult / 100).toLocaleString(
-        "uk-UA",
-        {
-          style: "currency",
-          currency: "UAH",
-          maximumFractionDigits: 0,
-        },
+
+    // Середній виробіток електроенергії за допомогою СЕС за місяць
+    const monthlyOutputOfStation = calcMonthlyOutputOfStation(currentPower);
+
+    // Середній виробіток електроенергії за допомогою СЕС за рік
+    const yearlyOutputOfStation = calcYearlyOutputOfStation(
+      monthlyOutputOfStation,
+    );
+
+    // Вартість електроенергії, яку згенерує станція на ринку за період експлуатації (копійки)
+    const costElectricityGenerated = calcCostElectricityGenerated(
+      Number(tariffValue) * 100,
+      Number(operatingTimeValue),
+      yearlyOutputOfStation,
+    );
+
+    // Прибуток від станції за весь строк експлуатації (копійки)
+    const profitEntirePeriodOperationResult = calcProfitEntirePeriodOperation(
+      costElectricityGenerated,
+      costInstalledStationResult,
+    );
+
+    // Окупність станції (років)
+    const paybackPeriodStationResult = calcPaybackPeriodStation(
+      costInstalledStationResult,
+      Number(tariffValue) * 100,
+      yearlyOutputOfStation,
+    );
+
+    // Середня економія за 1 кВт (копійки)
+    const averageSavingsPerKwResult = calcAverageSavingsPerKw(
+      costInstalledStationResult,
+      Number(operatingTimeValue),
+      yearlyOutputOfStation,
+      Number(tariffValue) * 100,
+    );
+
+    // Рентабельність інвестицій (%) за 1 рік
+    const investmentProfitabilityPerYearResult =
+      calcInvestmentProfitabilityPerYear(
+        profitEntirePeriodOperationResult,
+        costInstalledStationResult,
+        Number(operatingTimeValue),
+      );
+
+    return {
+      costInstalledStation: formatCurrency(costInstalledStationResult / 100, 0),
+      profitEntirePeriodOperation: formatCurrency(
+        Math.round(profitEntirePeriodOperationResult / 100),
+        0,
       ),
-    );
-    setPaybackPeriodStation(
-      paybackPeriodStationResult.toFixed(1) + " " + t("measurements.years"),
-    );
-    setAverageSavingsPerKw(
-      (averageSavingsPerKwResult / 100).toLocaleString("uk-UA", {
-        style: "currency",
-        currency: "UAH",
-      }),
-    );
-    setReturnOnInvestment(
-      Math.round(returnOnInvestmentResult * 100).toString() + "%",
-    );
-    setAverageElectricityGeneration(
-      monthlyOutputOfStationForMonth.toLocaleString("uk-UA", {}),
-    );
-  }, 1000);
-
-  useEffect(() => {
-    if (
-      !currentPower ||
-      !stationTypeValue ||
-      !tariffValue ||
-      !operatingTimeValue
-    )
-      return;
-
-    calcFunctionDebounced();
+      paybackPeriodStation:
+        paybackPeriodStationResult.toFixed(1) + " " + t("measurements.years"),
+      averageSavingsPerKw: formatCurrency(averageSavingsPerKwResult / 100),
+      returnOnInvestment:
+        Math.round(investmentProfitabilityPerYearResult).toString() + "%",
+      averageElectricityGeneration:
+        monthlyOutputOfStation.toLocaleString("uk-UA"),
+    };
   }, [
     currentPower,
     stationTypeValue,
     tariffValue,
     operatingTimeValue,
-    calcFunctionDebounced,
+    data.range_rate_per_kwh,
+    exchangeRateUAH,
+    t,
   ]);
 
   return (
@@ -191,20 +220,42 @@ export default function CalculatorProfit({
         />
         <Box className="flex mt-8 gap-6 flex-col md:flex-row md:items-center">
           <Box className="w-full md:w-[320px]">
-            <CalculatorSettings registerAction={register} control={control} />
+            <CalculatorSettings
+              helperTextTariff={
+                <>
+                  <Typography
+                    component={"span"}
+                    fontSize={12}
+                    fontStyle={"italic"}
+                    lineHeight={1}
+                    mb={0.5}
+                  >
+                    {t("calculator.helperText.tariff")}
+                  </Typography>
+                  <br />
+                  <Typography
+                    component={"span"}
+                    fontSize={12}
+                    fontStyle={"italic"}
+                  >
+                    - {t("calculator.helperText.useHome")} {averageTariffs.home}
+                  </Typography>
+                  <br />
+                  <Typography
+                    component={"span"}
+                    fontSize={12}
+                    fontStyle={"italic"}
+                  >
+                    - {t("calculator.helperText.useEnterprise")}{" "}
+                    {averageTariffs.enterprise}
+                  </Typography>
+                </>
+              }
+              control={control}
+            />
           </Box>
           <Box className="flex-1">
-            <CalculatorResults
-              results={{
-                costInstalledStation: costInstalledStation ?? "0",
-                profitEntirePeriodOperation: profitEntirePeriodOperation ?? "0",
-                paybackPeriodStation: paybackPeriodStation ?? "0",
-                averageSavingsPerKw: averageSavingsPerKw ?? "0",
-                returnOnInvestment: returnOnInvestment ?? "0",
-                averageElectricityGeneration:
-                  averageElectricityGeneration ?? "0",
-              }}
-            />
+            <CalculatorResults results={calculatedResults} />
           </Box>
         </Box>
       </Container>

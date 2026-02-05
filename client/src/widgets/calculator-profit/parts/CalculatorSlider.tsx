@@ -61,12 +61,10 @@ export default function CalculatorSlider({
   pageType,
   onChangePower,
 }: Props) {
-  // Генерируем массив всех возможных значений
   const powerValues = useMemo(() => {
     const minMax = data.min_max_range_power[pageType][stationType];
     const ranges = data.range_power[stationType];
 
-    // Сортируем ranges по breakPoint для корректной работы
     const sortedRanges = [...ranges].sort(
       (a, b) => a.breakPoint - b.breakPoint,
     );
@@ -77,9 +75,7 @@ export default function CalculatorSlider({
     while (currentValue <= minMax.max) {
       values.push(currentValue);
 
-      // Находим подходящий шаг для текущего значения
-      // Ищем последний диапазон, где breakPoint <= currentValue
-      let step = 1; // шаг по умолчанию, если значение меньше первого breakPoint
+      let step = 1;
 
       for (let i = sortedRanges.length - 1; i >= 0; i--) {
         if (currentValue >= sortedRanges[i].breakPoint) {
@@ -91,19 +87,39 @@ export default function CalculatorSlider({
       currentValue += step;
     }
 
-    // Убедимся, что максимальное значение включено
     if (values[values.length - 1] !== minMax.max) {
       values.push(minMax.max);
     }
 
     return values;
-  }, [data, stationType]);
+  }, [data, stationType, pageType]);
 
-  // Состояние слайдера - работаем с индексами
-  const [sliderIndex, setSliderIndex] = useState(0);
+  // Вычисляем дефолтный индекс - 20% от диапазона
+  const defaultIndex = useMemo(() => {
+    if (powerValues.length === 0) return 0;
 
-  // Получаем реальное значение из индекса
-  const currentPower = powerValues[sliderIndex];
+    const minMax = data.min_max_range_power[pageType][stationType];
+    const defaultPower = minMax.min + (minMax.max - minMax.min) * 0.15;
+
+    let closestIndex = 0;
+    let minDiff = Math.abs(powerValues[0] - defaultPower);
+
+    for (let i = 1; i < powerValues.length; i++) {
+      const diff = Math.abs(powerValues[i] - defaultPower);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIndex = i;
+      }
+    }
+
+    return closestIndex;
+  }, [powerValues, data, stationType, pageType]);
+
+  const [sliderIndex, setSliderIndex] = useState(defaultIndex);
+
+  useEffect(() => {
+    setSliderIndex(defaultIndex);
+  }, [defaultIndex]);
 
   const handleSliderChange = (_event: Event, newValue: number | number[]) => {
     const idx = newValue as number;
@@ -112,7 +128,6 @@ export default function CalculatorSlider({
     onChangePower?.(power);
   };
 
-  // emit initial value and when ranges or index change
   useEffect(() => {
     if (powerValues.length === 0) return;
     onChangePower?.(powerValues[sliderIndex]);

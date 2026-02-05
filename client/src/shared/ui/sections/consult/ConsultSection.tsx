@@ -10,6 +10,7 @@ export default function ConsultSection() {
 
   return (
     <Box
+      mt={3}
       sx={{
         backgroundColor: "secondary.main",
         position: "relative",
