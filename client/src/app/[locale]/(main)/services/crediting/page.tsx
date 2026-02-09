@@ -6,6 +6,7 @@ import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import Stepper from "@/src/shared/ui/stepper/Stepper";
 import { getTranslations } from "next-intl/server";
 import { benefitsList } from "./benefits-list";
+import MathBenefits from "./MathBenefits";
 import { stepsWorkList } from "./steps-work-list";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -22,6 +23,7 @@ export default async function ServiceCreditingPage({ params }: Props) {
         imageSrc={IntroImage}
         buttonText={t("intro.button")}
       />
+      <MathBenefits t={t} />
       <BenefitsSimple title={t("benefits.title")} items={benefitsList(t)} />
       <Stepper
         title={t("stepsWork.title")}

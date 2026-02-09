@@ -11,6 +11,9 @@ import CalculatorProfit from "@/src/widgets/calculator-profit/CalcularoeProfit";
 import { getTranslations } from "next-intl/server";
 import { benefitsList } from "./benefits-list";
 import { stepsWorkList } from "./steps-work-list";
+import BenefitsWithImage from "@/src/shared/ui/sections/benefits-with-image/BenefitsWithImage";
+import { benefitsImageList } from "./benefits-image-list";
+import Services from "./Services";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -29,7 +32,10 @@ export default async function ServiceIncomePage({ params }: Props) {
         imageSrc={IntroImage}
         buttonText={t("intro.button")}
       />
-      <BenefitsSimple title={t("benefits.title")} items={benefitsList(t)} />
+      <BenefitsWithImage
+        title={t("how-earn.title")}
+        items={benefitsImageList(t)}
+      />
       {calculatorProfit && exchangeRate && (
         <CalculatorProfit
           data={calculatorProfit.value}
@@ -39,6 +45,8 @@ export default async function ServiceIncomePage({ params }: Props) {
           defaultOperatingTime={10}
         />
       )}
+      <BenefitsSimple title={t("benefits.title")} items={benefitsList(t)} />
+      <Services t={t} />
       <Stepper
         title={t("stepsWork.title")}
         subtitle={t("stepsWork.subtitle")}

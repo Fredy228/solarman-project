@@ -84,6 +84,13 @@ export const theme = (lang?: ELocale) =>
             },
           },
         },
+        MuiCard: {
+          styleOverrides: {
+            root: {
+              borderRadius: "var(--border-radius-main)",
+            },
+          },
+        },
       },
     },
     ...translateMui(lang),
