@@ -5,6 +5,7 @@ import { getCalculatorProfit } from "@/src/features/global-params/api/get-calcul
 import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-rate.api";
 import { getLastPortfolio } from "@/src/features/portfolio/api/get-last-portfolio.api";
 import PortfolioPreview from "@/src/features/portfolio/components/portfolio-preview/PortfolioPreview";
+import { DEFAULT_TARIFF } from "@/src/shared/configs/calculator-profit.config";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import CalculatorProfit from "@/src/widgets/calculator-profit/CalcularoeProfit";
@@ -30,7 +31,7 @@ export default async function Home({ params }: Props) {
           data={calculatorProfit.value}
           exchangeRate={exchangeRate.value}
           pageType={EPageType.DEFAULT}
-          defaultTariff={4.32}
+          defaultTariff={DEFAULT_TARIFF.HOME}
           defaultOperatingTime={15}
         />
       )}

@@ -7,6 +7,7 @@ import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-r
 import { STATIC_HASHTAGS } from "@/src/features/hashtag/list-static-hashtag-tag";
 import { getLastPortfolio } from "@/src/features/portfolio/api/get-last-portfolio.api";
 import PortfolioPreview from "@/src/features/portfolio/components/portfolio-preview/PortfolioPreview";
+import { DEFAULT_TARIFF } from "@/src/shared/configs/calculator-profit.config";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import BenefitsWithImage from "@/src/shared/ui/sections/benefits-with-image/BenefitsWithImage";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
@@ -41,8 +42,8 @@ export default async function ServiceHomePage({ params }: Props) {
           data={calculatorProfit.value}
           exchangeRate={exchangeRate.value}
           pageType={EPageType.HOME}
-          defaultTariff={16}
-          defaultOperatingTime={10}
+          defaultTariff={DEFAULT_TARIFF.HOME}
+          defaultOperatingTime={15}
         />
       )}
       <BenefitsWithImage
