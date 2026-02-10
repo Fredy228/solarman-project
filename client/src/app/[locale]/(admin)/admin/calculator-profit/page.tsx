@@ -55,7 +55,23 @@ export default function CalculatorProfitAdminPage() {
 
   useEffect(() => {
     if (calculatorProfitData) {
-      reset(calculatorProfitData as unknown as TCalculatorProfitForm);
+      reset({
+        ...calculatorProfitData,
+        range_rate_per_kwh: {
+          HYBRID: calculatorProfitData.range_rate_per_kwh.HYBRID.map(
+            (item) => ({
+              breakPoint: item.breakPoint,
+              rate: `${item.rate / 100}`,
+            }),
+          ),
+          NETWORK: calculatorProfitData.range_rate_per_kwh.NETWORK.map(
+            (item) => ({
+              breakPoint: item.breakPoint,
+              rate: `${item.rate / 100}`,
+            }),
+          ),
+        },
+      } as unknown as TCalculatorProfitForm);
     }
   }, [calculatorProfitData, reset]);
 
@@ -68,9 +84,22 @@ export default function CalculatorProfitAdminPage() {
 
     (Object.keys(dirtyFields) as Array<keyof TCalculatorProfitForm>).forEach(
       (key) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        updatedData[key] = data[key];
+        if (key === "range_rate_per_kwh") {
+          updatedData.range_rate_per_kwh = {
+            HYBRID: data.range_rate_per_kwh.HYBRID.map((item) => ({
+              breakPoint: item.breakPoint,
+              rate: `${Number.parseFloat(item.rate) * 100}`,
+            })),
+            NETWORK: data.range_rate_per_kwh.NETWORK.map((item) => ({
+              breakPoint: item.breakPoint,
+              rate: `${Number.parseFloat(item.rate) * 100}`,
+            })),
+          };
+        } else {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          updatedData[key] = data[key];
+        }
       },
     );
 

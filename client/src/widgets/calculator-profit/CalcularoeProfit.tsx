@@ -40,8 +40,8 @@ export default function CalculatorProfit({
   data,
   exchangeRate,
   pageType,
-  defaultOperatingTime = 10,
-  defaultTariff = 16,
+  defaultOperatingTime = 15,
+  defaultTariff = 4.32,
 }: Props) {
   const exchangeRateUAH = exchangeRate.UAH;
   const t = useTranslations("common");
@@ -78,26 +78,6 @@ export default function CalculatorProfit({
     return `${formatted} ₴`;
   };
 
-  // Вычисляем средние тарифы
-  const averageTariffs = useMemo(() => {
-    if (!operatingTimeValue) {
-      return {
-        home: "0",
-        enterprise: "0",
-      };
-    }
-
-    const averageTariffHomeResult =
-      ((4.32 * 1.25 ** (Number(operatingTimeValue) - 1)) / 2) * 100;
-    const averageTariffEnterpriseResult =
-      ((10 * 1.25 ** (Number(operatingTimeValue) - 1)) / 2) * 100;
-
-    return {
-      home: formatCurrency(averageTariffHomeResult / 100),
-      enterprise: formatCurrency(averageTariffEnterpriseResult / 100),
-    };
-  }, [operatingTimeValue]);
-
   // Основные вычисления калькулятора
   const calculatedResults = useMemo(() => {
     if (
@@ -126,7 +106,7 @@ export default function CalculatorProfit({
 
     // Вартість встановленої станції (копійки)
     const costInstalledStationResult = calcCostInstalledStation(
-      ratePerKwCalc * exchangeRateUAH * 100,
+      ratePerKwCalc * exchangeRateUAH,
       currentPower,
     );
 
@@ -220,39 +200,7 @@ export default function CalculatorProfit({
         />
         <Box className="flex mt-8 gap-6 flex-col md:flex-row md:items-center">
           <Box className="w-full md:w-[320px]">
-            <CalculatorSettings
-              helperTextTariff={
-                <>
-                  <Typography
-                    component={"span"}
-                    fontSize={12}
-                    fontStyle={"italic"}
-                    lineHeight={1}
-                    mb={0.5}
-                  >
-                    {t("calculator.helperText.tariff")}
-                  </Typography>
-                  <br />
-                  <Typography
-                    component={"span"}
-                    fontSize={12}
-                    fontStyle={"italic"}
-                  >
-                    - {t("calculator.helperText.useHome")} {averageTariffs.home}
-                  </Typography>
-                  <br />
-                  <Typography
-                    component={"span"}
-                    fontSize={12}
-                    fontStyle={"italic"}
-                  >
-                    - {t("calculator.helperText.useEnterprise")}{" "}
-                    {averageTariffs.enterprise}
-                  </Typography>
-                </>
-              }
-              control={control}
-            />
+            <CalculatorSettings control={control} />
           </Box>
           <Box className="flex-1">
             <CalculatorResults results={calculatedResults} />

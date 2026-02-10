@@ -1,3 +1,5 @@
+const ANNUAL_TARIFF_GROWTH_RATE = 0.14;
+
 /* === Вартість станціі ===
 @param ratePerKwCalc - вартість за кВт
 @param currentPower - потужність станціі
@@ -12,15 +14,15 @@ export function calcCostInstalledStation(
 
 /* === Середній виробіток СЕС в місяць ===
 @param currentPower - потужність станціі (кВт)
-@return Середнії виробіток електроенергіг за допомогою СЕС за місяць (кВт)
+@return Середнії виробіток електроенергіг за допомогою СЕС за місяць (кВт/год)
 */
 export function calcMonthlyOutputOfStation(currentPower: number): number {
   return 98.21 * currentPower;
 }
 
 /* === Середній виробіток СЕС в рік ===
-@param monthlyOutputOfStation - середній виробіток СЕС в місяць (кВт)
-@return Середнії виробіток електроенергіг за допомогою СЕС за рік (кВт)
+@param monthlyOutputOfStation - середній виробіток СЕС в місяць (кВт/год)
+@return Середнії виробіток електроенергіг за допомогою СЕС за рік (кВт/год)
 */
 export function calcYearlyOutputOfStation(
   monthlyOutputOfStation: number,
@@ -39,7 +41,16 @@ export function calcCostElectricityGenerated(
   operatingTimeValue: number,
   yearlyOutputOfStation: number,
 ): number {
-  return yearlyOutputOfStation * operatingTimeValue * tariffValue;
+  const annualGrowthRate = ANNUAL_TARIFF_GROWTH_RATE;
+  let totalCost = 0;
+  let currentTariff = tariffValue;
+
+  for (let year = 0; year < operatingTimeValue; year += 1) {
+    totalCost += yearlyOutputOfStation * currentTariff;
+    currentTariff *= 1 + annualGrowthRate;
+  }
+
+  return totalCost;
 }
 
 /* === Прибуток за всесь срок експлуатації ===
@@ -82,7 +93,28 @@ export function calcPaybackPeriodStation(
   tariffValue: number,
   yearlyOutputOfStation: number,
 ): number {
-  return costInstalledStation / (tariffValue * yearlyOutputOfStation);
+  const annualGrowthRate = ANNUAL_TARIFF_GROWTH_RATE;
+  let remainingCost = costInstalledStation;
+  let years = 0;
+  let currentTariff = tariffValue;
+
+  while (remainingCost > 0) {
+    const yearlySavings = currentTariff * yearlyOutputOfStation;
+
+    if (yearlySavings >= remainingCost) {
+      return years + remainingCost / yearlySavings;
+    }
+
+    remainingCost -= yearlySavings;
+    years += 1;
+    currentTariff *= 1 + annualGrowthRate;
+
+    if (years > 1000) {
+      break;
+    }
+  }
+
+  return years;
 }
 
 /* === Середня економія за 1 кВт ===

@@ -37,8 +37,4 @@ export type TCalculatorProfit = {
   range_rate_per_kwh: {
     [key in keyof typeof EStationType]: TRangeRatePerKWh[];
   };
-  station_operating_time: {
-    [key in keyof typeof EStationType]: TMinMaxRange;
-  };
-  tariff: TMinMaxRange;
 };

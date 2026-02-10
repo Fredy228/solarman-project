@@ -11,10 +11,7 @@ type Props = {
   control: Control<TCalculatorForm>;
 };
 
-export default function CalculatorSettings({
-  control,
-  helperTextTariff,
-}: Props) {
+export default function CalculatorSettings({ control }: Props) {
   const t = useTranslations("common");
 
   return (
@@ -81,7 +78,6 @@ export default function CalculatorSettings({
               suffix={` ${t("currency.UAH")}`}
               fullWidth
               size="small"
-              helperText={helperTextTariff}
             />
           </Box>
         )}

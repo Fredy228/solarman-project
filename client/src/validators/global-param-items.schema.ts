@@ -105,9 +105,4 @@ export const globalParamCalculatorProfitSchema = (t: TranslatorType) =>
         )
         .required(),
     }).optional(),
-    station_operating_time: Joi.object({
-      [EStationType.HYBRID]: calculatorMinMaxRangeSchema.required(),
-      [EStationType.NETWORK]: calculatorMinMaxRangeSchema.required(),
-    }).optional(),
-    tariff: calculatorMinMaxRangeSchema.optional(),
   });
