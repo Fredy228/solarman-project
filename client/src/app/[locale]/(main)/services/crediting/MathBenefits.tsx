@@ -14,7 +14,12 @@ export default function MathBenefits({ t }: Props) {
         <SectionTitle textAlign={"center"} mb={2}>
           {t("mathBenefits.title")}
         </SectionTitle>
-        <Typography className="indent-8" component={"p"}>
+        <Typography
+          className="indent-8"
+          component={"p"}
+          fontSize={16}
+          color="var(--color-text-g3)"
+        >
           {t("mathBenefits.text")}
         </Typography>
       </Container>
