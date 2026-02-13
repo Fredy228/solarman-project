@@ -1,0 +1,26 @@
+model Order {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    email String?
+    name  String
+    phone String
+
+    lang    Language?
+    utmTags Json?
+    notes   String?
+
+    type OrderType?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    pageId Int?
+
+    @@map("order")
+}
+
+enum OrderType {
+    CONSULTATION
+    ORDER
+    QUIZ
+}

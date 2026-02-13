@@ -5,6 +5,7 @@ import { GlobalParamModule } from './global-param/global-param.module';
 import { GoodsBrandModule } from './goods-brand/goods-brand.module';
 import { GoodsModule } from './goods/goods.module';
 import { HashtagModule } from './hashtag/hashtag.module';
+import { OrderModule } from './order/order.module';
 import { PortfolioModule } from './potfolio/portfolio.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
     GoodsBrandModule,
     UploadModule,
     HashtagModule,
+    OrderModule,
   ],
 })
 export class ApiModule {}
