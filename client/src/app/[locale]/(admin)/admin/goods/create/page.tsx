@@ -28,13 +28,12 @@ export default function GoodsCreatePage() {
   });
 
   const handleSave = (data: IGoodsForm) => {
-    console.log("Form Data:", data);
     const createData = {} as IGoodsForm;
     Object.entries(data).forEach(([key, value]) => {
       if (!value) return;
       if (key === "specs")
         return (createData.specs = JSON.stringify(
-          value
+          value,
         ) as unknown as IGoodsForm["specs"]);
       if (key === "price" || key === "discountPrice")
         return (createData[key] = (parseFloat(value) *

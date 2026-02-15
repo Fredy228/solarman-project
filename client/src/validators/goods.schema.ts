@@ -13,11 +13,6 @@ import {
   readyMadeSolutionSpecSchema,
 } from "./goods-specs.schema";
 
-const spy = (value: any, helpers: any) => {
-  console.log("👀 Joi видит:", value, "| Тип:", typeof value);
-  return value; // Обязательно возвращаем значение, чтобы валидация шла дальше
-};
-
 export const goodsSchema = (t: TranslatorType) =>
   Joi.object({
     cover: Joi.object()
@@ -162,43 +157,43 @@ export const goodsSchema = (t: TranslatorType) =>
         {
           is: EGoodsCategory.PANEL,
           then: Joi.custom(
-            joiJsonCheck(panelSpecSchema.optional().allow(null))
+            joiJsonCheck(panelSpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.INVERTOR,
           then: Joi.custom(
-            joiJsonCheck(invertorSpecSchema.optional().allow(null))
+            joiJsonCheck(invertorSpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.BATTERY,
           then: Joi.custom(
-            joiJsonCheck(batterySpecSchema.optional().allow(null))
+            joiJsonCheck(batterySpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.FASTENER,
           then: Joi.custom(
-            joiJsonCheck(fastenerSpecSchema.optional().allow(null))
+            joiJsonCheck(fastenerSpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.CHARGE_STATION,
           then: Joi.custom(
-            joiJsonCheck(chargeStationSpecSchema.optional().allow(null))
+            joiJsonCheck(chargeStationSpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.READY_MADE_SOLUTION,
           then: Joi.custom(
-            joiJsonCheck(readyMadeSolutionSpecSchema.optional().allow(null))
+            joiJsonCheck(readyMadeSolutionSpecSchema.optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.COMPONENT,
           then: Joi.custom(
-            joiJsonCheck(Joi.object({}).unknown(false).optional().allow(null))
+            joiJsonCheck(Joi.object({}).unknown(false).optional().allow(null)),
           ),
         },
       ],

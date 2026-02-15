@@ -24,7 +24,7 @@ export const NumericFormatPhone: FC<Props> = (props) => {
         onChange({
           target: {
             name: props.name,
-            value: values.formattedValue,
+            value: values.value,
           },
         });
       }}

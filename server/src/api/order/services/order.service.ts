@@ -1,8 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Language as Lang, Prisma } from '@prisma/client';
 import { Language } from 'src/common/enums/language.enum';
 import { OrderErrorMessage } from 'src/common/messages/error/order.message';
 import { CustomHttpExceptionUtil } from 'src/helpers/custom-http-exection.util';
+import { generatePrismaDateFilter } from 'src/helpers/prisma/generate-prisma-date-filter';
 import { PrismaService } from 'src/libs/prisma/prisma.service';
 import { generatePrismaPaginateOption } from '../../../helpers/prisma/generate-prisma-paginate-option';
 import { PagesMap } from '../data/pages-map';
@@ -14,11 +15,12 @@ import type { OrderUpdateDto } from '../dto/order.update.dto';
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(body: OrderCreateDto) {
+  async create(body: OrderCreateDto, lang: Language) {
     const { pageUrl, ...otherFields } = body;
 
     const data: Prisma.OrderCreateInput = {
       ...otherFields,
+      lang: lang.toUpperCase() as Lang,
     };
 
     if (pageUrl) {
@@ -59,7 +61,19 @@ export class OrderService {
   }
 
   async getAll(query: OrderGetManyQueryDto) {
-    const { _start, _end, _sort, _order, ...filters } = query;
+    const {
+      _start,
+      _end,
+      _sort,
+      _order,
+      createdAt,
+      createdAt_gte,
+      createdAt_lte,
+      updatedAt,
+      updatedAt_gte,
+      updatedAt_lte,
+      ...filters
+    } = query;
 
     const whereOption: Prisma.OrderWhereInput = {
       email: {
@@ -72,7 +86,7 @@ export class OrderService {
       },
       phone: {
         contains: filters.phone_like,
-        mode: 'insensitive',
+        mode: 'default',
       },
       notes: {
         contains: filters.notes_like,
@@ -80,6 +94,16 @@ export class OrderService {
       },
       lang: filters.lang,
       type: filters.type,
+      createdAt: generatePrismaDateFilter({
+        date: createdAt,
+        date_gte: createdAt_gte,
+        date_lte: createdAt_lte,
+      }),
+      updatedAt: generatePrismaDateFilter({
+        date: updatedAt,
+        date_gte: updatedAt_gte,
+        date_lte: updatedAt_lte,
+      }),
     };
 
     const [data, total] = await this.prisma.$transaction([

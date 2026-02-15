@@ -18,6 +18,7 @@ import {
   GalleryVerticalEnd,
   Hash,
   Images,
+  Mails,
   Settings2,
   ShoppingBasket,
   ShoppingCart,
@@ -77,6 +78,17 @@ export default function AdminLayout({
                 meta: {
                   label: t("common.main"),
                   icon: <DashboardIcon />,
+                },
+              },
+              {
+                name: "order",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.edit,
+                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.show,
+                meta: {
+                  label: t("order.order"),
+                  icon: <Mails />,
                 },
               },
               {

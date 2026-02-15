@@ -1,24 +1,33 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   Param,
   Patch,
+  Post,
   Query,
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { JoiPipe } from 'nestjs-joi';
 import { Lang } from 'src/common/decorator/lang.decorator';
-import type { Language } from 'src/common/enums/language.enum';
-import type { OrderGetManyQueryDto } from '../dto/order-get-many.query.dto';
-import type { OrderUpdateDto } from '../dto/order.update.dto';
-import type { OrderService } from '../services/order.service';
+import { Language } from 'src/common/enums/language.enum';
+import { OrderGetManyQueryDto } from '../dto/order-get-many.query.dto';
+import { OrderCreateDto } from '../dto/order.create.dto';
+import { OrderUpdateDto } from '../dto/order.update.dto';
+import { OrderService } from '../services/order.service';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
+
+  @Post('/')
+  @HttpCode(201)
+  async create(@Body(JoiPipe) body: OrderCreateDto, @Lang() lang: Language) {
+    return this.orderService.create(body, lang);
+  }
 
   @Get('/')
   @HttpCode(200)
@@ -42,7 +51,7 @@ export class OrderController {
   async update(
     @Lang() lang: Language,
     @Param('id') id: string,
-    @Query(JoiPipe) body: OrderUpdateDto,
+    @Body(JoiPipe) body: OrderUpdateDto,
   ) {
     return this.orderService.update(id, body, lang);
   }
