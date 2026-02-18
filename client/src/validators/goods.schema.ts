@@ -157,37 +157,37 @@ export const goodsSchema = (t: TranslatorType) =>
         {
           is: EGoodsCategory.PANEL,
           then: Joi.custom(
-            joiJsonCheck(panelSpecSchema.optional().allow(null)),
+            joiJsonCheck(panelSpecSchema(t).optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.INVERTOR,
           then: Joi.custom(
-            joiJsonCheck(invertorSpecSchema.optional().allow(null)),
+            joiJsonCheck(invertorSpecSchema(t).optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.BATTERY,
           then: Joi.custom(
-            joiJsonCheck(batterySpecSchema.optional().allow(null)),
+            joiJsonCheck(batterySpecSchema(t).optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.FASTENER,
           then: Joi.custom(
-            joiJsonCheck(fastenerSpecSchema.optional().allow(null)),
+            joiJsonCheck(fastenerSpecSchema().optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.CHARGE_STATION,
           then: Joi.custom(
-            joiJsonCheck(chargeStationSpecSchema.optional().allow(null)),
+            joiJsonCheck(chargeStationSpecSchema(t).optional().allow(null)),
           ),
         },
         {
           is: EGoodsCategory.READY_MADE_SOLUTION,
           then: Joi.custom(
-            joiJsonCheck(readyMadeSolutionSpecSchema.optional().allow(null)),
+            joiJsonCheck(readyMadeSolutionSpecSchema(t).optional().allow(null)),
           ),
         },
         {

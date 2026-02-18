@@ -23,3 +23,8 @@ export interface IOrderForm {
   notes: string | null;
   type: EOrderType | null;
 }
+
+export interface IOrderRequest extends IOrderForm {
+  utmTags: UTMTagsType | null;
+  pageUrl: string;
+}

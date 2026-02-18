@@ -113,7 +113,7 @@ export default function HashtagChips({
 
       {hashtags.length > maxVisible && (
         <Chip
-          label={showAll ? "Скрыть" : "Еще"}
+          label={showAll ? t("button.hide") : t("button.more")}
           variant="filled"
           onClick={() => setManualShowAll((prev) => !(prev ?? autoShowAll))}
           color={"secondary"}

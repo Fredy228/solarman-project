@@ -10,7 +10,8 @@ class FetchNative {
   public fetchAPI = async (
     path: string,
     withCredentials: boolean = false,
-    options: FetchOptions = {}
+    options: FetchOptions = {},
+    body?: BodyInit,
   ): Promise<Response | null> => {
     const headers = new Headers(options.headers);
     if (!headers.has("Content-Type")) {
@@ -38,6 +39,7 @@ class FetchNative {
         ...options,
         headers,
         credentials: withCredentials ? "include" : undefined,
+        body,
       });
 
       if (!response.ok) {

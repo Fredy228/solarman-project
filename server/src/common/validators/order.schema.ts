@@ -17,7 +17,7 @@ export const orderSchema = Joi.object({
     utm_term: Joi.string().trim().min(1).max(100).optional(),
     utm_content: Joi.string().trim().min(1).max(100).optional(),
   }),
-  pageUrl: Joi.string().uri().trim().min(1).max(500),
+  pageUrl: Joi.string().trim().min(1).max(500),
   type: Joi.string().valid(...Object.values(OrderType)),
   lang: Joi.string()
     .valid(...Object.values(Language))

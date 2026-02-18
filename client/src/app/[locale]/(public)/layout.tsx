@@ -3,7 +3,7 @@ import Footer from "@/src/widgets/footer/Footer";
 import Header from "@/src/widgets/header/Header";
 import { Box } from "@mui/material";
 
-export default async function MainLayout({
+export default async function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

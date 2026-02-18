@@ -16,6 +16,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
+import { PagesMap } from "@/src/features/order/data/pages-map";
 import { EOrderType } from "@/src/features/order/types/order-type.enum";
 import { ELocale } from "@/src/i18n/routing";
 import ProtectProvider from "@/src/providers/protect-provider";
@@ -83,7 +84,7 @@ export default function OrderList() {
       },
       {
         field: "lang",
-        label: "Язык",
+        label: t("order.fields.lang"),
         type: "select",
         operators: selectOperators,
         options: Object.values(ELocale).map((lang) => ({
@@ -103,13 +104,13 @@ export default function OrderList() {
       },
       {
         field: "createdAt",
-        label: "Дата создания",
+        label: t("order.fields.createdAt"),
         type: "date",
         operators: dateOperators,
       },
       {
         field: "updatedAt",
-        label: "Дата обновления",
+        label: t("order.fields.updatedAt"),
         type: "date",
         operators: dateOperators,
       },
@@ -168,7 +169,7 @@ export default function OrderList() {
     },
     {
       field: "lang",
-      headerName: "Язык",
+      headerName: t("order.fields.lang"),
       width: 100,
       align: "center",
       headerAlign: "center",
@@ -199,8 +200,20 @@ export default function OrderList() {
       ),
     },
     {
+      field: "pageId",
+      headerName: t("order.fields.pageId"),
+      width: 170,
+      align: "center",
+      headerAlign: "center",
+      type: "singleSelect",
+      valueFormatter: (value: number) => value && PagesMap.get(value),
+      filterOperators: getGridSingleSelectOperators().filter(
+        (operator) => operator.value === "is",
+      ),
+    },
+    {
       field: "createdAt",
-      headerName: "Дата создания",
+      headerName: t("order.fields.createdAt"),
       width: 180,
       align: "center",
       headerAlign: "center",
@@ -212,7 +225,7 @@ export default function OrderList() {
     },
     {
       field: "updatedAt",
-      headerName: "Дата обновления",
+      headerName: t("order.fields.updatedAt"),
       width: 180,
       align: "center",
       headerAlign: "center",

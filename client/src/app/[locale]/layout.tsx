@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { Montserrat } from "next/font/google";
-import { use } from "react";
+import { Suspense, use } from "react";
 import "./globals.css";
 
 import { routing } from "@/src/i18n/routing";
 import MuiProvider from "@/src/providers/mui-provider";
+import { UtmCaptureProvider } from "@/src/providers/utm-capture-provider";
 import { notFound } from "next/navigation";
 
 const montserrat = Montserrat({
@@ -36,7 +37,12 @@ export default function RootLayout({
     <html lang={locale}>
       <body className={`${montserrat.variable} antialiased`}>
         <NextIntlClientProvider>
-          <MuiProvider locale={locale}>{children}</MuiProvider>
+          <MuiProvider locale={locale}>
+            <Suspense fallback={null}>
+              <UtmCaptureProvider />
+            </Suspense>
+            {children}
+          </MuiProvider>
         </NextIntlClientProvider>
       </body>
     </html>

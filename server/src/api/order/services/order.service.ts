@@ -24,9 +24,12 @@ export class OrderService {
     };
 
     if (pageUrl) {
-      const pageId = Array.from(PagesMap.keys()).find(
-        (key) => PagesMap.get(key) === pageUrl,
-      );
+      const pageId = Array.from(PagesMap.keys()).find((key) => {
+        if (pageUrl.replace('uk', '').replace('ru', '') === PagesMap.get(key)) {
+          return true;
+        }
+        return pageUrl.includes(PagesMap.get(key)!);
+      });
       if (pageId) data.pageId = pageId;
     }
 

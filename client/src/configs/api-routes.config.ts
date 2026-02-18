@@ -28,4 +28,7 @@ export const API_ROUTES = {
     calculatorProfit: `/global-param/${EGlobalParam.CALCULATOR_PROFIT}`,
     exchangeRate: `/global-param/${EGlobalParam.EXCHANGE_RATE}`,
   },
+  order: {
+    send: "/order/public",
+  },
 };
