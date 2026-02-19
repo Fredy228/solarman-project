@@ -19,4 +19,4 @@ import { KeyCrmApiService } from './services/key-crm-api.service';
   providers: [KeyCrmApiService],
   exports: [KeyCrmApiService],
 })
-export class CashlessApiModule {}
+export class KeyCrmApiModule {}

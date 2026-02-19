@@ -9,7 +9,7 @@ export class KeyCrmApiService {
   private logger = new Logger(KeyCrmApiService.name);
   constructor(private readonly httpService: HttpService) {}
 
-  async createLead(data: TCreateLeadRequest): Promise<void> {
+  async sendLead(data: TCreateLeadRequest): Promise<void> {
     try {
       const response = await firstValueFrom(
         this.httpService.post('/v1/pipelines/cards', data),
