@@ -5,6 +5,9 @@ model User {
   name     String
   password String
 
+  phone      String?
+  telegramId String?
+
   role      Role
   isBlocked Boolean @default(false)
 
@@ -20,4 +23,5 @@ enum Role {
   ADMIN
   ANALYST
   MODERATOR
+  TECHNICIAN
 }

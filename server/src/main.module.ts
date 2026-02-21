@@ -5,8 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { envSchema } from './configs/env.config';
 import { jwtConfig } from './configs/jwt.config';
 
-import { PrismaModule } from './libs/prisma/prisma.module';
 import { ApiModule } from './api/api.module';
+import { PrismaModule } from './libs/prisma/prisma.module';
+import { TelegramModule } from './libs/telegram/telegram.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ApiModule } from './api/api.module';
     }),
     PrismaModule,
     ApiModule,
+    TelegramModule,
   ],
   controllers: [],
   providers: [],

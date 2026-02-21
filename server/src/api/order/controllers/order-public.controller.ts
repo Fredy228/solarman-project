@@ -12,6 +12,6 @@ export class OrderPublicController {
   @Post('/')
   @HttpCode(201)
   async create(@Body(JoiPipe) body: OrderCreateDto, @Lang() lang: Language) {
-    return this.orderService.create(body, lang);
+    return this.orderService.createPublic(body, lang);
   }
 }
