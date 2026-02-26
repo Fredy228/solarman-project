@@ -6,6 +6,7 @@ export const API_URL = API_URL_BASE + "/api";
 
 export const API_LIMITS_ITEMS = {
   portfolio: 12,
+  goods: 12,
 };
 
 export const API_ROUTES = {
@@ -22,6 +23,11 @@ export const API_ROUTES = {
     list: "/portfolio",
     get: (id: string) => `/portfolio/${id}`,
     getByTag: (tag: string) => `/portfolio/tag/${tag}`,
+  },
+  goods: {
+    list: "/goods",
+    filters: (category: string) => `/goods/filters/${category}`,
+    getByTag: (tag: string) => `/goods/tag/${tag}`,
   },
   globalParams: {
     contacts: `/global-param/${EGlobalParam.CONTACTS}`,

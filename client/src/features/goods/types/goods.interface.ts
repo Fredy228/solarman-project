@@ -22,14 +22,14 @@ interface IGoodsBase {
   tag: string;
   status: EProductStatus;
   price: number;
-  discountPrice?: number;
+  discountPrice?: number | null;
   currency: ECurrency;
-  badge?: EBadgeType;
-  country?: string;
+  badge?: EBadgeType | null;
+  country?: string | null;
   brandId?: string;
   brand?: {
     name: string;
-  };
+  } | null;
 }
 
 interface IGoodsPanel extends IGoodsBase {
@@ -105,3 +105,40 @@ export interface IGoodsForm {
     | TReadyMadeSolutionSpecs
     | null;
 }
+
+export type TGoodsListItem = Pick<
+  IGoods,
+  | "id"
+  | "cover"
+  | "title"
+  | "country"
+  | "price"
+  | "discountPrice"
+  | "currency"
+  | "badge"
+  | "category"
+  | "status"
+  | "brand"
+  | "tag"
+>;
+
+export type TGetGoodsListParams = {
+  _start: number;
+  _end: number;
+  _sort: string;
+  _order: "asc" | "desc";
+  title_like: string;
+  price_gte: number;
+  price_lte: number;
+  discountPrice_gte: number;
+  discountPrice_lte: number;
+  status: EProductStatus;
+  badge: EBadgeType;
+  category: EGoodsCategory;
+  type: string | string[];
+  power: number | number[];
+  phase: number | number[];
+  capacity: number | number[];
+  voltage: number | number[];
+  material: string | string[];
+};

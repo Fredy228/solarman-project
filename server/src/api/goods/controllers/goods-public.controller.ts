@@ -7,13 +7,15 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { JoiPipe } from 'nestjs-joi';
 import type { Response } from 'express';
+import { JoiPipe } from 'nestjs-joi';
 
-import { GoodsPublicService } from '../services/goods-public.service';
+import { GoodsCategory } from '@prisma/client';
+import Joi from 'joi';
 import { Lang } from '../../../common/decorator/lang.decorator';
 import { Language } from '../../../common/enums/language.enum';
 import { GoodsGetManyQueryDto } from '../dto/goods-get-many.query.dto';
+import { GoodsPublicService } from '../services/goods-public.service';
 
 @Controller('goods')
 export class GoodsPublicController {
@@ -35,5 +37,17 @@ export class GoodsPublicController {
   @HttpCode(HttpStatus.OK)
   async getOne(@Param('tag') tag: string, @Lang() lang: Language) {
     return this.goodsPublicService.getOneByTag(tag, lang);
+  }
+
+  @Get('/filters/:category')
+  @HttpCode(HttpStatus.OK)
+  async getFiltersByCategory(
+    @Param(
+      'category',
+      new JoiPipe(Joi.string().valid(...Object.values(GoodsCategory))),
+    )
+    category: GoodsCategory,
+  ) {
+    return this.goodsPublicService.getFiltersByCategory(category);
   }
 }
