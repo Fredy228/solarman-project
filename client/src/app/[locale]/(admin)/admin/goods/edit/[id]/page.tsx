@@ -7,7 +7,9 @@ import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
 import { GoodsForm, type IGoods, type IGoodsForm } from "@/src/features/goods";
+import { revalidateCache } from "@/src/libs/revalidateCache";
 import { goodsUpdateSchema } from "@/src/validators/goods.schema";
 import { joiResolver } from "@hookform/resolvers/joi";
 
@@ -49,7 +51,7 @@ export default function GoodsEditPage() {
       resource: "goods",
       id,
       action: "edit",
-      redirect: "show",
+      redirect: false,
     },
   });
 
@@ -99,6 +101,7 @@ export default function GoodsEditPage() {
         return;
       }
       if (key === "specs") {
+        updatedData["category"] = data["category"];
         updatedData["specs"] = JSON.stringify(
           specsWatch,
         ) as unknown as IGoodsForm["specs"];
@@ -113,7 +116,28 @@ export default function GoodsEditPage() {
       updatedData[key] = data[key];
     });
 
-    void onFinish(updatedData);
+    // Use current tag from form, or old tag if not changed
+    const tagToInvalidate = data.tag || goodsData?.tag || id;
+    const oldTag = goodsData?.tag;
+
+    void onFinish(updatedData).then(async () => {
+      const tagsToRevalidate = [
+        CACHE_TAGS.goodsList,
+        CACHE_TAGS.goodsFilters,
+        CACHE_TAGS.goodsId(tagToInvalidate),
+      ];
+
+      // If tag was changed, also invalidate the old tag cache
+      if (oldTag && oldTag !== tagToInvalidate) {
+        tagsToRevalidate.push(CACHE_TAGS.goodsId(oldTag));
+        console.log("Tag was changed, also invalidating old tag");
+      }
+
+      console.log("Revalidating tags:", tagsToRevalidate);
+      await revalidateCache(tagsToRevalidate);
+      console.log("Cache revalidation completed");
+      list("goods");
+    });
   };
 
   return (

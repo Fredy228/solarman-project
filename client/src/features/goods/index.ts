@@ -8,8 +8,5 @@ export * from "./types/goods-spec.type";
 export * from "./types/goods.interface";
 export * from "./types/spec-props-form.type";
 
-export * from "./api/goods-filters.api";
-export * from "./api/goods-list.api";
-
 export * from "./components/GoodsForm";
 export * from "./components/PanelSpecForm";

@@ -55,7 +55,7 @@ const BlockNoteEditor = dynamic(
   () => import("@/src/shared/ui/editor/BlockNoteEditor"),
   {
     ssr: false,
-  }
+  },
 );
 
 type GoodsFormProps = {
@@ -126,7 +126,7 @@ export const GoodsForm: FC<GoodsFormProps> = ({
       {isEdit && goods?.cover && (
         <Box>
           <Image
-            src={"/" + goods.cover}
+            src={goods.cover}
             alt="cover"
             width={150}
             height={150}

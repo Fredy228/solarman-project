@@ -161,8 +161,6 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
     onFiltersChange?.(filters);
   }, [filters, onFiltersChange]);
 
-  const isSearchUnchanged = searchValue.trim() === filters.title_like;
-
   const locale = useLocale();
 
   const sortModeLabel = t("goods.sort.default");
@@ -191,7 +189,7 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
 
   const toolbarGridTemplateColumns = {
     xs: "1fr",
-    md: "2fr 1fr",
+    md: "minmax(0, 500px) 1fr",
   };
 
   return (
@@ -201,7 +199,8 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
         borderRadius: 3,
         border: "1px solid",
         borderColor: "divider",
-        bgcolor: "background.paper",
+        bgcolor: "secondary.main",
+        color: "var(--color-text-light)",
         boxShadow: 1,
         display: "grid",
         gridTemplateColumns: toolbarGridTemplateColumns,
@@ -221,6 +220,9 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           gridTemplateColumns: "1fr auto",
           gap: 1,
           alignItems: "center",
+          width: "100%",
+          maxWidth: { md: 500 },
+          justifySelf: { md: "start" },
         }}
       >
         <TextField
@@ -231,9 +233,44 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           label={searchFieldLabel}
           placeholder={titlePlaceholder}
           fullWidth
+          sx={{
+            "& .MuiInputBase-root": { backgroundColor: "transparent" },
+            "& .MuiInputBase-root:hover .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+            },
+            "& .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+              fontSize: "0.875rem",
+              "&::placeholder": { color: "rgba(255, 255, 255, 0.75)" },
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.35)",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "rgba(255, 255, 255, 0.8)",
+              },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.6)",
+            },
+            "& .MuiInputAdornment-root svg": {
+              color: "var(--color-text-light)",
+            },
+            "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
+          }}
           slotProps={{
+            inputLabel: {
+              sx: {
+                color: "var(--color-text-light)",
+                "&.Mui-focused": { color: "var(--color-text-light)" },
+              },
+            },
             input: {
-              startAdornment: <Search size={16} />,
+              startAdornment: (
+                <Box sx={{ display: "flex", alignItems: "center", mr: 1 }}>
+                  <Search size={16} color="var(--color-text-light)" />
+                </Box>
+              ),
             },
           }}
         />
@@ -242,7 +279,6 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           type="submit"
           variant="contained"
           size="small"
-          disabled={isSearchUnchanged}
           sx={{ minHeight: 40, px: 2.5, whiteSpace: "nowrap" }}
         >
           {findLabel}
@@ -252,8 +288,14 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: {
+            xs: "1fr 1fr",
+            md: "repeat(2, minmax(200px, 1fr))",
+          },
           gap: 1,
+          justifySelf: { md: "end" },
+          width: { xs: "100%", md: "auto" },
+          maxWidth: { md: 420 },
         }}
       >
         <TextField
@@ -263,6 +305,36 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           onChange={handleSortModeChange}
           label={priceLabel}
           fullWidth
+          slotProps={{
+            inputLabel: {
+              sx: {
+                color: "var(--color-text-light)",
+                "&.Mui-focused": { color: "var(--color-text-light)" },
+              },
+            },
+          }}
+          sx={{
+            minWidth: { md: 200 },
+            "& .MuiInputBase-root": { backgroundColor: "transparent" },
+            "& .MuiInputBase-root:hover .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+            },
+            "& .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+              fontSize: "0.875rem",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.35)",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "rgba(255, 255, 255, 0.8)",
+              },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.6)",
+            },
+            "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
+          }}
         >
           <MenuItem value="default">{sortModeLabel}</MenuItem>
           <MenuItem value="price_desc">{priceDescLabel}</MenuItem>
@@ -276,6 +348,36 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           onChange={handleCategoryChange}
           label={categoryLabel}
           fullWidth
+          slotProps={{
+            inputLabel: {
+              sx: {
+                color: "var(--color-text-light)",
+                "&.Mui-focused": { color: "var(--color-text-light)" },
+              },
+            },
+          }}
+          sx={{
+            minWidth: { md: 200 },
+            "& .MuiInputBase-root": { backgroundColor: "transparent" },
+            "& .MuiInputBase-root:hover .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+            },
+            "& .MuiInputBase-input": {
+              color: "var(--color-text-light)",
+              fontSize: "0.875rem",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.35)",
+            },
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "rgba(255, 255, 255, 0.8)",
+              },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.6)",
+            },
+            "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
+          }}
         >
           <MenuItem value={EGoodsCategory.PANEL}>
             {t(`${categoryTitlePrefix}${EGoodsCategory.PANEL}`)}

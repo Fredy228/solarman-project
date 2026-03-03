@@ -285,6 +285,7 @@
       "kilowatts": "кВт",
       "ampereHour": "Ач",
       "volt": "В",
+      "phase": "фазы",
       "years": "годы"
     },
     "specs": {

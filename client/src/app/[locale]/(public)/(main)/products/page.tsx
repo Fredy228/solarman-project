@@ -86,6 +86,8 @@ export default async function ProductsPage({ params, searchParams }: Props) {
     phase: toNumberArray(searchParamsResolved.phase),
     capacity: toNumberArray(searchParamsResolved.capacity),
     voltage: toNumberArray(searchParamsResolved.voltage),
+    country: toStringArray(searchParamsResolved.country),
+    brand: toStringArray(searchParamsResolved.brand),
   });
 
   const goodsItems = goodsListResponse.items ?? [];
@@ -103,6 +105,8 @@ export default async function ProductsPage({ params, searchParams }: Props) {
     searchParamsResolved.capacity,
     searchParamsResolved.voltage,
     searchParamsResolved.material,
+    searchParamsResolved.country,
+    searchParamsResolved.brand,
   ]
     .map((value) => (Array.isArray(value) ? value.join("|") : (value ?? "")))
     .join("::");
@@ -113,13 +117,21 @@ export default async function ProductsPage({ params, searchParams }: Props) {
         <Box height={70} />
         <GoodsShopToolbar />
 
-        <Box sx={{ display: "flex", gap: 3, alignItems: "flex-start" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", lg: "row" },
+            gap: 3,
+            alignItems: "flex-start",
+          }}
+        >
           <GoodsFiltersSidebar
             key={sidebarStateKey}
             fields={goodsFilters as Record<string, (string | number)[]> | null}
             category={category}
+            locale={locale}
           />
-          <Box sx={{ flex: 1, minHeight: "100vh" }}>
+          <Box sx={{ flex: 1, minHeight: "calc(100vh - 250px)" }}>
             <GoodsCardGrid
               items={goodsItems}
               locale={locale as ELocale}

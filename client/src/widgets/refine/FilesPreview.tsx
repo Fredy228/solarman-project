@@ -1,6 +1,6 @@
 "use client";
 
-import { PdfInfo } from "@/src/features/goods";
+import { PdfInfo } from "@/src/features/goods/types/goods-instruction.type";
 import { Close } from "@mui/icons-material";
 import {
   Box,
@@ -30,7 +30,7 @@ export const FilesPreview = memo(
   }) => {
     const { mutate: deleteFile } = useDelete();
     const [saved, setSaved] = useState<string[]>(
-      (instructions || []).map((i) => i.filePath)
+      (instructions || []).map((i) => i.filePath),
     );
     const [open, setOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export const FilesPreview = memo(
             setSaved((prev) => prev.filter((p) => p !== fileToDelete));
             handleClose();
           },
-        }
+        },
       );
     };
 
@@ -131,7 +131,7 @@ export const FilesPreview = memo(
         </Dialog>
       </>
     );
-  }
+  },
 );
 
 FilesPreview.displayName = "FilesPreview";

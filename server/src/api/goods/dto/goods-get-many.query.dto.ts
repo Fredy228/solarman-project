@@ -80,4 +80,14 @@ export class GoodsGetManyQueryDto extends BaseQueryGetManyDto {
       .optional(),
   )
   material?: string | string[];
+
+  @JoiSchema(
+    Joi.array().items(goodsSchema.extract('country')).single().optional(),
+  )
+  country?: string | string[];
+
+  @JoiSchema(
+    Joi.array().items(Joi.string().hex().length(24)).single().optional(),
+  )
+  brand?: string | string[];
 }

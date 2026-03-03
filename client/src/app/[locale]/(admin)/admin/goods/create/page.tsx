@@ -6,8 +6,10 @@ import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { useTranslations } from "next-intl";
 
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
 import { GoodsForm } from "@/src/features/goods/components/GoodsForm";
 import { IGoodsForm } from "@/src/features/goods/types/goods.interface";
+import { revalidateCache } from "@/src/libs/revalidateCache";
 import { goodsSchema } from "@/src/validators/goods.schema";
 
 export default function GoodsCreatePage() {
@@ -41,7 +43,9 @@ export default function GoodsCreatePage() {
       createData[key as keyof IGoodsForm] = value;
     });
 
-    void onFinish(createData);
+    void onFinish(createData).then(async () => {
+      await revalidateCache([CACHE_TAGS.goodsList, CACHE_TAGS.goodsFilters]);
+    });
   };
 
   return (

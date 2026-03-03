@@ -50,7 +50,7 @@ export default function GoodsList() {
       gte: t("filters.operators.gte"),
       lte: t("filters.operators.lte"),
     }),
-    [t]
+    [t],
   );
 
   const priceParser = useCallback(
@@ -64,7 +64,7 @@ export default function GoodsList() {
       }
       return Math.round(numericValue * 100);
     },
-    []
+    [],
   );
 
   const filterFields = useMemo<MultiFilterFieldConfig[]>(() => {
@@ -144,12 +144,12 @@ export default function GoodsList() {
       fieldLabel: t("filters.field"),
       operatorLabel: t("filters.operator"),
     }),
-    [t]
+    [t],
   );
 
   const handleProcessRowUpdate = async (
     newRow: GridRowModel,
-    oldRow: GridRowModel
+    oldRow: GridRowModel,
   ) => {
     if (newRow.status !== oldRow.status) {
       try {
@@ -165,7 +165,7 @@ export default function GoodsList() {
             {
               onSuccess: () => resolve(true),
               onError: (error) => reject(error),
-            }
+            },
           );
         });
 
@@ -195,7 +195,7 @@ export default function GoodsList() {
         return row.cover ? (
           <Box
             component="img"
-            src={"/" + row.cover}
+            src={row.cover}
             alt={row.title}
             sx={{
               width: 170,
@@ -229,7 +229,7 @@ export default function GoodsList() {
       align: "center",
       headerAlign: "center",
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is"
+        (operator) => operator.value === "is",
       ),
       type: "singleSelect",
       valueOptions: Object.values(EGoodsCategory).map((category) => ({
@@ -264,7 +264,7 @@ export default function GoodsList() {
       valueGetter: (value: number) => value / 100,
       valueFormatter: (value: number) => `${value} $`,
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains"
+        (operator) => operator.value === "contains",
       ),
     },
     {
@@ -277,7 +277,7 @@ export default function GoodsList() {
       valueGetter: (value: number) => (value ? value / 100 : null),
       valueFormatter: (value: number) => (value ? `${value} $` : null),
       filterOperators: getGridStringOperators().filter(
-        (operator) => operator.value === "contains"
+        (operator) => operator.value === "contains",
       ),
     },
     {
@@ -293,7 +293,7 @@ export default function GoodsList() {
       })),
       valueFormatter: (value: string) => value && t(`goods.badge.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is"
+        (operator) => operator.value === "is",
       ),
       renderCell: (params) => {
         const config = goodsBadgeConfig[params.value as EBadgeType];
@@ -326,7 +326,7 @@ export default function GoodsList() {
       })),
       valueFormatter: (value: string) => t(`goods.status.${value}`),
       filterOperators: getGridSingleSelectOperators().filter(
-        (operator) => operator.value === "is"
+        (operator) => operator.value === "is",
       ),
       renderCell: (params) => {
         const config = productStatusConfig[params.value as EProductStatus];

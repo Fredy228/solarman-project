@@ -15,7 +15,7 @@ export async function getGoodsFilters<C extends EGoodsCategory>({
 
   const goodsFiltersResponse = await fetchNative.fetchAPI(url, false, {
     method: "GET",
-    next: { revalidate: 3600, tags: [CACHE_TAGS.goodsFilters] },
+    next: { revalidate: 300, tags: [CACHE_TAGS.goodsFilters] },
   });
 
   if (!goodsFiltersResponse?.ok) {

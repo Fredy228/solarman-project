@@ -1,6 +1,6 @@
-import { PdfInfo } from "@/src/features/goods";
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
+import { PdfInfo } from "@/src/features/goods/types/goods-instruction.type";
 import {
   TBatterySpecs,
   TChargeStationSpecs,
@@ -141,4 +141,6 @@ export type TGetGoodsListParams = {
   capacity: number | number[];
   voltage: number | number[];
   material: string | string[];
+  country: string | string[];
+  brand: string | string[];
 };

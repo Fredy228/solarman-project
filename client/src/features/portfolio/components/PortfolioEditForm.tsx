@@ -104,9 +104,6 @@ export const PortfolioEditForm = () => {
       }
     });
 
-    console.log(data);
-    console.log(updatedData);
-
     void onFinish(updatedData as IPortfolioForm).then(() => {
       revalidateCache([
         CACHE_TAGS.portfolioId(data.tag),

@@ -11,15 +11,29 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  ReadonlyURLSearchParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { type FC, useMemo, useState } from "react";
 
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
-import { TFilterValue } from "@/src/features/goods/types/goods-filters.type";
+import {
+  TBrandFilter,
+  TCountryFilter,
+  TFilterValue,
+} from "@/src/features/goods/types/goods-filters.type";
+import { getCountryName } from "@/src/shared/utils/country-locale";
 
 type GoodsFiltersSidebarProps = {
-  fields: Record<string, TFilterValue[]> | null;
+  fields: Record<
+    string,
+    TFilterValue[] | TBrandFilter[] | TCountryFilter[]
+  > | null;
   category: EGoodsCategory;
+  locale: string;
 };
 
 type TSelectedFilters = Record<string, string[]>;
@@ -31,6 +45,8 @@ const FIELD_ORDER = [
   "capacity",
   "voltage",
   "material",
+  "country",
+  "brand",
 ];
 
 const FILTER_QUERY_FIELDS = new Set(FIELD_ORDER);
@@ -59,7 +75,7 @@ const parseSelectedFiltersFromSearchParams = (
   FILTER_QUERY_FIELDS.forEach((fieldName) => {
     const values = searchParams
       .getAll(fieldName)
-      .map((value) => value.trim())
+      .map((value: string) => value.trim())
       .filter((value) => value.length > 0);
 
     if (values.length > 0) {
@@ -81,6 +97,8 @@ const buildFieldLabel = (
     capacity: "goods.fields.specs.capacity",
     voltage: "goods.fields.specs.voltage",
     material: "goods.fields.specs.material",
+    country: "goods.fields.country",
+    brand: "goods.fields.brand",
   };
 
   const key = keyMap[fieldName];
@@ -89,10 +107,22 @@ const buildFieldLabel = (
 
 const buildValueLabel = (
   fieldName: string,
-  value: TFilterValue,
+  value: TFilterValue | TBrandFilter | TCountryFilter,
   category: EGoodsCategory,
   t: ReturnType<typeof useTranslations>,
 ): string => {
+  if (fieldName === "brand" && typeof value === "object" && "name" in value) {
+    return value.name;
+  }
+
+  if (
+    fieldName === "country" &&
+    typeof value === "object" &&
+    "label" in value
+  ) {
+    return (value as TCountryFilter).label;
+  }
+
   const normalizedValue = String(value);
 
   if (fieldName === "type") {
@@ -105,46 +135,64 @@ const buildValueLabel = (
     return prefix ? t(`${prefix}.${normalizedValue}`) : normalizedValue;
   }
 
+  const unitKeyMap: Record<string, string> = {
+    power: "goods.measurements.kilowatts",
+    capacity: "goods.measurements.ampereHour",
+    voltage: "goods.measurements.volt",
+  };
+
+  const unitKey = unitKeyMap[fieldName];
+  if (unitKey) {
+    return `${normalizedValue} ${t(unitKey)}`;
+  }
+
   return normalizedValue;
 };
 
 const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
   fields,
   category,
+  locale,
 }) => {
   const t = useTranslations("refine");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // Localize country values on the server side to avoid hydration mismatch
+  const localizedFields = useMemo(() => {
+    if (!fields) return null;
+
+    const result: Record<
+      string,
+      TFilterValue[] | TBrandFilter[] | TCountryFilter[]
+    > = {};
+
+    Object.entries(fields).forEach(([fieldName, values]) => {
+      if (fieldName === "country") {
+        result[fieldName] = (values as TFilterValue[]).map(
+          (value): TCountryFilter => ({
+            code: String(value),
+            label: getCountryName(String(value), locale),
+          }),
+        );
+      } else {
+        result[fieldName] = values;
+      }
+    });
+
+    return result;
+  }, [fields, locale]);
+
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState<TSelectedFilters>(() =>
     parseSelectedFiltersFromSearchParams(searchParams),
   );
 
-  const fieldEntries = fields ? Object.entries(fields) : [];
+  const fieldEntries = localizedFields ? Object.entries(localizedFields) : [];
   const orderedFieldEntries = fieldEntries.sort(
     ([a], [b]) => FIELD_ORDER.indexOf(a) - FIELD_ORDER.indexOf(b),
   );
-
-  const isApplyDisabled = useMemo(() => {
-    const currentSelected = parseSelectedFiltersFromSearchParams(searchParams);
-    const currentKeys = Object.keys(currentSelected);
-    const draftKeys = Object.keys(selectedFilters);
-
-    if (currentKeys.length !== draftKeys.length) return false;
-
-    return draftKeys.every((key) => {
-      const currentValues = [...(currentSelected[key] ?? [])].sort();
-      const draftValues = [...(selectedFilters[key] ?? [])].sort();
-
-      if (currentValues.length !== draftValues.length) return false;
-
-      return draftValues.every(
-        (value, index) => value === currentValues[index],
-      );
-    });
-  }, [searchParams, selectedFilters]);
 
   const toggleFilterValue = (fieldName: string, value: string) => {
     setSelectedFilters((prev) => {
@@ -154,7 +202,8 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
       if (isSelected) {
         const nextValues = currentValues.filter((item) => item !== value);
         if (nextValues.length === 0) {
-          const { [fieldName]: _removed, ...rest } = prev;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [fieldName]: _, ...rest } = prev;
           return rest;
         }
 
@@ -197,11 +246,12 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
       sx={{
         p: 2,
         borderRadius: { xs: 0, lg: 3 },
-        border: { xs: "none", lg: "1px solid" },
-        borderColor: "divider",
-        bgcolor: "background.paper",
+        border: "none",
+        borderColor: "transparent",
+        bgcolor: { xs: "background.paper", lg: "transparent" },
+        background: { xs: "none", lg: "var(--bg-section-gradient)" },
         color: "var(--color-text-g2)",
-        boxShadow: { xs: "none", lg: 1 },
+        boxShadow: { xs: "none", lg: 2 },
       }}
     >
       <Typography variant="h6" mb={2}>
@@ -223,7 +273,19 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
 
             <FormGroup>
               {values.map((value) => {
-                const valueAsString = String(value);
+                const isBrandFilter =
+                  fieldName === "brand" &&
+                  typeof value === "object" &&
+                  "id" in value;
+                const isCountryFilter =
+                  fieldName === "country" &&
+                  typeof value === "object" &&
+                  "code" in value;
+                const valueAsString = isBrandFilter
+                  ? (value as TBrandFilter).id
+                  : isCountryFilter
+                    ? (value as TCountryFilter).code
+                    : String(value);
 
                 return (
                   <FormControlLabel
@@ -250,12 +312,7 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
         ))}
 
         {orderedFieldEntries.length > 0 && (
-          <Button
-            variant="contained"
-            size="small"
-            onClick={applyFilters}
-            disabled={isApplyDisabled}
-          >
+          <Button variant="contained" size="small" onClick={applyFilters}>
             {t("filters.apply")}
           </Button>
         )}
@@ -265,7 +322,14 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
 
   return (
     <>
-      <Box sx={{ display: { xs: "flex", lg: "none" }, mb: 2 }}>
+      <Box
+        sx={{
+          display: { xs: "block", lg: "none" },
+          width: "100%",
+          flexBasis: "100%",
+          mb: 2,
+        }}
+      >
         <Button
           variant="outlined"
           size="small"
@@ -286,7 +350,7 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
 
       <Box
         sx={{
-          width: 300,
+          width: 240,
           flexShrink: 0,
           display: { xs: "none", lg: "block" },
           position: "sticky",

@@ -17,6 +17,20 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { memo, useState } from "react";
 
+const normalizeImageSrc = (src: string): string | null => {
+  if (!src || typeof src !== "string") return null;
+  const trimmed = src.trim();
+  if (!trimmed) return null;
+  try {
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      return new URL(trimmed).toString();
+    }
+    return trimmed;
+  } catch {
+    return null;
+  }
+};
+
 export const ImagesPreview = memo(
   ({
     images,
@@ -69,10 +83,14 @@ export const ImagesPreview = memo(
 
     if (!images) return null;
 
+    const normalizedImages = savedImages
+      .map((img) => normalizeImageSrc(img))
+      .filter((img): img is string => !!img);
+
     return (
       <>
         <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-          {savedImages.map((image) => {
+          {normalizedImages.map((image) => {
             return (
               <Box key={image} sx={{ position: "relative" }}>
                 <Image
