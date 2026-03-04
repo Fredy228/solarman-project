@@ -3,7 +3,7 @@
 import { Box, Dialog, IconButton } from "@mui/material";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -38,18 +38,39 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
   const nextRef = useRef<HTMLButtonElement | null>(null);
   const modalPrevRef = useRef<HTMLButtonElement | null>(null);
   const modalNextRef = useRef<HTMLButtonElement | null>(null);
+  const mainSwiperRef = useRef<SwiperType | null>(null);
+  const modalSwiperRef = useRef<SwiperType | null>(null);
+  const isMountedRef = useRef(true);
   const items = useMemo(
     () => (images && images.length > 0 ? images : []),
     [images],
   );
 
+  // Cleanup on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const handleOpenModal = (index: number) => {
-    setModalInitialSlide(index);
-    setIsModalOpen(true);
+    if (!isMountedRef.current) return;
+    startTransition(() => {
+      if (isMountedRef.current) {
+        setModalInitialSlide(index);
+        setIsModalOpen(true);
+      }
+    });
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    if (!isMountedRef.current) return;
+    startTransition(() => {
+      if (isMountedRef.current) {
+        setIsModalOpen(false);
+      }
+    });
   };
 
   if (items.length === 0) {
@@ -131,21 +152,39 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
         </button>
         <Swiper
           modules={[FreeMode, Navigation, Thumbs]}
-          navigation
+          navigation={false}
           onBeforeInit={(swiper) => {
-            if (typeof swiper.params.navigation === "boolean") return;
-            if (!swiper.params.navigation) {
-              swiper.params.navigation = {};
+            mainSwiperRef.current = swiper;
+            if (typeof swiper.params.navigation !== "boolean") {
+              if (!swiper.params.navigation) {
+                swiper.params.navigation = {};
+              }
+              swiper.params.navigation.prevEl = prevRef.current;
+              swiper.params.navigation.nextEl = nextRef.current;
             }
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
+          }}
+          onSwiper={(swiper) => {
+            mainSwiperRef.current = swiper;
+            // Initialize navigation after mount
+            if (swiper.navigation) {
+              swiper.navigation.init();
+              swiper.navigation.update();
+            }
           }}
           thumbs={{
             swiper:
               thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
           }}
+          watchSlidesProgress
           spaceBetween={12}
-          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          onSlideChange={(swiper) => {
+            if (!isMountedRef.current) return;
+            startTransition(() => {
+              if (isMountedRef.current) {
+                setActiveIndex(swiper.activeIndex);
+              }
+            });
+          }}
           className="w-full"
         >
           {items.map((src, idx) => {
@@ -171,6 +210,11 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                     className="block object-cover w-full h-full"
                     priority={idx === 0}
+                    loading={idx === 0 ? "eager" : "lazy"}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                    }}
                   />
                 </Box>
               </SwiperSlide>
@@ -186,12 +230,18 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
         }}
       >
         <Swiper
-          onSwiper={setThumbsSwiper}
+          onSwiper={(swiper) => {
+            if (isMountedRef.current) {
+              setThumbsSwiper(swiper);
+            }
+          }}
           modules={[FreeMode, Navigation, Thumbs]}
           spaceBetween={8}
           slidesPerView="auto"
           freeMode
           watchSlidesProgress
+          watchOverflow
+          slideToClickedSlide
           style={{ width: "100%" }}
         >
           {items.map((src, idx) => {
@@ -224,6 +274,11 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
                     fill
                     sizes="(max-width: 768px) 25vw, 72px"
                     className="object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                    }}
                   />
                 </Box>
               </SwiperSlide>
@@ -344,15 +399,25 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
 
             <Swiper
               modules={[Navigation]}
-              navigation
+              navigation={false}
               initialSlide={modalInitialSlide}
               onBeforeInit={(swiper) => {
-                if (typeof swiper.params.navigation === "boolean") return;
-                if (!swiper.params.navigation) {
-                  swiper.params.navigation = {};
+                modalSwiperRef.current = swiper;
+                if (typeof swiper.params.navigation !== "boolean") {
+                  if (!swiper.params.navigation) {
+                    swiper.params.navigation = {};
+                  }
+                  swiper.params.navigation.prevEl = modalPrevRef.current;
+                  swiper.params.navigation.nextEl = modalNextRef.current;
                 }
-                swiper.params.navigation.prevEl = modalPrevRef.current;
-                swiper.params.navigation.nextEl = modalNextRef.current;
+              }}
+              onSwiper={(swiper) => {
+                modalSwiperRef.current = swiper;
+                // Initialize navigation after mount
+                if (swiper.navigation) {
+                  swiper.navigation.init();
+                  swiper.navigation.update();
+                }
               }}
               spaceBetween={20}
               style={{
@@ -405,8 +470,12 @@ export default function GoodsGallery({ images, title }: GoodsGalleryProps) {
                         style={{
                           objectFit: "contain",
                         }}
-                        quality={100}
                         priority={idx === modalInitialSlide}
+                        loading={idx === modalInitialSlide ? "eager" : "lazy"}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = "none";
+                        }}
                       />
                     </Box>
                   </SwiperSlide>

@@ -15,6 +15,7 @@ import {
   Calculator,
   CircleDollarSign,
   Contact,
+  FileCodeCorner,
   GalleryVerticalEnd,
   Hash,
   Images,
@@ -78,6 +79,14 @@ export default function AdminLayout({
                 meta: {
                   label: t("common.main"),
                   icon: <DashboardIcon />,
+                },
+              },
+              {
+                name: "main-site",
+                list: "/",
+                meta: {
+                  label: t("common.site"),
+                  icon: <FileCodeCorner />,
                 },
               },
               {

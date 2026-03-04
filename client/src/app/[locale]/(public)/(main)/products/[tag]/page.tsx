@@ -146,7 +146,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 }, mt: 5 }}>
       <Box className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <GoodsGallery images={images} title={data.title} />
+        <GoodsGallery key={tag} images={images} title={data.title} />
 
         <Box
           sx={{

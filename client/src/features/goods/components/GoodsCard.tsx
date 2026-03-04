@@ -111,6 +111,7 @@ export default function GoodsCard({ item, locale, exchangeRate }: Props) {
     >
       <Link
         href={`/products/${item.tag}`}
+        prefetch={false}
         style={{
           textDecoration: "none",
           color: "inherit",

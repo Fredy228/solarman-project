@@ -33,7 +33,14 @@ export default function PaginationCustom({ count, page }: Props) {
 
           const href = `${pathname}?${currentParams.toString()}`;
 
-          return <PaginationItem component={Link} href={href} {...item} />;
+          return (
+            <PaginationItem
+              component={Link}
+              href={href}
+              prefetch={false}
+              {...item}
+            />
+          );
         }}
       />
     </Box>

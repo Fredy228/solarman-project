@@ -1,9 +1,11 @@
 "use client";
 
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Box,
   Button,
   Checkbox,
+  Collapse,
   Drawer,
   FormControlLabel,
   FormGroup,
@@ -159,7 +161,6 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Localize country values on the server side to avoid hydration mismatch
   const localizedFields = useMemo(() => {
     if (!fields) return null;
 
@@ -189,10 +190,22 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
     parseSelectedFiltersFromSearchParams(searchParams),
   );
 
+  // По умолчанию все секции свернуты (false).
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({});
+
   const fieldEntries = localizedFields ? Object.entries(localizedFields) : [];
   const orderedFieldEntries = fieldEntries.sort(
     ([a], [b]) => FIELD_ORDER.indexOf(a) - FIELD_ORDER.indexOf(b),
   );
+
+  const toggleSection = (fieldName: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [fieldName]: !(prev[fieldName] ?? false),
+    }));
+  };
 
   const toggleFilterValue = (fieldName: string, value: string) => {
     setSelectedFilters((prev) => {
@@ -254,7 +267,7 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
         boxShadow: { xs: "none", lg: 2 },
       }}
     >
-      <Typography variant="h6" mb={2}>
+      <Typography variant="h6" mb={1.5}>
         {t("filters.title")}
       </Typography>
 
@@ -264,55 +277,121 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
         </Typography>
       )}
 
-      <Stack spacing={2.5}>
-        {orderedFieldEntries.map(([fieldName, values]) => (
-          <Box key={fieldName}>
-            <Typography variant="subtitle2" mb={1}>
-              {buildFieldLabel(fieldName, t)}
-            </Typography>
+      <Stack spacing={1}>
+        {orderedFieldEntries.map(([fieldName, values]) => {
+          const isExpanded = expandedSections[fieldName] ?? false;
 
-            <FormGroup>
-              {values.map((value) => {
-                const isBrandFilter =
-                  fieldName === "brand" &&
-                  typeof value === "object" &&
-                  "id" in value;
-                const isCountryFilter =
-                  fieldName === "country" &&
-                  typeof value === "object" &&
-                  "code" in value;
-                const valueAsString = isBrandFilter
-                  ? (value as TBrandFilter).id
-                  : isCountryFilter
-                    ? (value as TCountryFilter).code
-                    : String(value);
-
-                return (
-                  <FormControlLabel
-                    key={`${fieldName}-${valueAsString}`}
-                    control={
-                      <Checkbox
-                        size="small"
-                        checked={
-                          selectedFilters[fieldName]?.includes(valueAsString) ??
-                          false
-                        }
-                        onChange={() =>
-                          toggleFilterValue(fieldName, valueAsString)
-                        }
-                      />
-                    }
-                    label={buildValueLabel(fieldName, value, category, t)}
-                    sx={{ color: "var(--color-text-g2)" }}
+          return (
+            <Box
+              key={fieldName}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "var(--border-radius-main)",
+                overflow: "hidden",
+                bgcolor: { xs: "background.paper", lg: "transparent" },
+              }}
+            >
+              <Button
+                variant="text"
+                fullWidth
+                onClick={() => toggleSection(fieldName)}
+                endIcon={
+                  <ExpandMoreIcon
+                    sx={{
+                      transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.2s ease",
+                    }}
                   />
-                );
-              })}
-            </FormGroup>
-          </Box>
-        ))}
+                }
+                sx={{
+                  minHeight: 36,
+                  px: 1.25,
+                  py: 0.5,
+                  justifyContent: "space-between",
+                  textTransform: "none",
+                  color: "var(--color-text-g2)",
+                  borderRadius: "var(--border-radius-main)",
+                  "& .MuiButton-endIcon": {
+                    ml: 1,
+                  },
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                  {buildFieldLabel(fieldName, t)}
+                </Typography>
+              </Button>
+
+              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                <FormGroup
+                  sx={{
+                    px: 1.25,
+                    pb: 0.75,
+                    pt: 0.25,
+                    gap: 0.125,
+                  }}
+                >
+                  {values.map((value) => {
+                    const isBrandFilter =
+                      fieldName === "brand" &&
+                      typeof value === "object" &&
+                      "id" in value;
+                    const isCountryFilter =
+                      fieldName === "country" &&
+                      typeof value === "object" &&
+                      "code" in value;
+                    const valueAsString = isBrandFilter
+                      ? (value as TBrandFilter).id
+                      : isCountryFilter
+                        ? (value as TCountryFilter).code
+                        : String(value);
+
+                    return (
+                      <FormControlLabel
+                        key={`${fieldName}-${valueAsString}`}
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={
+                              selectedFilters[fieldName]?.includes(
+                                valueAsString,
+                              ) ?? false
+                            }
+                            onChange={() =>
+                              toggleFilterValue(fieldName, valueAsString)
+                            }
+                            sx={{
+                              p: 0.5,
+                              mr: 0.5,
+                            }}
+                          />
+                        }
+                        label={buildValueLabel(fieldName, value, category, t)}
+                        sx={{
+                          color: "var(--color-text-g2)",
+                          m: 0,
+                          minHeight: 30,
+                          "& .MuiFormControlLabel-label": {
+                            fontSize: "0.875rem",
+                            lineHeight: 1.2,
+                          },
+                        }}
+                      />
+                    );
+                  })}
+                </FormGroup>
+              </Collapse>
+            </Box>
+          );
+        })}
 
         {orderedFieldEntries.length > 0 && (
-          <Button variant="contained" size="small" onClick={applyFilters}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={applyFilters}
+            sx={{ mt: 0.75 }}
+          >
             {t("filters.apply")}
           </Button>
         )}

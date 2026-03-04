@@ -4,6 +4,7 @@ import imageTeamAnatoliy from "@/src/assets/team/team-anatoliy.png";
 import imageTeamDenis from "@/src/assets/team/team-denis.png";
 import imageTeamMax from "@/src/assets/team/team-max.png";
 import imageTeamPavlo from "@/src/assets/team/team-pavlo.png";
+import imageTeamPavlo2 from "@/src/assets/team/team-pavlo2.png";
 import type { TranslatorType } from "@/src/i18n/types";
 
 type TeamItemType = {
@@ -40,8 +41,8 @@ export const listTeam = (t: TranslatorType): Array<TeamItemType> => [
     id: 4,
     name: t("team.team.item4.name"),
     position: t("team.team.item4.position"),
-    photoSrc: imageTeamMax,
-    ico: "BicepsFlexed",
+    photoSrc: imageTeamPavlo2,
+    ico: "GitCompareArrows",
   },
   {
     id: 5,

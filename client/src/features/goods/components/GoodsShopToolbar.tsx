@@ -164,6 +164,7 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
   const locale = useLocale();
 
   const sortModeLabel = t("goods.sort.default");
+  const sortLabel = locale === "uk" ? "Сортування" : "Сортировка";
 
   const searchFieldLabel = t("goods.fields.title");
 
@@ -250,8 +251,8 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
               {
                 borderColor: "rgba(255, 255, 255, 0.8)",
               },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(255, 255, 255, 0.6)",
+            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.8)",
             },
             "& .MuiInputAdornment-root svg": {
               color: "var(--color-text-light)",
@@ -303,7 +304,7 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           select
           value={filters.sortMode}
           onChange={handleSortModeChange}
-          label={priceLabel}
+          label={sortLabel}
           fullWidth
           slotProps={{
             inputLabel: {
@@ -330,8 +331,8 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
               {
                 borderColor: "rgba(255, 255, 255, 0.8)",
               },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(255, 255, 255, 0.6)",
+            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.8)",
             },
             "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
           }}
@@ -373,8 +374,8 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
               {
                 borderColor: "rgba(255, 255, 255, 0.8)",
               },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(255, 255, 255, 0.6)",
+            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "rgba(255, 255, 255, 0.8)",
             },
             "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
           }}

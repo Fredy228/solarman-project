@@ -12,6 +12,7 @@ export const PUBLIC_ROUTES = {
     income: "/services/income",
   },
   products: "/products",
+  productsItem: (tag: string) => `/products/${tag}`,
   projects: "/projects",
   blog: "/blog",
   about: "/about",

@@ -26,6 +26,97 @@ export class FileService {
 
   constructor() {}
 
+  private transliterate(text: string): string {
+    const cyrillicToLatin: { [key: string]: string } = {
+      а: 'a',
+      б: 'b',
+      в: 'v',
+      г: 'g',
+      д: 'd',
+      е: 'e',
+      ё: 'yo',
+      ж: 'zh',
+      з: 'z',
+      и: 'i',
+      й: 'y',
+      к: 'k',
+      л: 'l',
+      м: 'm',
+      н: 'n',
+      о: 'o',
+      п: 'p',
+      р: 'r',
+      с: 's',
+      т: 't',
+      у: 'u',
+      ф: 'f',
+      х: 'h',
+      ц: 'ts',
+      ч: 'ch',
+      ш: 'sh',
+      щ: 'sch',
+      ъ: '',
+      ы: 'y',
+      ь: '',
+      э: 'e',
+      ю: 'yu',
+      я: 'ya',
+      А: 'A',
+      Б: 'B',
+      В: 'V',
+      Г: 'G',
+      Д: 'D',
+      Е: 'E',
+      Ё: 'Yo',
+      Ж: 'Zh',
+      З: 'Z',
+      И: 'I',
+      Й: 'Y',
+      К: 'K',
+      Л: 'L',
+      М: 'M',
+      Н: 'N',
+      О: 'O',
+      П: 'P',
+      Р: 'R',
+      С: 'S',
+      Т: 'T',
+      У: 'U',
+      Ф: 'F',
+      Х: 'H',
+      Ц: 'Ts',
+      Ч: 'Ch',
+      Ш: 'Sh',
+      Щ: 'Sch',
+      Ъ: '',
+      Ы: 'Y',
+      Ь: '',
+      Э: 'E',
+      Ю: 'Yu',
+      Я: 'Ya',
+    };
+
+    return text
+      .split('')
+      .map((char) => cyrillicToLatin[char] || char)
+      .join('');
+  }
+
+  private normalizeFileName(fileName: string): string {
+    // Транслитерация
+    let normalized = this.transliterate(fileName);
+    // Приведение к нижнему регистру
+    normalized = normalized.toLowerCase();
+    // Замена пробелов на дефисы
+    normalized = normalized.replace(/\s+/g, '-');
+    // Удаление небезопасных символов
+    normalized = normalized.replace(/[^a-z0-9.\-_]/g, '');
+    // Удаление множественных дефисов
+    normalized = normalized.replace(/-+/g, '-');
+
+    return normalized;
+  }
+
   private async generatePathFile({
     file,
     filePath,
@@ -43,10 +134,12 @@ export class FileService {
     const splitFileName = fileName.split('.');
     const extname = splitFileName.pop();
 
+    const normalizedBaseName = this.normalizeFileName(splitFileName.join('.'));
+
     const fullFolderPath = path.join(process.cwd(), ...filePath);
     await ensureDir(fullFolderPath);
 
-    const fileUniqueName = `${fileKey}-${splitFileName.join('.')}.${format || extname}`;
+    const fileUniqueName = `${fileKey}-${normalizedBaseName}.${format || extname}`;
     const fullFilePath = path.join(fullFolderPath, fileUniqueName);
     const dbFilePath = path.join('/api', ...filePath, fileUniqueName);
     return {

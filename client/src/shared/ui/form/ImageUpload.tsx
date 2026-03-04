@@ -2,7 +2,7 @@
 
 import { Close } from "@mui/icons-material";
 import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 interface ImageUploadProps {
   value: File | File[] | null;
@@ -21,6 +21,8 @@ export const ImageUpload = ({
   error = false,
   helperText,
 }: ImageUploadProps) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       if (multiple) {
@@ -30,6 +32,7 @@ export const ImageUpload = ({
       } else {
         onChange(event.target.files[0]);
       }
+      event.target.value = "";
     }
   };
 
@@ -41,12 +44,15 @@ export const ImageUpload = ({
       } else {
         onChange(null);
       }
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const files = (Array.isArray(value) ? value : value ? [value] : []).filter(
-    (f) => typeof f !== "string"
+    (f) => typeof f !== "string",
   );
 
   const filesWithUrls = useMemo(() => {
@@ -77,6 +83,7 @@ export const ImageUpload = ({
           multiple={multiple}
           accept="image/*"
           onChange={handleFileChange}
+          ref={inputRef}
         />
       </Button>
       {helperText && (

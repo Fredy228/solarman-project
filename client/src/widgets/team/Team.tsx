@@ -1,7 +1,13 @@
 import Section from "@/src/shared/ui/sections/Section";
 import SectionTitle from "@/src/shared/ui/title/SectionTitle";
 import { Box, Container, Typography } from "@mui/material";
-import { BicepsFlexed, Brain, Heart, Zap } from "lucide-react";
+import {
+  BicepsFlexed,
+  Brain,
+  GitCompareArrows,
+  Heart,
+  Zap,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { listTeam } from "./listTeam";
@@ -11,6 +17,7 @@ const LucideIcons = {
   Brain,
   BicepsFlexed,
   Zap,
+  GitCompareArrows,
 };
 
 export default function Team() {
