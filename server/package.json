@@ -30,6 +30,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/schedule": "^6.1.1",
     "@prisma/client": "^6.19.0",
     "@types/bcrypt": "^6.0.0",
     "@types/express-useragent": "^1.0.5",

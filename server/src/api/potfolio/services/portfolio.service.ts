@@ -2,6 +2,9 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Portfolio, Prisma } from '@prisma/client';
 import { ObjectId } from 'bson';
 
+import { Block } from '@blocknote/core';
+import { extractImageUrls } from 'src/helpers/extract-image-urls.util';
+import { replaceImageUrls } from 'src/helpers/replace-image-urls.util';
 import { Language } from '../../../common/enums/language.enum';
 import { PortfolioErrorMessage } from '../../../common/messages/error/portfolio.message';
 import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
@@ -39,6 +42,8 @@ export class PortfolioService {
         `Портфоліо з тегом ${body.tag} вже існує`,
       );
 
+    const newId = new ObjectId().toString();
+
     const {
       titleUk,
       titleRu,
@@ -49,7 +54,38 @@ export class PortfolioService {
       hashtags,
     } = body;
 
-    const newId = new ObjectId().toString();
+    const descriptionUkParsed = JSON.parse(descriptionUk) as Block[];
+    const descriptionRuParsed = JSON.parse(descriptionRu) as Block[];
+
+    const descriptionImageUrls: string[] = [
+      ...new Set([
+        ...extractImageUrls(descriptionUkParsed),
+        ...extractImageUrls(descriptionRuParsed),
+      ]),
+    ];
+
+    const urlReplaceMap: Record<string, string> = {};
+    await Promise.all(
+      descriptionImageUrls.map(async (url) => {
+        if (!url) return;
+        const newUrl = await this.fileService.moveFile(url, [
+          'static',
+          'portfolio',
+          newId,
+        ]);
+        if (!newUrl) return;
+        urlReplaceMap[url] = newUrl;
+      }),
+    );
+
+    const descriptionUkUpdated = replaceImageUrls(
+      descriptionUkParsed,
+      urlReplaceMap,
+    );
+    const descriptionRuUpdated = replaceImageUrls(
+      descriptionRuParsed,
+      urlReplaceMap,
+    );
 
     const coverPath = await this.fileService.saveImage({
       file: files.cover[0],
@@ -74,8 +110,8 @@ export class PortfolioService {
           ru: titleRu,
         },
         description: {
-          uk: descriptionUk,
-          ru: descriptionRu,
+          uk: JSON.stringify(descriptionUkUpdated),
+          ru: JSON.stringify(descriptionRuUpdated),
         },
         date,
         cover: coverPath,
@@ -116,6 +152,7 @@ export class PortfolioService {
     lang: Language,
   ) {
     const portfolio = await this.getOne(id, lang);
+    const { descriptionUk, descriptionRu } = body;
 
     const updatedBody: Prisma.PortfolioUpdateInput = {
       tag: body?.tag,
@@ -157,6 +194,67 @@ export class PortfolioService {
         },
       );
       updatedBody['images'] = portfolio.images.concat(imagesPath);
+    }
+
+    if (descriptionUk || descriptionRu) {
+      const descriptionUkParsed = descriptionUk
+        ? (JSON.parse(descriptionUk) as Block[])
+        : null;
+      const descriptionRuParsed = descriptionRu
+        ? (JSON.parse(descriptionRu) as Block[])
+        : null;
+
+      const descriptionImageUrlsCurrent: string[] = [
+        ...new Set([
+          ...extractImageUrls(JSON.parse(portfolio.description.uk) as Block[]),
+          ...extractImageUrls(JSON.parse(portfolio.description.ru) as Block[]),
+        ]),
+      ];
+      const descriptionImageUrlsNew: string[] = [
+        ...new Set([
+          ...(descriptionUkParsed ? extractImageUrls(descriptionUkParsed) : []),
+          ...(descriptionRuParsed ? extractImageUrls(descriptionRuParsed) : []),
+        ]),
+      ];
+
+      const addedImages = descriptionImageUrlsNew.filter(
+        (url) => !descriptionImageUrlsCurrent.includes(url),
+      );
+      const removedImages = descriptionImageUrlsCurrent.filter(
+        (url) => !descriptionImageUrlsNew.includes(url),
+      );
+
+      const urlReplaceMap: Record<string, string> = {};
+      await Promise.all(
+        addedImages.map(async (url) => {
+          if (!url) return;
+          const newUrl = await this.fileService.moveFile(url, [
+            'static',
+            'portfolio',
+            portfolio.id,
+          ]);
+          if (!newUrl) return;
+          urlReplaceMap[url] = newUrl;
+        }),
+      );
+      this.fileService.deleteFiles(removedImages);
+
+      let descriptionUkUpdated: undefined | Block[] = undefined;
+      let descriptionRuUpdated: undefined | Block[] = undefined;
+      if (descriptionUk && descriptionUkParsed)
+        descriptionUkUpdated = replaceImageUrls(
+          descriptionUkParsed,
+          urlReplaceMap,
+        );
+      if (descriptionRu && descriptionRuParsed)
+        descriptionRuUpdated = replaceImageUrls(
+          descriptionRuParsed,
+          urlReplaceMap,
+        );
+      updatedBody.description = prepareLocalizedUpdate(
+        JSON.stringify(descriptionUkUpdated),
+        JSON.stringify(descriptionRuUpdated),
+      );
     }
 
     return this.prisma.portfolio.update({
