@@ -138,8 +138,11 @@ export default function PortfolioList() {
           );
         });
 
-        await revalidateCache(CACHE_TAGS.portfolioList);
-        await revalidateCache(CACHE_TAGS.hashtags);
+        await revalidateCache([
+          CACHE_TAGS.portfolioId(newRow.tag),
+          CACHE_TAGS.portfolioList,
+          CACHE_TAGS.hashtags,
+        ]);
 
         return newRow;
       } catch (error) {
@@ -160,6 +163,29 @@ export default function PortfolioList() {
   };
 
   const columns: GridColDef[] = [
+    {
+      field: "actions",
+      headerName: t("actions.actions"),
+      renderCell: function render({ row }) {
+        return (
+          <Stack
+            direction="row"
+            spacing={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <ShowButton hideText recordItemId={row.id} />
+            <EditButton hideText recordItemId={row.id} />
+            <DeleteButton hideText recordItemId={row.id} />
+          </Stack>
+        );
+      },
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+      sortable: false,
+      filterable: false,
+    },
     {
       field: "cover",
       headerName: t("portfolio.fields.cover"),
@@ -241,29 +267,6 @@ export default function PortfolioList() {
           />
         );
       },
-    },
-    {
-      field: "actions",
-      headerName: t("actions.actions"),
-      renderCell: function render({ row }) {
-        return (
-          <Stack
-            direction="row"
-            spacing={0}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            <ShowButton hideText recordItemId={row.id} />
-            <EditButton hideText recordItemId={row.id} />
-            <DeleteButton hideText recordItemId={row.id} />
-          </Stack>
-        );
-      },
-      align: "center",
-      headerAlign: "center",
-      width: 150,
-      sortable: false,
-      filterable: false,
     },
   ];
 

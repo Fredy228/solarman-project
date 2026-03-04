@@ -16,8 +16,10 @@ import { DeleteButton, EditButton, List, useDataGrid } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 
+import { CACHE_TAGS } from "@/src/configs/cache-tags.config";
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
+import { revalidateCache } from "@/src/libs/revalidateCache";
 import ProtectProvider from "@/src/providers/protect-provider";
 import { goodsBadgeConfig } from "@/src/shared/configs/goods-badge.config";
 import { goodsCategoryConfig } from "@/src/shared/configs/goods-category.config";
@@ -166,6 +168,12 @@ export default function GoodsList() {
           );
         });
 
+        await revalidateCache([
+          CACHE_TAGS.goodsList,
+          CACHE_TAGS.goodsFilters,
+          CACHE_TAGS.goodsId(newRow.tag),
+        ]);
+
         return newRow;
       } catch (error) {
         console.error("Failed to update status:", error);
@@ -185,6 +193,39 @@ export default function GoodsList() {
   };
 
   const columns: GridColDef[] = [
+    {
+      field: "actions",
+      headerName: t("actions.actions"),
+      renderCell: function render({ row }) {
+        return (
+          <Stack
+            direction="row"
+            spacing={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <Link
+              href={PUBLIC_ROUTES.productsItem(row.tag)}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              style={{ display: "inline-flex" }}
+            >
+              <IconButton size="small" aria-label={t("actions.show")}>
+                <OpenInNewIcon fontSize="small" />
+              </IconButton>
+            </Link>
+            <EditButton hideText recordItemId={row.id} />
+            <DeleteButton hideText recordItemId={row.id} />
+          </Stack>
+        );
+      },
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+      sortable: false,
+      filterable: false,
+    },
     {
       field: "cover",
       headerName: t("goods.fields.cover"),
@@ -341,39 +382,6 @@ export default function GoodsList() {
           />
         );
       },
-    },
-    {
-      field: "actions",
-      headerName: t("actions.actions"),
-      renderCell: function render({ row }) {
-        return (
-          <Stack
-            direction="row"
-            spacing={0}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            <Link
-              href={PUBLIC_ROUTES.productsItem(row.tag)}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              style={{ display: "inline-flex" }}
-            >
-              <IconButton size="small" aria-label={t("actions.show")}>
-                <OpenInNewIcon fontSize="small" />
-              </IconButton>
-            </Link>
-            <EditButton hideText recordItemId={row.id} />
-            <DeleteButton hideText recordItemId={row.id} />
-          </Stack>
-        );
-      },
-      align: "center",
-      headerAlign: "center",
-      width: 150,
-      sortable: false,
-      filterable: false,
     },
   ];
 

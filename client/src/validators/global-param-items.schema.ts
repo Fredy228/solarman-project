@@ -90,7 +90,7 @@ export const globalParamContactsSchema = (t: TranslatorType) =>
       }),
   });
 
-export const globalParamExchangeRateSchema = () =>
+export const globalParamExchangeRateSchema = (t: TranslatorType) =>
   Joi.object({
     [ECurrency.UAH]: Joi.number().optional(),
     [ECurrency.EUR]: Joi.number().optional(),

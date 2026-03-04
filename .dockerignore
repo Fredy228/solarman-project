@@ -1,0 +1,16 @@
+# Reduce build context size for both client and server images
+**/node_modules
+**/.next
+**/dist
+**/build
+**/coverage
+**/.turbo
+**/.cache
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store

@@ -127,15 +127,10 @@ export default function GoodsEditPage() {
         CACHE_TAGS.goodsId(tagToInvalidate),
       ];
 
-      // If tag was changed, also invalidate the old tag cache
       if (oldTag && oldTag !== tagToInvalidate) {
         tagsToRevalidate.push(CACHE_TAGS.goodsId(oldTag));
-        console.log("Tag was changed, also invalidating old tag");
       }
-
-      console.log("Revalidating tags:", tagsToRevalidate);
       await revalidateCache(tagsToRevalidate);
-      console.log("Cache revalidation completed");
       list("goods");
     });
   };
