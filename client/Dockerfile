@@ -7,13 +7,20 @@ FROM base AS deps
 COPY client/package*.json ./
 RUN npm ci
 
-# ===== build =====
+# ===== build (production build artifacts) =====
 FROM base AS builder
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY client/ .
 COPY ./.env /app/.env
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
+
+# ===== dev (only deps, source mounted via volumes) =====
+FROM base AS dev
+ENV NODE_ENV=development
+COPY client/package*.json ./
+RUN npm ci
+CMD ["npm", "run", "dev"]
 
 # ===== production =====
 FROM base AS prod

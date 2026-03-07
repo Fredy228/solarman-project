@@ -16,6 +16,13 @@ COPY ./.env /app/.env
 RUN npm run prisma:generate \
     && npm run build
 
+# ===== dev (mount source via volumes, only install deps here) =====
+FROM base AS dev
+ENV NODE_ENV=development
+COPY server/package*.json ./
+RUN npm ci
+CMD ["sh", "-c", "npm run prisma:deploy && npm run prisma:generate && npm run start:dev"]
+
 # ===== production =====
 FROM base AS prod
 ENV NODE_ENV=production

@@ -2,9 +2,6 @@ services:
     client:
         build:
             target: dev
-        command: sh -c "
-            npm run dev
-            "
         volumes:
             - ./client:/app/
             - /app/node_modules
@@ -13,11 +10,6 @@ services:
     server:
         build:
             target: dev
-        command: sh -c "
-            && npm run prisma:deploy
-            && npm run prisma:generate
-            && npm run start:dev
-            "
         volumes:
             - ./server:/app/
             - /app/node_modules
