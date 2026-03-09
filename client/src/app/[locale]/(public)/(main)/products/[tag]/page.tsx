@@ -1,18 +1,11 @@
-import ShoppingCart from "@mui/icons-material/ShoppingCart";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-rate.api";
 import { getGoodsByTag } from "@/src/features/goods/api/goods-detail.api";
 import GoodsGallery from "@/src/features/goods/components/GoodsGallery";
+import ProductAddToCart from "@/src/features/goods/components/internal/ProductAddToCart";
 import type { IGoodsLocalized } from "@/src/features/goods/types/goods.interface";
 import { ECurrency } from "@/src/shared/types/currency.enum";
 import MuiBlockNoteViewer from "@/src/shared/ui/editor/BlockNoteRenderer";
@@ -158,6 +151,7 @@ export default async function ProductPage({ params }: Props) {
             color: "var(--color-text-g2)",
             display: "flex",
             flexDirection: "column",
+            alignItems: "flex-start",
             gap: 2,
           }}
         >
@@ -217,27 +211,19 @@ export default async function ProductPage({ params }: Props) {
             )}
           </Box>
 
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<ShoppingCart fontSize="small" />}
-            sx={{
-              alignSelf: "flex-start",
-              textTransform: "none",
-              color: "secondary.main",
-              borderColor: "secondary.main",
-              transition: "all 0.2s ease",
-              px: 2.5,
-              minHeight: 40,
-              "&:hover": {
-                bgcolor: "secondary.main",
-                color: "secondary.contrastText",
-                borderColor: "secondary.main",
-              },
+          <ProductAddToCart
+            locale={locale}
+            product={{
+              id: data.id,
+              title: data.title,
+              price: data.price,
+              discountPrice: data.discountPrice,
+              currency: data.currency,
+              cover: data.cover,
+              tag: data.tag,
             }}
-          >
-            {t("buttons.add")}
-          </Button>
+            size="small"
+          />
 
           {specsEntries.length > 0 && (
             <Box>

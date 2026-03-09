@@ -1,0 +1,13 @@
+{
+  "title": "Корзина",
+  "itemsCount": "{count, plural, one {# товар} few {# товара} many {# товаров} other {# товаров}}",
+  "empty": "Ваша корзина пуста",
+  "goToShop": "Перейти в магазин",
+  "price": "Цена",
+  "remove": "Удалить",
+  "sum": "Сумма",
+  "total": "Итого",
+  "continueShopping": "Продолжить покупки",
+  "clear": "Очистить",
+  "checkout": "Оформить заказ"
+}

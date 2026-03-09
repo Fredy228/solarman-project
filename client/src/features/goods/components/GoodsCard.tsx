@@ -1,9 +1,12 @@
+"use client";
+
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useCartStore } from "@/src/features/cart/store/useCartStore";
 import type { TExchangeRates } from "@/src/features/global-params/types/exchange-rate.type";
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 import type { TGoodsListItem } from "@/src/features/goods/types/goods.interface";
@@ -82,6 +85,7 @@ const BADGE_COLORS: Record<EBadgeType, { bgcolor: string; color: string }> = {
 
 export default function GoodsCard({ item, locale, exchangeRate }: Props) {
   const t = useTranslations("refine");
+  const addItem = useCartStore((state) => state.addItem);
   const formattedPrice = formatPrice(
     item.price,
     item.currency,
@@ -240,6 +244,7 @@ export default function GoodsCard({ item, locale, exchangeRate }: Props) {
           size="small"
           fullWidth
           startIcon={<ShoppingCart fontSize="small" />}
+          onClick={() => addItem(item)}
           sx={{
             textTransform: "none",
             color: "secondary.main",

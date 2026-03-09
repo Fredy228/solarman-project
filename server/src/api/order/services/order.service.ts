@@ -89,7 +89,7 @@ export class OrderService {
         );
       });
 
-    if (body.notes) message += `\nПримітки: ${body.notes}`;
+    if (body.notes) message += `\n<b>Примітки</b>: ${body.notes}`;
     if (body.utmTags) {
       const utmTagsString = Object.entries(body.utmTags)
         .map(([key, value]) => `${key} - ${value}`)

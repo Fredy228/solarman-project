@@ -1,5 +1,6 @@
 "use client";
 
+import { useCartStore } from "@/src/features/cart/store/useCartStore";
 import type { TContacts } from "@/src/features/global-params";
 import { Link as NavLink, usePathname } from "@/src/i18n/navigation";
 import IconLogoMain from "@/src/shared/ui/icons/IconLogoMain";
@@ -8,8 +9,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   AppBar,
+  Badge,
   Box,
   ClickAwayListener,
   Collapse,
@@ -32,7 +35,7 @@ import Popper from "@mui/material/Popper";
 import { useTheme } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import HeaderContacts from "./contacts/HeaderContacts";
 import { navItemList } from "./navigation.list";
 
@@ -50,8 +53,11 @@ export default function Header({ contactsData }: Props) {
     {},
   );
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isCartHydrated, setIsCartHydrated] = useState(false);
   const t = useTranslations("header");
   const pathname = usePathname();
+  const isProductsPage = pathname ? pathname.includes("/products") : false;
+  const cartCount = useCartStore((state) => state.getCount());
 
   useLayoutEffect(() => {
     const handleScroll = () => {
@@ -61,6 +67,23 @@ export default function Header({ contactsData }: Props) {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (useCartStore.persist.hasHydrated()) {
+        setIsCartHydrated(true);
+      }
+    }, 0);
+
+    const unsubscribe = useCartStore.persist.onFinishHydration(() => {
+      setIsCartHydrated(true);
+    });
+
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, []);
 
   const handleOpenMenu = (
@@ -293,6 +316,29 @@ export default function Header({ contactsData }: Props) {
           {/* Right: Language Switcher */}
           {isMdUp && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {isProductsPage ? (
+                <IconButton
+                  component={NavLink}
+                  href="/cart"
+                  aria-label="cart"
+                  color="inherit"
+                  sx={{
+                    p: 0.5,
+                    color: "var(--color-text-g3)",
+                    "&:hover": { color: "var(--color-primary)" },
+                  }}
+                >
+                  <Badge
+                    color="primary"
+                    badgeContent={isCartHydrated ? cartCount : 0}
+                    overlap="circular"
+                    invisible={!isCartHydrated || cartCount === 0}
+                    sx={{ "& .MuiBadge-badge": { color: "#fff" } }}
+                  >
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
+              ) : null}
               <LanguageSwitcher />
             </Box>
           )}
@@ -309,14 +355,40 @@ export default function Header({ contactsData }: Props) {
                 )}
               </>
             ) : (
-              <IconButton
-                edge="end"
-                color="inherit"
-                onClick={() => setOpen(true)}
-                aria-label="menu"
-              >
-                <MenuIcon />
-              </IconButton>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                {isProductsPage ? (
+                  <IconButton
+                    component={NavLink}
+                    href="/cart"
+                    aria-label="cart"
+                    color="inherit"
+                    onClick={() => setOpen(false)}
+                    sx={{
+                      p: 0.5,
+                      color: "var(--color-text-g3)",
+                      "&:hover": { color: "var(--color-primary)" },
+                    }}
+                  >
+                    <Badge
+                      color="primary"
+                      badgeContent={isCartHydrated ? cartCount : 0}
+                      overlap="circular"
+                      invisible={!isCartHydrated || cartCount === 0}
+                      sx={{ "& .MuiBadge-badge": { color: "#fff" } }}
+                    >
+                      <ShoppingCartIcon />
+                    </Badge>
+                  </IconButton>
+                ) : null}
+                <IconButton
+                  edge="end"
+                  color="inherit"
+                  onClick={() => setOpen(true)}
+                  aria-label="menu"
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Box>
             )}
           </Box>
         </Toolbar>

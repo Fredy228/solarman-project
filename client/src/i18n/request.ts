@@ -32,6 +32,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
         .default,
       servicesIncome: (await import(`${basePath}/services/income.json`))
         .default,
+      cart: (await import(`${basePath}/cart.json`)).default,
     },
   };
 });

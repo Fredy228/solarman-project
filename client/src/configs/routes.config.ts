@@ -1,3 +1,7 @@
+import envConfig from "./env.config";
+
+export const URL_BASE = `${envConfig.SERVER_PROTOCOL}://${envConfig.SERVER_HOST}`;
+
 export const ADMIN_AUTH_ROUTES = {
   login: "/admin/login",
 };
@@ -11,6 +15,7 @@ export const PUBLIC_ROUTES = {
     crediting: "/services/crediting",
     income: "/services/income",
   },
+  cart: "/cart",
   products: "/products",
   productsItem: (tag: string) => `/products/${tag}`,
   projects: "/projects",

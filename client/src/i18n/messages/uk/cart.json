@@ -1,0 +1,13 @@
+{
+  "title": "Кошик",
+  "itemsCount": "{count, plural, one {# товар} few {# товари} many {# товарів} other {# товарів}}",
+  "empty": "Ваш кошик порожній",
+  "goToShop": "Перейти до магазину",
+  "price": "Ціна",
+  "remove": "Видалити",
+  "sum": "Сума",
+  "total": "Разом",
+  "continueShopping": "Продовжити покупки",
+  "clear": "Очистити",
+  "checkout": "Оформити замовлення"
+}
