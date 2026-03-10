@@ -84,10 +84,16 @@ const convertToUahCents = (
   return Math.round(valueInCents * rate);
 };
 
-const getTitle = (title: any, locale: ELocale) => {
+const getTitle = (title: unknown, locale: ELocale) => {
   if (typeof title === "string") return title;
-  if (title && typeof title === "object") {
-    return title[locale] ?? Object.values(title)[0] ?? "";
+  if (title && typeof title === "object" && !Array.isArray(title)) {
+    const record = title as Record<string, unknown>;
+    const localized = record[locale];
+    if (typeof localized === "string") return localized;
+    const firstString = Object.values(record).find(
+      (value) => typeof value === "string",
+    );
+    return typeof firstString === "string" ? firstString : "";
   }
   return "";
 };

@@ -122,10 +122,16 @@ export default function CartClient({ locale, exchangeRate }: Props) {
 
   const totalForDisplay = totalInUahCents ?? total;
 
-  const getTitle = (title: any) => {
+  const getTitle = (title: unknown) => {
     if (typeof title === "string") return title;
-    if (title && typeof title === "object") {
-      return title[locale] ?? Object.values(title)[0] ?? "";
+    if (title && typeof title === "object" && !Array.isArray(title)) {
+      const record = title as Record<string, unknown>;
+      const localized = record[locale];
+      if (typeof localized === "string") return localized;
+      const firstString = Object.values(record).find(
+        (value) => typeof value === "string",
+      );
+      return typeof firstString === "string" ? firstString : "";
     }
     return "";
   };

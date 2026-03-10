@@ -35,7 +35,7 @@ import Popper from "@mui/material/Popper";
 import { useTheme } from "@mui/material/styles";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState, useSyncExternalStore } from "react";
 import HeaderContacts from "./contacts/HeaderContacts";
 import { navItemList } from "./navigation.list";
 
@@ -53,7 +53,11 @@ export default function Header({ contactsData }: Props) {
     {},
   );
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isCartHydrated, setIsCartHydrated] = useState(false);
+  const isCartHydrated = useSyncExternalStore(
+    (onStoreChange) => useCartStore.persist.onFinishHydration(onStoreChange),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
+  );
   const t = useTranslations("header");
   const pathname = usePathname();
   const isProductsPage = pathname ? pathname.includes("/products") : false;
@@ -67,23 +71,6 @@ export default function Header({ contactsData }: Props) {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (useCartStore.persist.hasHydrated()) {
-        setIsCartHydrated(true);
-      }
-    }, 0);
-
-    const unsubscribe = useCartStore.persist.onFinishHydration(() => {
-      setIsCartHydrated(true);
-    });
-
-    return () => {
-      clearTimeout(timeoutId);
-      unsubscribe();
-    };
   }, []);
 
   const handleOpenMenu = (
