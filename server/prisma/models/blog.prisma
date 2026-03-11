@@ -1,0 +1,17 @@
+model Blog {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    tag         String           @unique
+    title       LocalizedContent
+    description LocalizedContent
+    text        LocalizedContent
+
+    status ProductStatus @default(DRAFT)
+
+    cover String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("blog")
+}

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { AuthModule } from './auth/auth.module';
+import { BlogModule } from './blog/blog.module';
 import { GlobalParamModule } from './global-param/global-param.module';
 import { GoodsBrandModule } from './goods-brand/goods-brand.module';
 import { GoodsModule } from './goods/goods.module';
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     UploadModule,
     HashtagModule,
     OrderModule,
+    BlogModule,
   ],
 })
 export class ApiModule {}
