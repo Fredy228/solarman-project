@@ -4,19 +4,12 @@ import { Box, Card, CardMedia, Stack, Typography } from "@mui/material";
 import { useOne } from "@refinedev/core";
 import { DateField, Show, TagField } from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 
 import { IPortfolio } from "@/src/features/portfolio";
 import { LocalizedContent } from "@/src/shared/types/localized-content.type";
-
-const BlockNoteView = dynamic(
-  () => import("@/src/widgets/refine/BlockNoteView"),
-  {
-    ssr: false,
-    loading: () => <p>Загрузка описания...</p>,
-  },
-);
+import MuiBlockNoteViewer from "@/src/shared/ui/editor/BlockNoteRenderer";
 
 export default function PortfolioShow() {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +23,16 @@ export default function PortfolioShow() {
   const t = useTranslations("refine");
 
   const record = data?.data;
+
+  const descriptionContent = useMemo(() => {
+    const json = record?.description?.[locale as keyof LocalizedContent];
+    if (!json) return null;
+    try {
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }, [record?.description, locale]);
 
   return (
     <Show isLoading={isLoading}>
@@ -121,7 +124,7 @@ export default function PortfolioShow() {
             {t("portfolio.fields.description")}:
           </Typography>
           {record?.description && (
-            <BlockNoteView description={record.description} locale={locale} />
+            <MuiBlockNoteViewer content={descriptionContent} />
           )}
         </Stack>
       </Stack>

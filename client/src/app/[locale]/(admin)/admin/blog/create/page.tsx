@@ -6,10 +6,10 @@ import { Create } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { useTranslations } from "next-intl";
 
-import { IPortfolioForm, PortfolioForm } from "@/src/features/portfolio";
-import { portfolioSchema } from "@/src/validators/portfolio.schema";
+import { BlogForm, IBlogForm } from "@/src/features/blog";
+import { blogSchema } from "@/src/validators/blog.schema";
 
-export default function PortfolioCreate() {
+export default function BlogCreate() {
   const t = useTranslations("validation");
 
   const {
@@ -21,8 +21,8 @@ export default function PortfolioCreate() {
     watch,
     setValue,
     getValues,
-  } = useForm<IPortfolioForm, HttpError, IPortfolioForm>({
-    resolver: joiResolver(portfolioSchema(t)),
+  } = useForm<IBlogForm, HttpError, IBlogForm>({
+    resolver: joiResolver(blogSchema(t)),
     // defaultValues: {
     //   cover: null,
     //   titleUk: "",
@@ -37,7 +37,7 @@ export default function PortfolioCreate() {
 
   return (
     <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
-      <PortfolioForm
+      <BlogForm
         control={control}
         errors={errors}
         registerAction={register}

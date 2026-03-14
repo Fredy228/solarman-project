@@ -2,7 +2,7 @@ import Joi from "joi";
 
 import { TranslatorType } from "../i18n/types";
 
-export const portfolioSchema = (t: TranslatorType) =>
+export const blogSchema = (t: TranslatorType) =>
   Joi.object({
     cover: Joi.object()
       .instance(File)
@@ -54,79 +54,61 @@ export const portfolioSchema = (t: TranslatorType) =>
           t("tag.name") + t("common.max") + " 300 " + t("common.symbol"),
       }),
 
-    hashtags: Joi.array()
-      .items(
-        Joi.string()
-          .trim()
-          .min(5)
-          .max(300)
-          .required()
-          .messages({
-            "string.empty": t("hashtags.name") + t("common.required"),
-            "any.required": t("hashtags.name") + t("common.required"),
-            "string.min":
-              t("hashtags.name") + t("common.min") + " 5 " + t("common.symbol"),
-            "string.max":
-              t("hashtags.name") +
-              t("common.max") +
-              " 300 " +
-              t("common.symbol"),
-          }),
-      )
-      .min(1)
+    descriptionUk: Joi.string()
+      .trim()
+      .min(2)
+      .max(1500)
       .required()
       .messages({
-        "array.base": t("hashtags.name") + t("common.required"),
-        "array.min": t("hashtags.name") + t("common.required"),
-        "any.required": t("hashtags.name") + t("common.required"),
+        "string.empty": t("description.name") + t("common.required"),
+        "any.required": t("description.name") + t("common.required"),
+        "string.min":
+          t("description.name") + t("common.min") + " 2 " + t("common.symbol"),
+        "string.max":
+          t("description.name") +
+          t("common.max") +
+          " 1500 " +
+          t("common.symbol"),
       }),
 
-    date: Joi.any()
-      .custom((value, helpers) => {
-        if (!value) {
-          return value;
-        }
-        if (typeof value.isValid === "function" && value.isValid()) {
-          return value;
-        }
-        return helpers.error("date.base");
-      })
+    descriptionRu: Joi.string()
+      .trim()
+      .min(2)
+      .max(1500)
       .required()
       .messages({
-        "any.required": t("date.name") + t("common.required"),
-        "date.base": t("date.base"),
+        "string.empty": t("description.name") + t("common.required"),
+        "any.required": t("description.name") + t("common.required"),
+        "string.min":
+          t("description.name") + t("common.min") + " 2 " + t("common.symbol"),
+        "string.max":
+          t("description.name") +
+          t("common.max") +
+          " 1500 " +
+          t("common.symbol"),
       }),
 
-    descriptionUk: Joi.array()
+    textUk: Joi.array()
       .items(Joi.object().unknown(true))
       .min(1)
       .required()
       .messages({
-        "array.base": t("description.base"),
-        "array.min": t("description.min"),
+        "array.base": t("text.base"),
+        "array.min": t("text.min"),
       }),
 
-    descriptionRu: Joi.array()
+    textRu: Joi.array()
       .items(Joi.object().unknown(true))
       .min(1)
       .required()
       .messages({
-        "array.base": t("description.base"),
-        "array.min": t("description.min"),
-      }),
-
-    images: Joi.array()
-      .items(Joi.object().instance(File))
-      .max(10)
-      .optional()
-      .allow(null)
-      .messages({
-        "array.max": t("images.max") + " 10",
+        "array.base": t("text.base"),
+        "array.min": t("text.min"),
       }),
   });
 
-export const portfolioUpdateSchema = (t: TranslatorType) =>
-  portfolioSchema(t).keys({
+export const blogUpdateSchema = (t: TranslatorType) =>
+  blogSchema(t).keys({
     cover: Joi.object()
       .instance(File)
       .allow(null)

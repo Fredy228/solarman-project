@@ -20,6 +20,7 @@ import {
   Hash,
   Images,
   Mails,
+  Rss,
   Settings2,
   ShoppingBasket,
   ShoppingCart,
@@ -98,6 +99,17 @@ export default function AdminLayout({
                 meta: {
                   label: t("order.order"),
                   icon: <Mails />,
+                },
+              },
+              {
+                name: "blog",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.edit,
+                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.show,
+                meta: {
+                  label: t("blog.blog"),
+                  icon: <Rss />,
                 },
               },
               {

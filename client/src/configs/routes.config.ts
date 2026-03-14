@@ -54,6 +54,12 @@ export const ADMIN_PROTECTED_ROUTES = {
     edit: "/admin/order/edit/:id",
     show: "/admin/order/show/:id",
   },
+  blog: {
+    list: "/admin/blog",
+    create: "/admin/blog/create",
+    edit: "/admin/blog/edit/:id",
+    show: "/admin/blog/show/:id",
+  },
   contacts: "/admin/contacts",
   calculatorProfit: "/admin/calculator-profit",
   exchangeRate: "/admin/exchange-rate",
