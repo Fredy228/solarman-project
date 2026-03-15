@@ -19,6 +19,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       validation: (await import(`${basePath}/validation.json`)).default,
       home: (await import(`${basePath}/home.json`)).default,
       portfolio: (await import(`${basePath}/portfolio.json`)).default,
+      blog: (await import(`${basePath}/blog.json`)).default,
       about: (await import(`${basePath}/about.json`)).default,
       contacts: (await import(`${basePath}/contacts.json`)).default,
       projects: (await import(`${basePath}/projects.json`)).default,

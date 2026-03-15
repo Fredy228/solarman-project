@@ -1,0 +1,125 @@
+import { getBlogItem } from "@/src/features/blog/api/get-item-blog.api";
+import type { ELocale } from "@/src/i18n/routing";
+import MuiBlockNoteViewer, {
+  type Block,
+} from "@/src/shared/ui/editor/BlockNoteRenderer";
+import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
+import { Box, Container, Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { Clock, RefreshCw } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+
+type Props = {
+  params: Promise<{ locale: ELocale; tag: string }>;
+};
+
+export default async function BlogItemPage({ params }: Props) {
+  const { tag, locale } = await params;
+
+  const article = await getBlogItem({ tag });
+  if (!article) notFound();
+
+  const t = await getTranslations({ locale, namespace: "blog" });
+
+  let textContent: Block[] | null = null;
+  try {
+    textContent = JSON.parse(article.text[locale]) as Block[];
+  } catch {
+    textContent = null;
+  }
+
+  return (
+    <>
+      <Container maxWidth="xl">
+        <Box mt={10} mb={6}>
+          {/* Title */}
+          <Typography
+            component="h1"
+            fontSize={{ xs: "22px", md: "28px", lg: "34px" }}
+            fontWeight={700}
+            color="var(--color-text-g2)"
+            mb={2}
+          >
+            {article.title[locale]}
+          </Typography>
+
+          {/* Date */}
+          <Box className="flex flex-wrap items-center gap-x-5 gap-y-1" mb={5}>
+            <Box className="flex items-center gap-2">
+              <Clock size={16} color="var(--color-text-g4)" />
+              <Typography
+                component="span"
+                fontSize={14}
+                color="var(--color-text-g4)"
+              >
+                {t("item.published")}:{" "}
+                {dayjs(article.createdAt).format("DD.MM.YYYY")}
+              </Typography>
+            </Box>
+            <Box className="flex items-center gap-2">
+              <RefreshCw size={15} color="var(--color-text-g4)" />
+              <Typography
+                component="span"
+                fontSize={14}
+                color="var(--color-text-g4)"
+              >
+                {t("item.updated")}:{" "}
+                {dayjs(article.updatedAt).format("DD.MM.YYYY")}
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Cover + Description side by side */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 4,
+              mb: 6,
+              alignItems: { xs: "flex-start", md: "flex-start" },
+            }}
+          >
+            <Box
+              sx={{
+                flexShrink: 0,
+                width: { xs: "100%", md: "50%" },
+                borderRadius: "var(--border-radius-main)",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src={article.cover}
+                alt={article.title[locale]}
+                width={720}
+                height={480}
+                style={{ width: "100%", height: "auto", display: "block" }}
+                priority
+              />
+            </Box>
+
+            {article.description[locale] && (
+              <Typography
+                component="p"
+                variant="body1"
+                color="var(--color-text-g2)"
+                sx={{
+                  flex: 1,
+                  lineHeight: 1.8,
+                  fontSize: { xs: "15px", md: "16px" },
+                }}
+              >
+                {article.description[locale]}
+              </Typography>
+            )}
+          </Box>
+
+          {/* Full article text */}
+          {textContent && <MuiBlockNoteViewer content={textContent} />}
+        </Box>
+      </Container>
+      <ConsultSection />
+    </>
+  );
+}

@@ -20,6 +20,7 @@ export const PUBLIC_ROUTES = {
   productsItem: (tag: string) => `/products/${tag}`,
   projects: "/projects",
   blog: "/blog",
+  blogItem: (tag: string) => `/blog/${tag}`,
   about: "/about",
   contacts: "/contacts",
 };

@@ -54,7 +54,7 @@ export class GoodsController {
         },
         instructions: {
           nullable: true,
-          maxSize: 10,
+          maxSize: 20,
           allowType: ['application'],
           allowFormat: ['pdf', 'x-pdf', 'x-bzpdf', 'x-gzpdf'],
         },

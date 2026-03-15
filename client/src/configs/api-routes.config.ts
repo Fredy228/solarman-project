@@ -6,6 +6,7 @@ export const API_URL = API_URL_BASE + "/api";
 
 export const API_LIMITS_ITEMS = {
   portfolio: 12,
+  blog: 12,
   goods: 12,
 };
 
@@ -23,6 +24,11 @@ export const API_ROUTES = {
     list: "/portfolio",
     get: (id: string) => `/portfolio/${id}`,
     getByTag: (tag: string) => `/portfolio/tag/${tag}`,
+  },
+  blog: {
+    list: "/blog",
+    get: (id: string) => `/blog/${id}`,
+    getByTag: (tag: string) => `/blog/tag/${tag}`,
   },
   goods: {
     list: "/goods",

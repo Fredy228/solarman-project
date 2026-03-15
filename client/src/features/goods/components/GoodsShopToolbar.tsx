@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Button, MenuItem, TextField } from "@mui/material";
-import { Search } from "lucide-react";
+import { Box, Button, IconButton, MenuItem, TextField } from "@mui/material";
+import { Search, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -272,6 +272,18 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
                   <Search size={16} color="var(--color-text-light)" />
                 </Box>
               ),
+              endAdornment: searchValue ? (
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    setSearchValue("");
+                    updateQuery((params) => params.delete("title_like"));
+                  }}
+                  sx={{ color: "var(--color-text-light)" }}
+                >
+                  <X size={14} />
+                </IconButton>
+              ) : null,
             },
           }}
         />

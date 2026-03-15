@@ -34,7 +34,7 @@ type StyledText = {
   };
 };
 
-type Block = {
+export type Block = {
   id: string;
   type: string;
   props: Record<string, any>;

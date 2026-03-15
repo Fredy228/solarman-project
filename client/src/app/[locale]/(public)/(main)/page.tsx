@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
+import { getLastBlog } from "@/src/features/blog/api/get-last-blog.api";
+import BlogPreview from "@/src/features/blog/components/blog-preview/BlogPreview";
 import { EPageType } from "@/src/features/global-params";
 import { getCalculatorProfit } from "@/src/features/global-params/api/get-calculator-profit.api";
 import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-rate.api";
@@ -19,6 +21,7 @@ export default async function Home({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "home" });
 
   const portfolioList = await getLastPortfolio();
+  const blogList = await getLastBlog();
   const calculatorProfit = await getCalculatorProfit();
   const exchangeRate = await getExchangeRate();
 
@@ -36,6 +39,7 @@ export default async function Home({ params }: Props) {
         />
       )}
       {portfolioList && <PortfolioPreview data={portfolioList} />}
+      {blogList && <BlogPreview data={blogList} />}
       <ConsultSection />
     </>
   );

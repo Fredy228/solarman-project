@@ -19,9 +19,6 @@ export class BlogPublicService {
         tag,
         status: ProductStatus.PUBLISHED,
       },
-      include: {
-        hashtags: true,
-      },
     });
     if (!foundBlog)
       throw new CustomHttpExceptionUtil(
