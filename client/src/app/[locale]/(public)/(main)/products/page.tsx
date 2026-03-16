@@ -1,4 +1,5 @@
 import { Box, Container } from "@mui/material";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { API_LIMITS_ITEMS } from "@/src/configs/api-routes.config";
@@ -13,11 +14,44 @@ import {
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
 import { ELocale } from "@/src/i18n/routing";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
+import { buildMetadata } from "@/src/shared/utils/seo";
 
 type Props = {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: ELocale }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/products",
+    titles: {
+      uk: "Каталог обладнання для сонячних електростанцій",
+      ru: "Каталог оборудования для солнечных электростанций",
+    },
+    descriptions: {
+      uk: "Купіть сонячні панелі, акумулятори, інвертори та інше обладнання для СЕС в Одесі. Широкий асортимент, гарантія якості, доставка по Україні.",
+      ru: "Купите солнечные панели, аккумуляторы, инверторы и другое оборудование для СЭС в Одессе. Широкий ассортимент, гарантия качества, доставка по Украине.",
+    },
+    keywords: {
+      uk: [
+        "купити сонячні панелі",
+        "інвертор для СЕС",
+        "акумулятор LiFePO4",
+        "обладнання для сонячної станції",
+        "ціни на СЕС",
+      ],
+      ru: [
+        "купить солнечные панели",
+        "инвертор для СЭС",
+        "аккумулятор LiFePO4",
+        "оборудование для солнечной станции",
+        "цены на СЭС",
+      ],
+    },
+  });
+}
 
 const isGoodsCategory = (
   value: string | null | undefined,

@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { FileText } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
@@ -17,12 +18,56 @@ import ProductAddToCart from "@/src/features/goods/components/internal/ProductAd
 import type { IGoodsLocalized } from "@/src/features/goods/types/goods.interface";
 import { ECurrency } from "@/src/shared/types/currency.enum";
 import MuiBlockNoteViewer from "@/src/shared/ui/editor/BlockNoteRenderer";
+import { buildUrl, OG_IMAGE_DEFAULT, SITE_NAME } from "@/src/shared/utils/seo";
 
-import type { ELocale } from "@/src/i18n/routing";
+import { ELocale } from "@/src/i18n/routing";
 
 type Props = {
   params: Promise<{ locale: ELocale; tag: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, tag } = await params;
+  const data = await getGoodsByTag(tag);
+  if (!data) return {};
+
+  const title = `${data.title} | ${SITE_NAME}`;
+  const description = data.description
+    ? String(data.description)
+        .replace(/<[^>]*>/g, "")
+        .slice(0, 160)
+    : "";
+  const canonicalUrl = buildUrl(locale, `/products/${tag}`);
+  const ogImage = data.cover || OG_IMAGE_DEFAULT;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        "uk-UA": buildUrl(ELocale.UK, `/products/${tag}`),
+        "ru-UA": buildUrl(ELocale.RU, `/products/${tag}`),
+      },
+    },
+    openGraph: {
+      type: "website",
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      title,
+      description,
+      locale: locale === ELocale.UK ? "uk_UA" : "ru_UA",
+      alternateLocale: locale === ELocale.UK ? "ru_UA" : "uk_UA",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 const formatPrice = (
   priceInCents: number,

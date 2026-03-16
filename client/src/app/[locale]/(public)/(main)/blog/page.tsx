@@ -1,14 +1,48 @@
 import { Box } from "@mui/material";
+import type { Metadata } from "next";
 
 import { API_LIMITS_ITEMS } from "@/src/configs/api-routes.config";
 import { getBlogList } from "@/src/features/blog/api/get-blog-list.api";
+import type { ELocale } from "@/src/i18n/routing";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
+import { buildMetadata } from "@/src/shared/utils/seo";
 import BlogList from "@/src/widgets/blog/BlogList";
 
 type Props = {
+  params: Promise<{ locale: ELocale }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/blog",
+    titles: {
+      uk: "Блог про сонячну енергетику",
+      ru: "Блог о солнечной энергетике",
+    },
+    descriptions: {
+      uk: "Корисні статті про сонячні електростанції, енергонезалежність, обладнання та новини галузі від команди SolarMan.",
+      ru: "Полезные статьи о солнечных электростанциях, энергонезависимости, оборудовании и новостях отрасли от команды SolarMan.",
+    },
+    keywords: {
+      uk: [
+        "сонячна енергетика блог",
+        "СЕС статті",
+        "сонячні панелі поради",
+        "енергонезалежність",
+      ],
+      ru: [
+        "солнечная энергетика блог",
+        "СЭС статьи",
+        "солнечные панели советы",
+        "энергонезависимость",
+      ],
+    },
+  });
+}
 
 export default async function BlogPage({ searchParams }: Props) {
   const searchParamsResolved = await searchParams;

@@ -1,12 +1,14 @@
 import { getBlogItem } from "@/src/features/blog/api/get-item-blog.api";
-import type { ELocale } from "@/src/i18n/routing";
+import { ELocale } from "@/src/i18n/routing";
 import MuiBlockNoteViewer, {
   type Block,
 } from "@/src/shared/ui/editor/BlockNoteRenderer";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
+import { buildUrl, OG_IMAGE_DEFAULT, SITE_NAME } from "@/src/shared/utils/seo";
 import { Box, Container, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { Clock, RefreshCw } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -14,6 +16,47 @@ import { notFound } from "next/navigation";
 type Props = {
   params: Promise<{ locale: ELocale; tag: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, tag } = await params;
+  const article = await getBlogItem({ tag });
+  if (!article) return {};
+
+  const title = `${article.title[locale]} | ${SITE_NAME}`;
+  const description = article.description?.[locale] ?? "";
+  const canonicalUrl = buildUrl(locale, `/blog/${tag}`);
+  const ogImage = article.cover || OG_IMAGE_DEFAULT;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        "uk-UA": buildUrl(ELocale.UK, `/blog/${tag}`),
+        "ru-UA": buildUrl(ELocale.RU, `/blog/${tag}`),
+      },
+    },
+    openGraph: {
+      type: "article",
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      title,
+      description,
+      locale: locale === ELocale.UK ? "uk_UA" : "ru_UA",
+      alternateLocale: locale === ELocale.UK ? "ru_UA" : "uk_UA",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      publishedTime: article.createdAt,
+      modifiedTime: article.updatedAt,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
+}
 
 export default async function BlogItemPage({ params }: Props) {
   const { tag, locale } = await params;
