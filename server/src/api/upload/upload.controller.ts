@@ -4,13 +4,18 @@ import {
   HttpStatus,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
-import { UploadService } from './upload.service';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from 'src/common/guard/roles.guard';
 import { FileValidatorPipe } from 'src/common/pipe/validator-file.pipe';
+import { UploadService } from './upload.service';
 
+@UseGuards(RolesGuard)
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
@@ -18,6 +23,7 @@ export class UploadController {
   @Post('/image')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async saveImage(
     @UploadedFiles(
       new FileValidatorPipe({

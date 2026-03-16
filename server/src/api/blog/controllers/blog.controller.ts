@@ -9,12 +9,15 @@ import {
   Patch,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Blog } from '@prisma/client';
+import { Blog, Role } from '@prisma/client';
 import { JoiPipe } from 'nestjs-joi';
 
+import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from 'src/common/guard/roles.guard';
 import { Lang } from '../../../common/decorator/lang.decorator';
 import { Language } from '../../../common/enums/language.enum';
 import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
@@ -22,6 +25,7 @@ import { BlogCreateDto } from '../dto/blog.create.dto';
 import { BlogUpdateDto } from '../dto/blog.update.dto';
 import { BlogService } from '../services/blog.service';
 
+@UseGuards(RolesGuard)
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
@@ -29,6 +33,7 @@ export class BlogController {
   @Post('/')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'cover', maxCount: 1 }]))
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async create(
     @UploadedFiles(
       new FileValidatorPipe({
@@ -53,6 +58,7 @@ export class BlogController {
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileFieldsInterceptor([{ name: 'cover', maxCount: 1 }]))
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async update(
     @Param('id') id: string,
     @UploadedFiles(
@@ -77,6 +83,7 @@ export class BlogController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async deleteById(
     @Param('id') id: string,
     @Lang() lang: Language,
@@ -86,6 +93,7 @@ export class BlogController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async getOne(@Param('id') id: string, @Lang() lang: Language): Promise<Blog> {
     return this.blogService.getOne(id, lang);
   }

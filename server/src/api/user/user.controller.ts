@@ -8,11 +8,11 @@ import {
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
 
+import { Roles } from '../../common/decorator/roles.decorator';
+import { RolesGuard } from '../../common/guard/roles.guard';
+import { TUserPublic } from '../../common/types/user.type';
 import { RegisterDto } from './dto/register-user.dto';
 import { UserService } from './user.service';
-import { TUserPublic } from '../../common/types/user.type';
-import { RolesGuard } from '../../common/guard/roles.guard';
-import { Roles } from '../../common/decorator/roles.decorator';
 
 @UseGuards(RolesGuard)
 @Controller('user')

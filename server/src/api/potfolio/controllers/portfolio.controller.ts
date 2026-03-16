@@ -9,20 +9,24 @@ import {
   Patch,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Portfolio, Role } from '@prisma/client';
 import { JoiPipe } from 'nestjs-joi';
-import { Portfolio } from '@prisma/client';
 
-import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
-import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
-import { PortfolioService } from '../services/portfolio.service';
-import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
+import { Roles } from 'src/common/decorator/roles.decorator';
+import { RolesGuard } from 'src/common/guard/roles.guard';
 import { Lang } from '../../../common/decorator/lang.decorator';
 import { Language } from '../../../common/enums/language.enum';
+import { FileValidatorPipe } from '../../../common/pipe/validator-file.pipe';
 import { PortfolioDeleteImageDto } from '../dto/portfolio-delete-image.dto';
+import { PortfolioCreateDto } from '../dto/portfolio.create.dto';
+import { PortfolioUpdateDto } from '../dto/portfolio.update.dto';
+import { PortfolioService } from '../services/portfolio.service';
 
+@UseGuards(RolesGuard)
 @Controller('portfolio')
 export class PortfolioController {
   constructor(private readonly portfolioService: PortfolioService) {}
@@ -35,6 +39,7 @@ export class PortfolioController {
       { name: 'images', maxCount: 10 },
     ]),
   )
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async create(
     @UploadedFiles(
       new FileValidatorPipe({
@@ -69,6 +74,7 @@ export class PortfolioController {
       { name: 'images', maxCount: 10 },
     ]),
   )
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async update(
     @Param('id') id: string,
     @UploadedFiles(
@@ -99,6 +105,7 @@ export class PortfolioController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async deleteById(
     @Param('id') id: string,
     @Lang() lang: Language,
@@ -108,6 +115,7 @@ export class PortfolioController {
 
   @Delete('/image/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async deleteImageById(
     @Param('id') id: string,
     @Body(JoiPipe) body: PortfolioDeleteImageDto,
@@ -118,6 +126,7 @@ export class PortfolioController {
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.MODERATOR)
   async getOne(
     @Param('id') id: string,
     @Lang() lang: Language,

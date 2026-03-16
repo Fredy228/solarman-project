@@ -21,7 +21,6 @@ model User {
 
 enum Role {
   ADMIN
-  ANALYST
   MODERATOR
   TECHNICIAN
 }
