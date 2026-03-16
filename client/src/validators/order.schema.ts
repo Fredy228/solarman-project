@@ -80,15 +80,11 @@ export const orderConsultationSchema = (t: TranslatorType) =>
       }),
     phone: Joi.string()
       .trim()
-      .min(1)
-      .max(20)
+      .pattern(/^\d{9}$/)
       .required()
       .messages({
         "string.empty": t("phone.name") + t("common.required"),
         "any.required": t("phone.name") + t("common.required"),
-        "string.min":
-          t("phone.name") + t("common.min") + " 1 " + t("common.symbol"),
-        "string.max":
-          t("phone.name") + t("common.max") + " 20 " + t("common.symbol"),
+        "string.pattern.base": t("phone.base"),
       }),
   });

@@ -120,6 +120,7 @@ export const GoodsForm: FC<GoodsFormProps> = ({
             label={isEdit ? t("common.update") : t("common.upload")}
             error={!!errors.cover}
             helperText={errors?.cover?.message}
+            maxFileSizeBytes={10000000}
           />
         )}
       />
@@ -150,6 +151,8 @@ export const GoodsForm: FC<GoodsFormProps> = ({
             multiple
             error={!!errors.images}
             helperText={errors.images?.message}
+            maxFileSizeBytes={10000000}
+            maxFiles={10}
           />
         )}
       />
@@ -177,6 +180,8 @@ export const GoodsForm: FC<GoodsFormProps> = ({
             allowedExtensions={["pdf", "x-pdf", "x-bzpdf", "x-gzpdf"]}
             error={!!errors.instructions}
             helperText={errors.instructions?.message}
+            maxFileSizeBytes={20000000}
+            maxFiles={5}
           />
         )}
       />

@@ -2,7 +2,8 @@
 
 import { Close } from "@mui/icons-material";
 import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface ImageUploadProps {
   value: File | File[] | null;
@@ -11,7 +12,16 @@ interface ImageUploadProps {
   label: string;
   error?: boolean;
   helperText?: string;
+  /** Maximum size per file in bytes */
+  maxFileSizeBytes?: number;
+  /** Maximum number of files (only for multiple mode) */
+  maxFiles?: number;
 }
+
+const formatBytes = (bytes: number): string => {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} КБ`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`;
+};
 
 export const ImageUpload = ({
   value,
@@ -20,20 +30,49 @@ export const ImageUpload = ({
   label,
   error = false,
   helperText,
+  maxFileSizeBytes,
+  maxFiles,
 }: ImageUploadProps) => {
+  const t = useTranslations("validation");
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      if (multiple) {
-        const newFiles = Array.from(event.target.files);
-        const currentFiles = Array.isArray(value) ? value : [];
-        onChange([...currentFiles, ...newFiles]);
-      } else {
-        onChange(event.target.files[0]);
+    if (!event.target.files) return;
+
+    setValidationError(null);
+    const newFiles = Array.from(event.target.files);
+
+    if (maxFileSizeBytes !== undefined) {
+      const oversized = newFiles.find((f) => f.size > maxFileSizeBytes);
+      if (oversized) {
+        setValidationError(
+          t("upload.fileSizeExceeded", {
+            filename: oversized.name,
+            size: formatBytes(maxFileSizeBytes),
+          }),
+        );
+        event.target.value = "";
+        return;
       }
-      event.target.value = "";
     }
+
+    if (multiple) {
+      const currentFiles = Array.isArray(value) ? value : [];
+      const combined = [...currentFiles, ...newFiles];
+
+      if (maxFiles !== undefined && combined.length > maxFiles) {
+        setValidationError(t("upload.maxFilesExceeded", { count: maxFiles }));
+        event.target.value = "";
+        return;
+      }
+
+      onChange(combined);
+    } else {
+      onChange(newFiles[0]);
+    }
+
+    event.target.value = "";
   };
 
   const handleRemove = useCallback(
@@ -86,6 +125,15 @@ export const ImageUpload = ({
           ref={inputRef}
         />
       </Button>
+      {validationError && (
+        <Typography
+          color="error"
+          variant="caption"
+          sx={{ display: "block", mt: 1 }}
+        >
+          {validationError}
+        </Typography>
+      )}
       {helperText && (
         <Typography
           color="error"

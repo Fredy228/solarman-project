@@ -92,6 +92,7 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
             label={isEdit ? t("common.update") : t("common.upload")}
             error={!!errors.cover}
             helperText={errors?.cover?.message}
+            maxFileSizeBytes={10000000}
           />
         )}
       />
@@ -122,6 +123,8 @@ export const PortfolioForm: FC<PortfolioFormProps> = ({
             multiple
             error={!!errors.images}
             helperText={errors.images?.message}
+            maxFileSizeBytes={10000000}
+            maxFiles={10}
           />
         )}
       />

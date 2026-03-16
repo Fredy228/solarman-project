@@ -1,4 +1,12 @@
-import { Box, Container, Divider, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { FileText } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
@@ -224,6 +232,48 @@ export default async function ProductPage({ params }: Props) {
             }}
             size="small"
           />
+
+          {data.instructions && data.instructions.length > 0 && (
+            <Box width="100%">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontWeight={600}
+                mb={1}
+              >
+                {t("goods.fields.instructions")}
+              </Typography>
+              <Stack spacing={1}>
+                {data.instructions.map((instruction) => (
+                  <Button
+                    key={instruction.filePath}
+                    component="a"
+                    href={instruction.filePath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<FileText size={16} />}
+                    sx={{
+                      justifyContent: "flex-start",
+                      textAlign: "left",
+                      textTransform: "none",
+                      fontWeight: 500,
+                      fontSize: 13,
+                      px: 1.5,
+                      py: 0.75,
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {instruction.fileName}
+                  </Button>
+                ))}
+              </Stack>
+            </Box>
+          )}
 
           {specsEntries.length > 0 && (
             <Box>

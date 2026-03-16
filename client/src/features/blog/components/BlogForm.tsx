@@ -86,6 +86,7 @@ export const BlogForm: FC<BlogFormProps> = ({
             label={isEdit ? t("common.update") : t("common.upload")}
             error={!!errors.cover}
             helperText={errors?.cover?.message}
+            maxFileSizeBytes={10000000}
           />
         )}
       />

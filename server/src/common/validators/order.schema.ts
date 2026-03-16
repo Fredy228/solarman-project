@@ -8,7 +8,7 @@ export const orderSchema = Joi.object({
     .min(1)
     .allow(null, ''),
   name: Joi.string().trim().min(1).max(100),
-  phone: Joi.string().trim().min(1).max(20),
+  phone: Joi.string().trim().length(12),
   notes: Joi.string().trim().min(1).max(1000).allow(null, ''),
   utmTags: Joi.object({
     utm_source: Joi.string().trim().min(1).max(100).optional(),

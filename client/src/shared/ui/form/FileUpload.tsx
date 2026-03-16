@@ -2,7 +2,8 @@
 
 import { Close } from "@mui/icons-material";
 import { Box, Button, IconButton, Paper, Typography } from "@mui/material";
-import { useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { useCallback, useRef, useState } from "react";
 
 interface FileUploadProps {
   value: File | File[] | null;
@@ -12,7 +13,16 @@ interface FileUploadProps {
   allowedExtensions?: string[]; // e.g. ["pdf","docx"]
   error?: boolean;
   helperText?: string;
+  /** Maximum size per file in bytes */
+  maxFileSizeBytes?: number;
+  /** Maximum number of files (only for multiple mode) */
+  maxFiles?: number;
 }
+
+const formatBytes = (bytes: number): string => {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} КБ`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} МБ`;
+};
 
 export const FileUpload = ({
   value,
@@ -22,21 +32,52 @@ export const FileUpload = ({
   allowedExtensions,
   error = false,
   helperText,
+  maxFileSizeBytes,
+  maxFiles,
 }: FileUploadProps) => {
+  const t = useTranslations("validation");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      if (multiple) {
-        const newFiles = Array.from(event.target.files);
-        const currentFiles = Array.isArray(value) ? value : [];
-        onChange([...currentFiles, ...newFiles]);
-      } else {
-        onChange(event.target.files[0]);
+    if (!event.target.files) return;
+
+    setValidationError(null);
+    const newFiles = Array.from(event.target.files);
+
+    if (maxFileSizeBytes !== undefined) {
+      const oversized = newFiles.find((f) => f.size > maxFileSizeBytes);
+      if (oversized) {
+        setValidationError(
+          t("upload.fileSizeExceeded", {
+            filename: oversized.name,
+            size: formatBytes(maxFileSizeBytes),
+          }),
+        );
+        event.target.value = "";
+        return;
       }
-      try {
-        (event.target as HTMLInputElement).value = "";
-      } catch (e) {
-        console.error(e);
+    }
+
+    if (multiple) {
+      const currentFiles = Array.isArray(value) ? value : [];
+      const combined = [...currentFiles, ...newFiles];
+
+      if (maxFiles !== undefined && combined.length > maxFiles) {
+        setValidationError(t("upload.maxFilesExceeded", { count: maxFiles }));
+        event.target.value = "";
+        return;
       }
+
+      onChange(combined);
+    } else {
+      onChange(newFiles[0]);
+    }
+
+    try {
+      event.target.value = "";
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -48,19 +89,15 @@ export const FileUpload = ({
       } else {
         onChange(null);
       }
-      try {
-        const input =
-          document.querySelector<HTMLInputElement>("input[type=file]");
-        if (input) input.value = "";
-      } catch (e) {
-        console.error(e);
+      if (inputRef.current) {
+        inputRef.current.value = "";
       }
     },
-    [value, onChange]
+    [value, onChange],
   );
 
   const files = (Array.isArray(value) ? value : value ? [value] : []).filter(
-    (f): f is File => f instanceof File
+    (f): f is File => f instanceof File,
   );
 
   const acceptAttr = allowedExtensions
@@ -81,8 +118,18 @@ export const FileUpload = ({
           multiple={multiple}
           accept={acceptAttr}
           onChange={handleFileChange}
+          ref={inputRef}
         />
       </Button>
+      {validationError && (
+        <Typography
+          color="error"
+          variant="caption"
+          sx={{ display: "block", mt: 1 }}
+        >
+          {validationError}
+        </Typography>
+      )}
       {helperText && (
         <Typography
           color="error"

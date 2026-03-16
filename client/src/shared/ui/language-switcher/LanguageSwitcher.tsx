@@ -35,6 +35,11 @@ export const LanguageSwitcher = () => {
           "& .MuiOutlinedInput-notchedOutline": { border: "none" },
           "& .MuiSelect-icon": { color: "inherit" },
         }}
+        MenuProps={{
+          PaperProps: {
+            sx: { borderRadius: "10px" },
+          },
+        }}
         inputProps={{ "aria-label": "Switch language" }}
       >
         <MenuItem value="uk">UK</MenuItem>

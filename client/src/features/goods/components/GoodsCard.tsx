@@ -5,7 +5,9 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useRef } from "react";
 
+import { useCartAnimation } from "@/src/features/cart/context/CartAnimationContext";
 import { useCartStore } from "@/src/features/cart/store/useCartStore";
 import type { TExchangeRates } from "@/src/features/global-params/types/exchange-rate.type";
 import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
@@ -86,6 +88,8 @@ const BADGE_COLORS: Record<EBadgeType, { bgcolor: string; color: string }> = {
 export default function GoodsCard({ item, locale, exchangeRate }: Props) {
   const t = useTranslations("refine");
   const addItem = useCartStore((state) => state.addItem);
+  const { triggerFly } = useCartAnimation();
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const formattedPrice = formatPrice(
     item.price,
     item.currency,
@@ -240,11 +244,15 @@ export default function GoodsCard({ item, locale, exchangeRate }: Props) {
 
       <Box sx={{ px: 1.5, pb: 1.5, pt: 0, mt: "auto" }}>
         <Button
+          ref={buttonRef}
           variant="outlined"
           size="small"
           fullWidth
           startIcon={<ShoppingCart fontSize="small" />}
-          onClick={() => addItem(item)}
+          onClick={() => {
+            addItem(item);
+            if (buttonRef.current) triggerFly(buttonRef.current);
+          }}
           sx={{
             textTransform: "none",
             color: "secondary.main",

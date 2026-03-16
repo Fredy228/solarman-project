@@ -309,6 +309,7 @@ export default function Header({ contactsData }: Props) {
                   href="/cart"
                   aria-label="cart"
                   color="inherit"
+                  data-cart-icon
                   sx={{
                     p: 0.5,
                     color: "var(--color-text-g3)",
@@ -350,6 +351,7 @@ export default function Header({ contactsData }: Props) {
                     aria-label="cart"
                     color="inherit"
                     onClick={() => setOpen(false)}
+                    data-cart-icon
                     sx={{
                       p: 0.5,
                       color: "var(--color-text-g3)",
