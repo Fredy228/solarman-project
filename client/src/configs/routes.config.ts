@@ -27,6 +27,12 @@ export const PUBLIC_ROUTES = {
 
 export const ADMIN_PROTECTED_ROUTES = {
   dashboard: "/admin",
+  user: {
+    list: "/admin/user",
+    create: "/admin/user/create",
+    edit: "/admin/user/edit/:id",
+    show: "/admin/user/show/:id",
+  },
   portfolio: {
     list: "/admin/portfolio",
     create: "/admin/portfolio/create",

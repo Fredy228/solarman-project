@@ -1,7 +1,7 @@
 import { AccessControlProvider } from "@refinedev/core";
 
-import { authProvider } from "./authProvider";
 import { EUserRole, IUser } from "@/src/features/user";
+import { authProvider } from "./authProvider";
 
 export const accessControlProvider: AccessControlProvider = {
   can: async ({ resource, action }) => {
@@ -13,21 +13,15 @@ export const accessControlProvider: AccessControlProvider = {
       return { can: false };
     }
 
-    if (role === EUserRole.ADMIN) {
+    if (role === EUserRole.ADMIN || role === EUserRole.TECHNICIAN) {
       return { can: true };
     }
 
     if (role === EUserRole.MODERATOR) {
-      if (resource === "users") {
+      if (resource === "user") {
         return { can: false };
       }
       return { can: true };
-    }
-
-    if (role === EUserRole.ANALYST) {
-      if (action === "list" || action === "show") {
-        return { can: true };
-      }
     }
 
     return { can: false };

@@ -1,10 +1,8 @@
-import { HttpStatus, Injectable, Logger, Optional } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 
-import { UserErorMessage } from '../../common/messages/error/user.message';
-import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -44,35 +42,16 @@ export class TelegramService {
     }
   }
 
-  async sendMessageToUser(userId: string, message: string): Promise<void> {
+  async sendMessageToUser(telegramId: string, message: string): Promise<void> {
     if (!this.enabled) return;
 
-    const user = await this.prisma.user.findFirst({
-      where: { id: userId },
-      select: { telegramId: true, name: true },
-    });
-
-    if (!user) {
-      throw new CustomHttpExceptionUtil(
-        HttpStatus.NOT_FOUND,
-        UserErorMessage.NOT_FOUND,
-      );
-    }
-
-    if (!user.telegramId) {
-      this.logger.warn(
-        `User ${userId} (${user.name}) has no linked Telegram account`,
-      );
-      return;
-    }
-
     try {
-      await this.bot!.telegram.sendMessage(user.telegramId, message, {
+      await this.bot!.telegram.sendMessage(telegramId, message, {
         parse_mode: 'HTML',
       });
     } catch (error) {
       this.logger.error(
-        `Failed to send Telegram message to user ${userId}`,
+        `Failed to send Telegram message to telegramId ${telegramId}`,
         error as Error,
       );
     }

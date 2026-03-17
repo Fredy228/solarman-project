@@ -13,6 +13,13 @@ export class TelegramUpdate {
 
   @Start()
   async onStart(@Ctx() ctx: Context): Promise<void> {
+    if (ctx.chat?.type !== 'private') {
+      await ctx.reply(
+        "Щоб прив'язати акаунт, напишіть мені в приватні повідомлення.",
+      );
+      return;
+    }
+
     await ctx.reply(
       "Щоб прив'язати акаунт, натисніть кнопку нижче й поділіться своїм номером телефону.",
       Markup.keyboard([
@@ -30,8 +37,6 @@ export class TelegramUpdate {
       message && 'contact' in message
         ? (message as Message.ContactMessage).contact
         : undefined;
-
-    console.log('contact', contact);
 
     if (!contact) return;
 

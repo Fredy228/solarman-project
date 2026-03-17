@@ -24,6 +24,7 @@ import {
   Settings2,
   ShoppingBasket,
   ShoppingCart,
+  Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import React from "react";
@@ -88,6 +89,17 @@ export default function AdminLayout({
                 meta: {
                   label: t("common.site"),
                   icon: <FileCodeCorner />,
+                },
+              },
+              {
+                name: "user",
+                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.list,
+                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.create,
+                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.edit,
+                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.show,
+                meta: {
+                  label: t("user.user"),
+                  icon: <Users />,
                 },
               },
               {

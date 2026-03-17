@@ -1,14 +1,18 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Role } from '@prisma/client';
+import { Role, type Prisma, type User } from '@prisma/client';
 
-import { RegisterDto } from './dto/register-user.dto';
 import { AuthErrorMessage } from '../../common/messages/error/auth.message';
+import { UserErorMessage } from '../../common/messages/error/user.message';
+import { TUserPublic } from '../../common/types/user.type';
 import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
+import { generatePrismaDateFilter } from '../../helpers/prisma/generate-prisma-date-filter';
+import { generatePrismaPaginateOption } from '../../helpers/prisma/generate-prisma-paginate-option';
 import { HashService } from '../../libs/hash/hash.service';
 import { PrismaService } from '../../libs/prisma/prisma.service';
-import { TUserPublic } from '../../common/types/user.type';
-import { UserErorMessage } from '../../common/messages/error/user.message';
+import { RegisterDto } from './dto/register-user.dto';
+import type { UpdateUserDto } from './dto/update-user.dto';
+import type { UserGetManyQueryDto } from './dto/user-get-many.query.dto';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -41,7 +45,7 @@ export class UserService implements OnModuleInit {
       email: adminEmail,
       password: adminPass,
       name: 'Admin',
-      role: Role.ADMIN,
+      role: Role.TECHNICIAN,
     })
       .then(() => this.logger.log('Successful created admin'))
       .catch((err) => this.logger.error('Error create admin', err));
@@ -64,7 +68,7 @@ export class UserService implements OnModuleInit {
     });
     if (existUser)
       throw new CustomHttpExceptionUtil(
-        HttpStatus.UNAUTHORIZED,
+        HttpStatus.BAD_REQUEST,
         AuthErrorMessage.REGISTER_USER_EXIST,
       );
 
@@ -99,6 +103,9 @@ export class UserService implements OnModuleInit {
         name: true,
         role: true,
         isBlocked: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -109,5 +116,100 @@ export class UserService implements OnModuleInit {
       );
 
     return user;
+  }
+
+  async getAll(query: UserGetManyQueryDto) {
+    const {
+      _start,
+      _end,
+      _sort,
+      _order,
+      createdAt,
+      createdAt_gte,
+      createdAt_lte,
+      updatedAt,
+      updatedAt_gte,
+      updatedAt_lte,
+      ...filters
+    } = query;
+
+    const whereOption: Prisma.UserWhereInput = {
+      email: {
+        contains: filters.email_like,
+        mode: 'insensitive',
+      },
+      name: {
+        contains: filters.name_like,
+        mode: 'insensitive',
+      },
+      phone: {
+        contains: filters.phone_like,
+        mode: 'default',
+      },
+      role: filters.role,
+      isBlocked: filters.isBlocked,
+      createdAt: generatePrismaDateFilter({
+        date: createdAt,
+        date_gte: createdAt_gte,
+        date_lte: createdAt_lte,
+      }),
+      updatedAt: generatePrismaDateFilter({
+        date: updatedAt,
+        date_gte: updatedAt_gte,
+        date_lte: updatedAt_lte,
+      }),
+    };
+
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        ...generatePrismaPaginateOption(_start, _end, _sort, _order),
+        where: whereOption,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          phone: true,
+          role: true,
+          isBlocked: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.user.count({
+        where: whereOption,
+      }),
+    ]);
+
+    return { data, total };
+  }
+
+  async updateUser(userId: string, body: UpdateUserDto): Promise<User> {
+    const user = await this.findUserById(userId);
+
+    const updateData: Prisma.UserUpdateInput = {
+      ...body,
+    };
+
+    if (body.password) {
+      const hashPass = await this.hashService.createHash(body.password);
+      updateData.password = hashPass;
+    }
+
+    return this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: updateData,
+    });
+  }
+
+  async deleteById(id: string) {
+    await this.findUserById(id);
+
+    await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

@@ -17,6 +17,11 @@ export const API_ROUTES = {
     refresh: "/auth/refresh",
     logout: "/auth/logout",
   },
+  user: {
+    list: "/user",
+    update: (id: string) => `/user/${id}`,
+    get: (id: string) => `/user/${id}`,
+  },
   hashtag: {
     list: "/hashtag",
   },

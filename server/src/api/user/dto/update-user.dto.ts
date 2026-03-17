@@ -5,15 +5,18 @@ import { JoiSchema, JoiSchemaOptions } from 'nestjs-joi';
 JoiSchemaOptions({
   allowUnknown: false,
 });
-export class RegisterDto {
-  @JoiSchema(Joi.string().email().required())
-  email: string;
+export class UpdateUserDto {
+  @JoiSchema(Joi.string().email().optional())
+  email?: string;
 
-  @JoiSchema(Joi.string().min(1).max(100).required())
-  name: string;
+  @JoiSchema(Joi.string().min(1).max(100).optional())
+  name?: string;
 
   @JoiSchema(Joi.string().trim().length(12).optional())
   phone?: string;
+
+  @JoiSchema(Joi.boolean().optional())
+  isBlocked?: boolean;
 
   @JoiSchema(
     Joi.string()
@@ -26,14 +29,14 @@ export class RegisterDto {
       .pattern(/[A-Z]/, 'uppercase_required')
       .pattern(/[0-9]/, 'number_required')
       .pattern(/[\W_]/, 'special_char_required')
-      .required(),
+      .optional(),
   )
-  password: string;
+  password?: string;
 
   @JoiSchema(
     Joi.string()
       .valid(...Object.values(Role))
-      .required(),
+      .optional(),
   )
-  role: Role;
+  role?: Role;
 }
