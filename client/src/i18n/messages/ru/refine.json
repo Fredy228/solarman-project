@@ -365,5 +365,37 @@
         "ALUMINIUM": "Алюминий"
       }
     }
+  },
+  "change-password": {
+    "title": "Изменить пароль",
+    "fields": {
+      "currentPassword": "Текущий пароль",
+      "newPassword": "Новый пароль",
+      "confirmPassword": "Подтверждение нового пароля"
+    },
+    "success": "Пароль успешно изменён",
+    "errors": {
+      "passwordsMismatch": "Пароли не совпадают",
+      "wrongCurrentPassword": "Текущий пароль неверный"
+    }
+  },
+  "forgot-password": {
+    "title": "Забыли пароль?",
+    "subtitle": "Введите почту аккаунта. Код подтверждения будет отправлен в Telegram.",
+    "submit": "Отправить код",
+    "backToLogin": "← Вернуться ко входу",
+    "codeSent": "Код отправлен в Telegram",
+    "invalidEmail": "Неверный формат почты"
+  },
+  "reset-password": {
+    "title": "Сброс пароля",
+    "subtitle": "Введите код из Telegram и новый пароль.",
+    "submit": "Изменить пароль",
+    "backToForgot": "← Назад",
+    "success": "Пароль успешно изменён. Войдите с новым паролем.",
+    "invalidCode": "Код должен содержать 6 цифр",
+    "fields": {
+      "code": "Код подтверждения"
+    }
   }
 }

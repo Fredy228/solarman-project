@@ -1,15 +1,19 @@
 import { Logger } from '@nestjs/common';
-import { Ctx, On, Start, Update } from 'nestjs-telegraf';
+import { Action, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import { Context, Markup } from 'telegraf';
 import { Message } from 'telegraf/types';
 
+import { BlocklistService } from '../blocklist/blocklist.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Update()
 export class TelegramUpdate {
   private readonly logger = new Logger(TelegramUpdate.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly blocklist: BlocklistService,
+  ) {}
 
   @Start()
   async onStart(@Ctx() ctx: Context): Promise<void> {
@@ -85,5 +89,31 @@ export class TelegramUpdate {
       `✅ Акаунт успішно прив'язано! Ласкаво просимо, ${user.name}.`,
       Markup.removeKeyboard(),
     );
+  }
+
+  @Action(/^block_user:(.+)$/)
+  async onBlockUser(@Ctx() ctx: Context): Promise<void> {
+    const match =
+      ctx.callbackQuery && 'data' in ctx.callbackQuery
+        ? ctx.callbackQuery.data.match(/^block_user:(.+)$/)
+        : null;
+
+    const userId = match?.[1];
+    if (!userId) {
+      await ctx.answerCbQuery('❌ Помилка: userId не знайдено.');
+      return;
+    }
+
+    try {
+      await this.blocklist.block(userId);
+      await ctx.answerCbQuery('✅ Акаунт заблоковано.');
+      await ctx.editMessageReplyMarkup({ inline_keyboard: [] });
+      await ctx.reply(`🚫 Акаунт заблоковано. Усі активні сесії завершено.`, {
+        parse_mode: 'HTML',
+      });
+    } catch (err) {
+      this.logger.error(`Failed to block user ${userId}`, err);
+      await ctx.answerCbQuery('❌ Не вдалося заблокувати акаунт.');
+    }
   }
 }

@@ -4,20 +4,25 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { UserDevice } from '@prisma/client';
 import { type Request, type Response } from 'express';
-import { ConfigService } from '@nestjs/config';
 import { AgentDetails } from 'express-useragent';
 
-import { AuthService } from './auth.service';
+import { JoiPipe } from 'nestjs-joi';
 import { IpAddress } from '../../common/decorator/ip-address.decorator';
-import { LoginDto } from './dto/login.dto';
 import { ETokenAuth } from '../../common/enums/token-auth.enum';
 import { type ProtectReqType } from '../../common/types/request.type';
+import { AuthService } from './auth.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { LoginDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -94,5 +99,44 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   authCheck(@Req() req: ProtectReqType) {
     return req.user;
+  }
+
+  @Patch('/change-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changePassword(
+    @Req() req: ProtectReqType,
+    @Body(JoiPipe) body: ChangePasswordDto,
+    @Res() res: import('express').Response,
+  ) {
+    await this.authService.changePassword(
+      req.user.id,
+      body.currentPassword,
+      body.newPassword,
+    );
+    res.status(HttpStatus.NO_CONTENT).end();
+  }
+
+  @Post('/forgot-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async forgotPassword(
+    @Body(JoiPipe) body: ForgotPasswordDto,
+    @Res() res: import('express').Response,
+  ) {
+    await this.authService.requestPasswordReset(body.email);
+    res.status(HttpStatus.NO_CONTENT).end();
+  }
+
+  @Post('/reset-password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async resetPassword(
+    @Body(JoiPipe) body: ResetPasswordDto,
+    @Res() res: import('express').Response,
+  ) {
+    await this.authService.resetPassword(
+      body.email,
+      body.code,
+      body.newPassword,
+    );
+    res.status(HttpStatus.NO_CONTENT).end();
   }
 }

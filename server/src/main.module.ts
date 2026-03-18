@@ -7,6 +7,7 @@ import { envSchema } from './configs/env.config';
 import { jwtConfig } from './configs/jwt.config';
 
 import { ApiModule } from './api/api.module';
+import { BlocklistModule } from './libs/blocklist/blocklist.module';
 import { FileModule } from './libs/file/file.module';
 import { PrismaModule } from './libs/prisma/prisma.module';
 import { TelegramModule } from './libs/telegram/telegram.module';
@@ -24,6 +25,7 @@ import { TelegramModule } from './libs/telegram/telegram.module';
       useFactory: (config: ConfigService) => jwtConfig(config),
     }),
     PrismaModule,
+    BlocklistModule,
     ApiModule,
     TelegramModule,
     ScheduleModule.forRoot(),

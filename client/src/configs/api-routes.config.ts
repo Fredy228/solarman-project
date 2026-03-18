@@ -16,6 +16,9 @@ export const API_ROUTES = {
     check: "/auth/check",
     refresh: "/auth/refresh",
     logout: "/auth/logout",
+    changePassword: "/auth/change-password",
+    forgotPassword: "/auth/forgot-password",
+    resetPassword: "/auth/reset-password",
   },
   user: {
     list: "/user",

@@ -4,6 +4,8 @@ export const URL_BASE = `${envConfig.SERVER_PROTOCOL}://${envConfig.SERVER_HOST}
 
 export const ADMIN_AUTH_ROUTES = {
   login: "/admin/login",
+  forgotPassword: "/admin/forgot-password",
+  resetPassword: "/admin/reset-password",
 };
 
 export const PUBLIC_ROUTES = {
@@ -70,6 +72,7 @@ export const ADMIN_PROTECTED_ROUTES = {
   contacts: "/admin/contacts",
   calculatorProfit: "/admin/calculator-profit",
   exchangeRate: "/admin/exchange-rate",
+  changePassword: "/admin/change-password",
 };
 
 const ROUTES = {
