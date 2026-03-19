@@ -94,7 +94,7 @@ export const CustomHeader: React.FC<RefineThemedLayoutHeaderProps> = ({
               <ListItemIcon>
                 <LockResetIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>{t("change-password.title")}</ListItemText>
+              <ListItemText>{t("edit-profile.title")}</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>

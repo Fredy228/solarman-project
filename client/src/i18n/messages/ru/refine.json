@@ -366,6 +366,14 @@
       }
     }
   },
+  "edit-profile": {
+    "pageTitle": "Настройки аккаунта",
+    "title": "Редактировать профиль",
+    "success": "Профиль успешно обновлён",
+    "errors": {
+      "invalidEmail": "Неверный формат почты"
+    }
+  },
   "change-password": {
     "title": "Изменить пароль",
     "fields": {

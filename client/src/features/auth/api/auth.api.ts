@@ -23,6 +23,10 @@ export const authApi = {
     return response.data;
   },
 
+  async refresh(): Promise<void> {
+    await apiClient.getInstance().get(API_ROUTES.auth.refresh);
+  },
+
   async changePassword(body: {
     currentPassword: string;
     newPassword: string;

@@ -6,10 +6,12 @@ import {
   getGridSingleSelectOperators,
   GridColDef,
 } from "@mui/x-data-grid";
+import { useGetIdentity } from "@refinedev/core";
 import { DeleteButton, EditButton, List, useDataGrid } from "@refinedev/mui";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
+import { TUserAuth } from "@/src/features/user";
 import { EUserRole } from "@/src/features/user/types/user-role";
 import ProtectProvider from "@/src/providers/protect-provider";
 import {
@@ -24,6 +26,13 @@ export default function UserList() {
     syncWithLocation: true,
   });
   const t = useTranslations("refine");
+  const { data: identity } = useGetIdentity<TUserAuth>();
+
+  const filteredRows = useMemo(() => {
+    const rows =
+      (dataGridProps as unknown as { rows: { id: string }[] }).rows ?? [];
+    return rows.filter((row) => row.id !== identity?.id);
+  }, [dataGridProps, identity?.id]);
 
   const filterOperators = useMemo(
     () => ({
@@ -230,6 +239,7 @@ export default function UserList() {
           />
           <DataGrid
             {...(dataGridProps as unknown as Record<string, unknown>)}
+            rows={filteredRows}
             filterModel={{ items: [] }}
             columns={columns}
             autoHeight

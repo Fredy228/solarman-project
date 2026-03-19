@@ -27,7 +27,6 @@ type ProductAddToCartProps = {
 
 export default function ProductAddToCart({
   product,
-  locale,
   size = "small",
   fullWidth = false,
 }: ProductAddToCartProps) {
@@ -39,16 +38,14 @@ export default function ProductAddToCart({
   const itemToStore = useMemo(
     () => ({
       id: product.id,
-      title: {
-        [locale]: product.title,
-      },
+      title: product.title,
       price: product.price,
       discountPrice: product.discountPrice ?? null,
       currency: product.currency,
       cover: product.cover,
       tag: product.tag,
     }),
-    [product, locale],
+    [product],
   );
 
   return (

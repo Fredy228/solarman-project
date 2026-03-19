@@ -366,6 +366,14 @@
       }
     }
   },
+  "edit-profile": {
+    "pageTitle": "Налаштування акаунта",
+    "title": "Редагувати профіль",
+    "success": "Профіль успішно оновлено",
+    "errors": {
+      "invalidEmail": "Невірний формат пошти"
+    }
+  },
   "change-password": {
     "title": "Змінити пароль",
     "fields": {
