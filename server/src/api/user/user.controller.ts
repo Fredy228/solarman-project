@@ -68,7 +68,7 @@ export class UserController {
   ): Promise<User> {
     if (
       req.user?.id !== userId &&
-      ![Role.ADMIN, Role.MODERATOR].includes(req.user?.role as any)
+      ![Role.ADMIN, Role.TECHNICIAN].includes(req.user?.role as any)
     ) {
       throw new CustomHttpExceptionUtil(
         HttpStatus.FORBIDDEN,

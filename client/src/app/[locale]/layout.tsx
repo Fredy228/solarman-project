@@ -6,8 +6,6 @@ import MuiProvider from "@/src/providers/mui-provider";
 import { UtmCaptureProvider } from "@/src/providers/utm-capture-provider";
 import { notFound } from "next/navigation";
 
-export { metadata } from "@/src/app/layout";
-
 export default function LocaleLayout({
   children,
   params,
