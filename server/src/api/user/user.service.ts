@@ -86,6 +86,7 @@ export class UserService implements OnModuleInit {
         name: true,
         email: true,
         role: true,
+        phone: true,
       },
     });
 

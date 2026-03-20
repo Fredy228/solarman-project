@@ -108,9 +108,12 @@ export class TelegramUpdate {
       await this.blocklist.block(userId);
       await ctx.answerCbQuery('✅ Акаунт заблоковано.');
       await ctx.editMessageReplyMarkup({ inline_keyboard: [] });
-      await ctx.reply(`🚫 Акаунт заблоковано. Усі активні сесії завершено.`, {
-        parse_mode: 'HTML',
-      });
+      await ctx.reply(
+        `🚫 Акаунт заблоковано. Усі активні сесії завершено. Щоб розблокувати акаунт, перейдіть до "Забули пароль?".`,
+        {
+          parse_mode: 'HTML',
+        },
+      );
     } catch (err) {
       this.logger.error(`Failed to block user ${userId}`, err);
       await ctx.answerCbQuery('❌ Не вдалося заблокувати акаунт.');

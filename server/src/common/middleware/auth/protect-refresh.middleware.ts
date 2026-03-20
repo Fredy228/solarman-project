@@ -1,13 +1,13 @@
 import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserDevice } from '@prisma/client';
-import { NextFunction, Response, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-import { ProtectBaseAbstract } from './protect-base.abstract';
-import { PrismaService } from '../../../libs/prisma/prisma.service';
+import { AuthErrorMessage } from '../../../common/messages/error/auth.message';
 import { TUserAuth } from '../../../common/types/user.type';
 import { CustomHttpExceptionUtil } from '../../../helpers/custom-http-exection.util';
-import { AuthErrorMessage } from '../../../common/messages/error/auth.message';
+import { PrismaService } from '../../../libs/prisma/prisma.service';
+import { ProtectBaseAbstract } from './protect-base.abstract';
 
 @Injectable()
 export class ProtectRefreshMiddleware
@@ -36,10 +36,11 @@ export class ProtectRefreshMiddleware
       select: {
         id: true,
         email: true,
-        isBlocked: true,
-        role: true,
-        devices: true,
         name: true,
+        role: true,
+        phone: true,
+        isBlocked: true,
+        devices: true,
       },
     });
 

@@ -48,6 +48,7 @@ export class AuthService {
         email: true,
         name: true,
         role: true,
+        phone: true,
         isBlocked: true,
         telegramId: true,
       },
