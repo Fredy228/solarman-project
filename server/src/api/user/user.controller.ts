@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Role, type User } from '@prisma/client';
 import type { Response } from 'express';
+import { CustomHttpExceptionUtil } from '../../helpers/custom-http-exection.util';
 
 import { JoiPipe } from 'nestjs-joi';
 import type { ProtectReqType } from 'src/common/types/request.type';
@@ -69,7 +70,10 @@ export class UserController {
       req.user?.id !== userId &&
       ![Role.ADMIN, Role.MODERATOR].includes(req.user?.role as any)
     ) {
-      throw new Error('You are not authorized to update this user');
+      throw new CustomHttpExceptionUtil(
+        HttpStatus.FORBIDDEN,
+        'You are not authorized to update this user',
+      );
     }
     return this.userService.updateUser(userId, body);
   }

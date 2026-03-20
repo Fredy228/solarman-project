@@ -56,6 +56,7 @@ export class UserService implements OnModuleInit {
     password,
     name,
     role,
+    phone,
   }: RegisterDto): Promise<TUserPublic> {
     const existUser = await this.prisma.user.findFirst({
       where: {
@@ -80,6 +81,7 @@ export class UserService implements OnModuleInit {
         name,
         password: hashPass,
         role,
+        phone,
       },
       select: {
         id: true,

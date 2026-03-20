@@ -2,6 +2,7 @@
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { GlobalStyles } from "@mui/material";
+import type { NotificationProvider } from "@refinedev/core";
 import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import {
@@ -28,6 +29,25 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import React from "react";
+
+const useCustomNotificationProvider = (): NotificationProvider => {
+  const provider = useNotificationProvider();
+  return {
+    ...provider,
+    open: (params) => {
+      // For errors: show server message as title only, drop description to avoid duplication
+      const modified =
+        params.type === "error" && params.description
+          ? {
+              ...params,
+              message: String(params.description),
+              description: undefined,
+            }
+          : params;
+      provider.open(modified);
+    },
+  };
+};
 
 import { ADMIN_PROTECTED_ROUTES } from "@/src/configs/routes.config";
 import { usePathname, useRouter } from "@/src/i18n/navigation";
@@ -65,7 +85,7 @@ export default function AdminLayout({
           <Refine
             routerProvider={routerProvider}
             authProvider={authProvider}
-            notificationProvider={useNotificationProvider}
+            notificationProvider={useCustomNotificationProvider}
             dataProvider={dataProvider}
             accessControlProvider={accessControlProvider}
             i18nProvider={i18nProvider}
