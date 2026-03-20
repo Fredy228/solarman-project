@@ -37,7 +37,7 @@ export const defaultGlobalParam: GlobalParamType = {
   },
   [EGlobalParam.CONTACTS]: {
     value: {
-      phone: '+380000000000',
+      phone: '380000000000',
       email: 'email@example.com',
       address: {
         uk: 'Ваша адреса тут',

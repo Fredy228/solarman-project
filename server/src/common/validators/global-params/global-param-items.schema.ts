@@ -6,7 +6,7 @@ import {
 } from 'src/common/types/global-param/calculator-profit.type';
 
 export const globalParamContactsSchema = Joi.object({
-  phone: Joi.string().min(5).max(30).optional(),
+  phone: Joi.string().length(12).optional(),
   email: Joi.string().email().optional(),
   address: Joi.object({
     uk: Joi.string().min(1).max(500).optional(),

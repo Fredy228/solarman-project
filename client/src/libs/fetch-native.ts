@@ -41,7 +41,6 @@ class FetchNative {
         credentials: withCredentials ? "include" : undefined,
         body,
       });
-
       if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
       }

@@ -14,6 +14,10 @@ type Props = {
 };
 
 export default function Footer({ contactsData }: Props) {
+  const phoneFormatted = contactsData
+    ? `+${contactsData.phone.slice(0, 2)}(${contactsData.phone.slice(2, 5)})-${contactsData.phone.slice(5, 8)}-${contactsData.phone.slice(8, 10)}-${contactsData.phone.slice(10, 12)}`
+    : null;
+
   return (
     <Box component={"footer"} className="pt-5 pb-5 mt-auto">
       <Container maxWidth="xl">
@@ -34,7 +38,7 @@ export default function Footer({ contactsData }: Props) {
           {contactsData && (
             <Box className="flex flex-row justify-between items-center sm:justify-start gap-4">
               <MUILink
-                href={`tel:${contactsData.phone}`}
+                href={`tel:+${contactsData.phone}`}
                 underline="none"
                 color="inherit"
                 sx={{
@@ -47,7 +51,7 @@ export default function Footer({ contactsData }: Props) {
                 }}
               >
                 <Smartphone color="var(--color-primary)" />
-                <span>{contactsData.phone}</span>
+                <span>{phoneFormatted}</span>
               </MUILink>
               <SocialsLinks contactsData={contactsData} />
             </Box>

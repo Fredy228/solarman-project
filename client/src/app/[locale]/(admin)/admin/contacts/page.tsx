@@ -54,7 +54,12 @@ export default function ContactsAdminPage() {
 
   useEffect(() => {
     if (contactsData) {
-      reset(contactsData);
+      reset({
+        ...contactsData,
+        phone: contactsData.phone
+          ? String(contactsData.phone).replace(/^380/, "")
+          : "",
+      });
     }
   }, [contactsData, reset]);
 
@@ -66,6 +71,11 @@ export default function ContactsAdminPage() {
     const updatedData = {} as TContacts;
 
     (Object.keys(dirtyFields) as Array<keyof TContacts>).forEach((key) => {
+      if (key === "phone") {
+        const digits = String(data[key] ?? "").replace(/\D/g, "");
+        updatedData["phone"] = digits ? "380" + digits.slice(-9) : "";
+        return;
+      }
       if (key === "address") {
         updatedData["address"] = addressWatch;
         return;
@@ -79,7 +89,7 @@ export default function ContactsAdminPage() {
       name: "contacts",
       value: updatedData,
     } as unknown as TContacts).then(async () => {
-      await revalidateCache(CACHE_TAGS.contacts);
+      await revalidateCache([CACHE_TAGS.contacts]);
     });
   };
 

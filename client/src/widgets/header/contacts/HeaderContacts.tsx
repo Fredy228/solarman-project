@@ -20,6 +20,11 @@ export default function HeaderContacts({ isMobile, contactsData }: Props) {
     ? { direction: "column", spacing: 1, mt: 1 }
     : { direction: "row", spacing: 1, alignItems: "center" };
 
+  const phoneFormatted =
+    contactsData.phone.length === 12
+      ? `+${contactsData.phone.slice(0, 2)}(${contactsData.phone.slice(2, 5)})-${contactsData.phone.slice(5, 8)}-${contactsData.phone.slice(8, 10)}-${contactsData.phone.slice(10, 12)}`
+      : contactsData.phone;
+
   return (
     <Stack {...stackProps}>
       <MUILink
@@ -41,7 +46,7 @@ export default function HeaderContacts({ isMobile, contactsData }: Props) {
         {isMobile && <span>{contactsData.email}</span>}
       </MUILink>
       <MUILink
-        href={`tel:${contactsData.phone}`}
+        href={`tel:+${contactsData.phone}`}
         underline="none"
         color="inherit"
         sx={{
@@ -56,7 +61,7 @@ export default function HeaderContacts({ isMobile, contactsData }: Props) {
         }}
       >
         <Smartphone />
-        {(isMobile || isLgUp) && <span>{contactsData.phone}</span>}
+        {(isMobile || isLgUp) && <span>{phoneFormatted}</span>}
       </MUILink>
     </Stack>
   );

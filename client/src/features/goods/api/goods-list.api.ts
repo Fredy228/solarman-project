@@ -5,7 +5,13 @@ import { EProductStatus } from "@/src/shared/types/product-status.enum";
 import { TGetGoodsListParams, TGoodsListItem } from "../types/goods.interface";
 
 // Parameters that are allowed for caching (pagination and sorting only)
-const CACHEABLE_PARAMS = new Set(["_start", "_end", "_sort", "_order"]);
+const CACHEABLE_PARAMS = new Set([
+  "_start",
+  "_end",
+  "_sort",
+  "_order",
+  "category",
+]);
 
 export async function getGoodsList(
   params: Partial<TGetGoodsListParams> = {},
