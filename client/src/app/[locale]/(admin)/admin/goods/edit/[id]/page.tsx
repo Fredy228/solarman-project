@@ -51,7 +51,7 @@ export default function GoodsEditPage() {
       resource: "goods",
       id,
       action: "edit",
-      redirect: false,
+      redirect: "show",
     },
   });
 
@@ -79,6 +79,8 @@ export default function GoodsEditPage() {
           ? (goodsData.discountPrice / 100).toFixed(2)
           : "",
         brand: goodsData.brandId || "",
+        cover: null,
+        images: null,
       });
       setTimeout(() => setIsInitializing(false), 0);
     }
