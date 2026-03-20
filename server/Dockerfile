@@ -5,7 +5,7 @@ WORKDIR /app
 # ===== deps =====
 FROM base AS deps
 COPY server/package*.json ./
-RUN npm ci
+RUN npm install
 
 # ===== build =====
 FROM base AS builder
@@ -20,14 +20,14 @@ RUN npm run prisma:generate \
 FROM base AS dev
 ENV NODE_ENV=development
 COPY server/package*.json ./
-RUN npm ci
+RUN npm install
 CMD ["sh", "-c", "npm run prisma:deploy && npm run prisma:generate && npm run start:dev"]
 
 # ===== production =====
 FROM base AS prod
 ENV NODE_ENV=production
 COPY server/package*.json ./
-RUN npm ci --omit=dev \
+RUN npm install --omit=dev \
     && npm install --no-save prisma
 COPY server/. .
 COPY ./.env /app/.env

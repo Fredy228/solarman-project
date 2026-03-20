@@ -5,7 +5,7 @@ WORKDIR /app
 # ===== deps =====
 FROM base AS deps
 COPY client/package*.json ./
-RUN npm ci
+RUN npm install
 
 # ===== build (production build artifacts) =====
 FROM base AS builder
@@ -19,14 +19,14 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 FROM base AS dev
 ENV NODE_ENV=development
 COPY client/package*.json ./
-RUN npm ci
+RUN npm install
 CMD ["npm", "run", "dev"]
 
 # ===== production =====
 FROM base AS prod
 ENV NODE_ENV=production
 COPY client/package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 COPY client/. .
 COPY ./.env /app/.env
 COPY --from=builder /app/.next ./.next
