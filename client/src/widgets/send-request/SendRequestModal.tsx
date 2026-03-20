@@ -2,11 +2,11 @@
 
 import { Dialog, DialogTitle, IconButton } from "@mui/material";
 import { PhoneCall, X } from "lucide-react";
-import { useState } from "react";
 import SendRequest from "./SendRequest";
+import { useSendRequestStore } from "./store/useSendRequestStore";
 
 export default function SendRequestModal() {
-  const [open, setOpen] = useState(false);
+  const { open, openModal, closeModal } = useSendRequestStore();
 
   return (
     <>
@@ -26,14 +26,14 @@ export default function SendRequestModal() {
         }}
         onClick={(e) => {
           (e.currentTarget as HTMLElement).blur();
-          setOpen(true);
+          openModal();
         }}
       >
         <PhoneCall />
       </IconButton>
       <Dialog
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={closeModal}
         maxWidth="xs"
         fullWidth
         slotProps={{
@@ -47,7 +47,7 @@ export default function SendRequestModal() {
         <DialogTitle sx={{ m: 0, p: 2, position: "relative" }}>
           <IconButton
             aria-label="close"
-            onClick={() => setOpen(false)}
+            onClick={closeModal}
             sx={{
               position: "absolute",
               right: 8,

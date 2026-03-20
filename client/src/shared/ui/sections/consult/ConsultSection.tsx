@@ -1,12 +1,16 @@
+"use client";
+
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 import counsultImg from "@/src/assets/common/consult.png";
+import { useSendRequestStore } from "@/src/widgets/send-request/store/useSendRequestStore";
 import { ArrowDown, Phone } from "lucide-react";
 
 export default function ConsultSection() {
   const tCommon = useTranslations("common");
+  const openModal = useSendRequestStore((s) => s.openModal);
 
   return (
     <Box
@@ -50,7 +54,12 @@ export default function ConsultSection() {
               >
                 {tCommon("phrases.consultSectionTitle")}
               </Typography>
-              <Button variant="contained" color="primary" startIcon={<Phone />}>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<Phone />}
+                onClick={openModal}
+              >
                 {tCommon("button.getConsultationV1")}
               </Button>
             </Box>

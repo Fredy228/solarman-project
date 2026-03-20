@@ -1,9 +1,6 @@
 "use client";
 
-import { PUBLIC_ROUTES } from "@/src/configs/routes.config";
-import { Link } from "@/src/i18n/navigation";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { Box, Chip, IconButton, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 import {
   DataGrid,
   getGridSingleSelectOperators,
@@ -12,7 +9,13 @@ import {
   GridRowModel,
 } from "@mui/x-data-grid";
 import { useNotification, useUpdate } from "@refinedev/core";
-import { DeleteButton, EditButton, List, useDataGrid } from "@refinedev/mui";
+import {
+  DeleteButton,
+  EditButton,
+  List,
+  ShowButton,
+  useDataGrid,
+} from "@refinedev/mui";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 
@@ -204,17 +207,7 @@ export default function GoodsList() {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Link
-              href={PUBLIC_ROUTES.productsItem(row.tag)}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              style={{ display: "inline-flex" }}
-            >
-              <IconButton size="small" aria-label={t("actions.show")}>
-                <OpenInNewIcon fontSize="small" />
-              </IconButton>
-            </Link>
+            <ShowButton hideText recordItemId={row.id} />
             <EditButton hideText recordItemId={row.id} />
             <DeleteButton hideText recordItemId={row.id} />
           </Stack>

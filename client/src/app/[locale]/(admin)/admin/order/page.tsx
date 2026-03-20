@@ -132,6 +132,29 @@ export default function OrderList() {
 
   const columns: GridColDef[] = [
     {
+      field: "actions",
+      headerName: t("actions.actions"),
+      renderCell: function render({ row }) {
+        return (
+          <Stack
+            direction="row"
+            spacing={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <ShowButton hideText recordItemId={row.id} />
+            <EditButton hideText recordItemId={row.id} />
+            <DeleteButton hideText recordItemId={row.id} />
+          </Stack>
+        );
+      },
+      align: "center",
+      headerAlign: "center",
+      width: 150,
+      sortable: false,
+      filterable: false,
+    },
+    {
       field: "email",
       headerName: t("order.fields.email"),
       flex: 1,
@@ -234,29 +257,6 @@ export default function OrderList() {
         value ? new Date(value).toLocaleString("ru-RU") : "",
       filterable: false,
       sortable: true,
-    },
-    {
-      field: "actions",
-      headerName: t("actions.actions"),
-      renderCell: function render({ row }) {
-        return (
-          <Stack
-            direction="row"
-            spacing={0}
-            alignItems={"center"}
-            justifyContent={"center"}
-          >
-            <ShowButton hideText recordItemId={row.id} />
-            <EditButton hideText recordItemId={row.id} />
-            <DeleteButton hideText recordItemId={row.id} />
-          </Stack>
-        );
-      },
-      align: "center",
-      headerAlign: "center",
-      width: 150,
-      sortable: false,
-      filterable: false,
     },
   ];
 

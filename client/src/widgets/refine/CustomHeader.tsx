@@ -5,6 +5,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import {
   AppBar,
   Avatar,
+  Chip,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -84,10 +85,25 @@ export const CustomHeader: React.FC<RefineThemedLayoutHeaderProps> = ({
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             {identity && (
-              <MenuItem disabled>
+              <MenuItem
+                disabled
+                sx={{
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 0.5,
+                }}
+              >
                 <Typography variant="caption" color="text.secondary">
                   {identity.email}
                 </Typography>
+                {identity.role && (
+                  <Chip
+                    label={t(`roles.${identity.role}`)}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                )}
               </MenuItem>
             )}
             <MenuItem onClick={handleChangePassword}>

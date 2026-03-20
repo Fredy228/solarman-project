@@ -83,7 +83,7 @@ export default async function ServiceEnterprisePage({ params }: Props) {
         description={t("areasApplication.description")}
         list={t.raw("areasApplication.list") as string[]}
       />
-      {portfolioList && (
+      {portfolioList && portfolioList.length > 0 && (
         <PortfolioPreview
           data={portfolioList}
           hashtags={[STATIC_HASHTAGS.ENTERPRISE]}

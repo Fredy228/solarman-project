@@ -73,8 +73,10 @@ export default async function Home({ params }: Props) {
           defaultOperatingTime={15}
         />
       )}
-      {portfolioList && <PortfolioPreview data={portfolioList} />}
-      {blogList && <BlogPreview data={blogList} />}
+      {portfolioList && portfolioList.length > 0 && (
+        <PortfolioPreview data={portfolioList} />
+      )}
+      {blogList && blogList.length > 0 && <BlogPreview data={blogList} />}
       <ConsultSection />
     </>
   );

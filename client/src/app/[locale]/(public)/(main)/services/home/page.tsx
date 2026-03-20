@@ -85,7 +85,7 @@ export default async function ServiceHomePage({ params }: Props) {
         title={t("solution.title")}
         items={benefitsImageList(t)}
       />
-      {portfolioList && (
+      {portfolioList && portfolioList.length > 0 && (
         <PortfolioPreview
           data={portfolioList}
           hashtags={[STATIC_HASHTAGS.HOME]}

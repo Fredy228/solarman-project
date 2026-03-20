@@ -69,7 +69,7 @@ export default async function ServiceBackupPowerPage({ params }: Props) {
         title={t("equipment.title")}
         items={benefitsImageList(t)}
       />
-      {portfolioList && (
+      {portfolioList && portfolioList.length > 0 && (
         <PortfolioPreview
           data={portfolioList}
           hashtags={[STATIC_HASHTAGS.UPS]}

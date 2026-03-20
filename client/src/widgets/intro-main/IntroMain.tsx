@@ -1,3 +1,6 @@
+"use client";
+
+import { useSendRequestStore } from "@/src/widgets/send-request/store/useSendRequestStore";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -11,6 +14,7 @@ import { introLinkList } from "./introLinkList";
 export const IntroMain = () => {
   const t = useTranslations("home");
   const tCommon = useTranslations("common");
+  const openModal = useSendRequestStore((s) => s.openModal);
 
   return (
     <Box
@@ -45,7 +49,12 @@ export const IntroMain = () => {
           {t("intro.subtitle")}
         </Typography>
 
-        <Button variant="contained" size="large" startIcon={<Phone />}>
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<Phone />}
+          onClick={openModal}
+        >
           {tCommon("button.getConsultationV1")}
         </Button>
 

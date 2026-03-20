@@ -1,3 +1,6 @@
+"use client";
+
+import { useSendRequestStore } from "@/src/widgets/send-request/store/useSendRequestStore";
 import { Box, Button, Container, Typography } from "@mui/material";
 import type { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
@@ -16,6 +19,8 @@ export default function IntroGradient({
   imageSrc,
   buttonText,
 }: Props) {
+  const openModal = useSendRequestStore((s) => s.openModal);
+
   return (
     <Box
       component={"section"}
@@ -34,7 +39,7 @@ export default function IntroGradient({
               {description}
             </Typography>
             {buttonText && (
-              <Button className="mt-4!" variant="contained">
+              <Button className="mt-4!" variant="contained" onClick={openModal}>
                 {buttonText}
               </Button>
             )}

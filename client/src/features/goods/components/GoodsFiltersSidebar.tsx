@@ -190,10 +190,17 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
     parseSelectedFiltersFromSearchParams(searchParams),
   );
 
-  // По умолчанию все секции свернуты (false).
+  // Секции с активными фильтрами раскрыты по умолчанию, остальные свёрнуты.
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
-  >({});
+  >(() => {
+    const initialSelected = parseSelectedFiltersFromSearchParams(searchParams);
+    const expanded: Record<string, boolean> = {};
+    Object.keys(initialSelected).forEach((key) => {
+      expanded[key] = true;
+    });
+    return expanded;
+  });
 
   const fieldEntries = localizedFields ? Object.entries(localizedFields) : [];
   const orderedFieldEntries = fieldEntries.sort(
@@ -244,6 +251,22 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
       values.forEach((value) => {
         nextParams.append(fieldName, value);
       });
+    });
+
+    const queryString = nextParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+
+    setIsMobileOpen(false);
+  };
+
+  const resetFilters = () => {
+    setSelectedFilters({});
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+    FILTER_QUERY_FIELDS.forEach((fieldName) => {
+      nextParams.delete(fieldName);
     });
 
     const queryString = nextParams.toString();
@@ -386,14 +409,25 @@ const GoodsFiltersSidebar: FC<GoodsFiltersSidebarProps> = ({
         })}
 
         {orderedFieldEntries.length > 0 && (
-          <Button
-            variant="contained"
-            size="small"
-            onClick={applyFilters}
-            sx={{ mt: 0.75 }}
-          >
-            {t("filters.apply")}
-          </Button>
+          <Stack direction="column" spacing={1} sx={{ mt: 0.75 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={applyFilters}
+              sx={{ flex: 1 }}
+            >
+              {t("filters.apply")}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={resetFilters}
+              disabled={Object.keys(selectedFilters).length === 0}
+              sx={{ flex: 1 }}
+            >
+              {t("filters.reset")}
+            </Button>
+          </Stack>
         )}
       </Stack>
     </Box>

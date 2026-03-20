@@ -1,5 +1,6 @@
 "use client";
 
+import logoImg from "@/src/app/favicon.ico";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { GlobalStyles } from "@mui/material";
 import type { NotificationProvider } from "@refinedev/core";
@@ -56,6 +57,7 @@ import { authProvider } from "@/src/providers/authProvider";
 import { dataProvider } from "@/src/providers/dataProvider";
 import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -186,6 +188,7 @@ export default function AdminLayout({
                 list: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.list,
                 create: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.create,
                 edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.edit,
+                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.show,
                 meta: {
                   label: t("goods.goods"),
                   parent: "goods-group",
@@ -241,7 +244,13 @@ export default function AdminLayout({
           >
             <ThemedLayout
               Sider={ModifiedSider}
-              Title={() => <div>Admin Panel</div>}
+              Title={() => (
+                <Image
+                  src={logoImg}
+                  alt="Logo"
+                  style={{ width: "30px", height: "30px" }}
+                />
+              )}
               Header={CustomHeader}
             >
               {children}
