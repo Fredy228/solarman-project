@@ -15,7 +15,4 @@ services:
     volumes:
       - ./nginx:/etc/nginx/templates
       - /etc/letsencrypt:/etc/letsencrypt:ro
-    depends_on:
-      - server
-      - client
-    restart: no
+    restart: unless-stopped

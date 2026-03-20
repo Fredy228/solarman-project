@@ -13,7 +13,4 @@ services:
       - .env
     volumes:
       - ./nginx:/etc/nginx/templates
-    depends_on:
-      - server
-      - client
-    restart: no
+    restart: unless-stopped
