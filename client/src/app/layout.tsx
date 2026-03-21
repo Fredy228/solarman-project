@@ -3,12 +3,17 @@ import { getLocale } from "next-intl/server";
 import { Montserrat } from "next/font/google";
 import "./[locale]/globals.css";
 
-import { OG_IMAGE_DEFAULT, SITE_NAME, SITE_URL } from "@/src/shared/utils/seo";
+import {
+  OG_IMAGE_DEFAULT,
+  SITE_NAME,
+  SITE_URL,
+  TWITTER_HANDLE,
+} from "@/src/shared/utils/seo";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin", "cyrillic"],
-  display: "swap",
+  display: "optional",
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
@@ -19,6 +24,11 @@ export const metadata: Metadata = {
   },
   description:
     "Будуємо сонячні електростанції в Одесі та Одеській області. Окупність від 3 років, гарантія 15 років, кредит 0%.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: "website",
@@ -27,6 +37,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: TWITTER_HANDLE,
+    creator: TWITTER_HANDLE,
     images: [OG_IMAGE_DEFAULT],
   },
 };
@@ -43,8 +55,29 @@ export default async function RootLayout({
     // outside intl context (e.g. root not-found) — use default
   }
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/${locale}/products?search={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <html lang={locale}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body className={`${montserrat.variable} antialiased`}>{children}</body>
     </html>
   );

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 export const SITE_URL = `${envConfig.SERVER_PROTOCOL}://${envConfig.SERVER_HOST}`;
 
 export const SITE_NAME = "SolarMan";
+export const TWITTER_HANDLE = "@solarman_od";
 
 export const OG_IMAGE_DEFAULT = `${SITE_URL}/og-default.jpg`;
 
@@ -70,6 +71,8 @@ export function buildMetadata({
     },
     twitter: {
       card: "summary_large_image",
+      site: TWITTER_HANDLE,
+      creator: TWITTER_HANDLE,
       title: fullTitle,
       description,
       images: [OG_IMAGE_DEFAULT],

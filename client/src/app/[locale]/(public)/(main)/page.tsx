@@ -8,11 +8,11 @@ import { getCalculatorProfit } from "@/src/features/global-params/api/get-calcul
 import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-rate.api";
 import { getLastPortfolio } from "@/src/features/portfolio/api/get-last-portfolio.api";
 import PortfolioPreview from "@/src/features/portfolio/components/portfolio-preview/PortfolioPreview";
-import type { ELocale } from "@/src/i18n/routing";
+import { ELocale } from "@/src/i18n/routing";
 import { DEFAULT_TARIFF } from "@/src/shared/configs/calculator-profit.config";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
-import { buildMetadata } from "@/src/shared/utils/seo";
+import { buildMetadata, buildUrl } from "@/src/shared/utils/seo";
 import CalculatorProfit from "@/src/widgets/calculator-profit/CalcularoeProfit";
 import { IntroMain } from "@/src/widgets/intro-main/IntroMain";
 import { homeBenefitsList } from "./list-home-benefits";
@@ -29,8 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ru: "Солнечные электростанции в Одессе под ключ",
     },
     descriptions: {
-      uk: "Будуємо сонячні електростанції для дому та бізнесу в Одесі і Одеській області. Окупність від 3 років, гарантія 15 років, кредит 0%. Безкоштовна консультація!",
-      ru: "Строим солнечные электростанции для дома и бизнеса в Одессе и Одесской области. Окупаемость от 3 лет, гарантия 15 лет, кредит 0%. Бесплатная консультация!",
+      uk: "Будуємо сонячні електростанції від 3 до 200 кВт у Одесі під ключ. Знижуємо тарифи на електроенергію: окупність 3 роки, гарантія 15 років, кредит 0%. Безкоштовна консультація!",
+      ru: "Строим солнечные электростанции от 3 до 200 кВт в Одессе под ключ. Снижаем тарифы на электроэнергию: окупаемость 3 года, гарантия 15 лет, кредит 0%. Бесплатная консультация!",
     },
     keywords: {
       uk: [
@@ -39,6 +39,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "СЕС Одеса",
         "сонячна станція для дому",
         "сонячна енергетика",
+        "тарифи на електроенергію",
+        "кВт сонячна панель",
+        "економія електроенергії",
+        "сонячна станція ціна",
       ],
       ru: [
         "солнечные панели Одесса",
@@ -46,6 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "СЭС Одесса",
         "солнечная станция для дома",
         "солнечная энергетика",
+        "тарифы на электроэнергию",
+        "кВт солнечная панель",
+        "экономия электроэнергии",
+        "солнечная станция цена",
       ],
     },
   });
@@ -60,8 +68,25 @@ export default async function Home({ params }: Props) {
   const calculatorProfit = await getCalculatorProfit();
   const exchangeRate = await getExchangeRate();
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: locale === ELocale.UK ? "Головна" : "Главная",
+        item: buildUrl(locale, "/"),
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <IntroMain />
       <BenefitsSimple title={t("benefits.title")} items={homeBenefitsList(t)} />
       {calculatorProfit && exchangeRate && (

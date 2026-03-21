@@ -41,7 +41,7 @@ export default function ConsultSection() {
             </Box>
             <Box className="flex-1 text-center md:text-left">
               <Typography
-                component={"h3"}
+                component={"h2"}
                 color="var(--color-text-light)"
                 fontWeight={700}
                 fontSize={{

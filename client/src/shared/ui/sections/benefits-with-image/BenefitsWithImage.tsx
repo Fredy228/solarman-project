@@ -45,7 +45,7 @@ export default function BenefitsWithImage({ title, subtitle, items }: Props) {
                 </Box>
                 <Box>
                   <Typography
-                    component={"h4"}
+                    component={"h3"}
                     fontWeight={700}
                     fontSize={"18px"}
                     className="text-(--color-text-g2) pb-2.5"

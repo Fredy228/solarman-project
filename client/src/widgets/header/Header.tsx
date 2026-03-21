@@ -29,7 +29,6 @@ import {
   Paper,
   Stack,
   Toolbar,
-  useMediaQuery,
 } from "@mui/material";
 import Popper from "@mui/material/Popper";
 import { useTheme } from "@mui/material/styles";
@@ -45,7 +44,6 @@ type Props = {
 
 export default function Header({ contactsData }: Props) {
   const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null);
@@ -300,15 +298,64 @@ export default function Header({ contactsData }: Props) {
             </Stack>
           </Box>
 
-          {/* Right: Language Switcher */}
-          {isMdUp && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* Right: Language Switcher (desktop only) */}
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            {isProductsPage ? (
+              <IconButton
+                component={NavLink}
+                href="/cart"
+                aria-label="cart"
+                color="inherit"
+                data-cart-icon
+                sx={{
+                  p: 0.5,
+                  color: "var(--color-text-g3)",
+                  "&:hover": { color: "var(--color-primary)" },
+                }}
+              >
+                <Badge
+                  color="primary"
+                  badgeContent={isCartHydrated ? cartCount : 0}
+                  overlap="circular"
+                  invisible={!isCartHydrated || cartCount === 0}
+                  sx={{ "& .MuiBadge-badge": { color: "#fff" } }}
+                >
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            ) : null}
+            <LanguageSwitcher />
+          </Box>
+
+          {/* Right: Contacts (desktop) or menu button (mobile) */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* Desktop: contacts */}
+            {contactsData && (
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <HeaderContacts isMobile={false} contactsData={contactsData} />
+              </Box>
+            )}
+            {/* Mobile: cart + menu button */}
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               {isProductsPage ? (
                 <IconButton
                   component={NavLink}
                   href="/cart"
                   aria-label="cart"
                   color="inherit"
+                  onClick={() => setOpen(false)}
                   data-cart-icon
                   sx={{
                     p: 0.5,
@@ -327,63 +374,25 @@ export default function Header({ contactsData }: Props) {
                   </Badge>
                 </IconButton>
               ) : null}
-              <LanguageSwitcher />
+              <IconButton
+                edge="end"
+                color="inherit"
+                onClick={() => setOpen(true)}
+                aria-label="menu"
+              >
+                <MenuIcon />
+              </IconButton>
             </Box>
-          )}
-
-          {/* Right: Contacts or menu button on mobile */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {isMdUp ? (
-              <>
-                {contactsData && (
-                  <HeaderContacts
-                    isMobile={false}
-                    contactsData={contactsData}
-                  />
-                )}
-              </>
-            ) : (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                {isProductsPage ? (
-                  <IconButton
-                    component={NavLink}
-                    href="/cart"
-                    aria-label="cart"
-                    color="inherit"
-                    onClick={() => setOpen(false)}
-                    data-cart-icon
-                    sx={{
-                      p: 0.5,
-                      color: "var(--color-text-g3)",
-                      "&:hover": { color: "var(--color-primary)" },
-                    }}
-                  >
-                    <Badge
-                      color="primary"
-                      badgeContent={isCartHydrated ? cartCount : 0}
-                      overlap="circular"
-                      invisible={!isCartHydrated || cartCount === 0}
-                      sx={{ "& .MuiBadge-badge": { color: "#fff" } }}
-                    >
-                      <ShoppingCartIcon />
-                    </Badge>
-                  </IconButton>
-                ) : null}
-                <IconButton
-                  edge="end"
-                  color="inherit"
-                  onClick={() => setOpen(true)}
-                  aria-label="menu"
-                >
-                  <MenuIcon />
-                </IconButton>
-              </Box>
-            )}
           </Box>
         </Toolbar>
 
         {/* Mobile Drawer */}
-        <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+        <Drawer
+          anchor="right"
+          open={open}
+          onClose={() => setOpen(false)}
+          ModalProps={{ disableScrollLock: true }}
+        >
           <Box sx={{ width: 280, p: 2, height: "100%" }} role="presentation">
             <Box
               sx={{

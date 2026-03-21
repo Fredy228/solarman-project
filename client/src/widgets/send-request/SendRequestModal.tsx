@@ -36,6 +36,7 @@ export default function SendRequestModal() {
         onClose={closeModal}
         maxWidth="xs"
         fullWidth
+        disableScrollLock
         slotProps={{
           paper: {
             sx: {

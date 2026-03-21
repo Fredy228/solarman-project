@@ -2,10 +2,13 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import {
   BanknoteArrowUp,
   BatteryCharging,
+  ChevronsRight,
   Earth,
   FileStack,
   Globe,
+  Goal,
   HandCoins,
+  Landmark,
   PiggyBank,
   Power,
   RefreshCw,
@@ -17,9 +20,6 @@ import {
   VolumeX,
   Wrench,
   Zap,
-  ChevronsRight,
-  Goal,
-  Landmark,
 } from "lucide-react";
 
 import Section from "@/src/shared/ui/sections/Section";
@@ -88,7 +88,7 @@ export default function BenefitsSimple({ title, subtitle, items }: Props) {
                 </Box>
                 <Box>
                   <Typography
-                    component={"h4"}
+                    component={"h3"}
                     fontWeight={700}
                     fontSize={"18px"}
                     className="text-(--color-text-g2) pb-2.5"
