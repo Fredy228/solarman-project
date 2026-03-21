@@ -150,22 +150,30 @@ export default function Header({ contactsData }: Props) {
                   >
                     {item.children && item.children.length > 0 ? (
                       <>
-                        <MUILink
-                          component={NavLink}
-                          href={item.href}
-                          underline="none"
-                          color="inherit"
+                        <Box
+                          component="button"
                           aria-haspopup="true"
                           aria-expanded={activeMenuIndex === idx}
-                          onMouseEnter={(e) => handleOpenMenu(e, idx)}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleOpenMenu(e, idx);
-                          }}
+                          onMouseEnter={(e) =>
+                            handleOpenMenu(
+                              e as unknown as React.MouseEvent<HTMLElement>,
+                              idx,
+                            )
+                          }
+                          onClick={(e) =>
+                            handleOpenMenu(
+                              e as unknown as React.MouseEvent<HTMLElement>,
+                              idx,
+                            )
+                          }
                           sx={{
                             display: "flex",
                             alignItems: "center",
                             gap: "6px",
+                            border: "none",
+                            background: "none",
+                            cursor: "pointer",
+                            padding: 0,
                             borderBottom: "2px solid transparent",
                             pb: "6px",
                             borderBottomColor: isActive
@@ -173,6 +181,8 @@ export default function Header({ contactsData }: Props) {
                               : "transparent",
                             color: isActive ? "secondary.main" : "inherit",
                             fontWeight: isActive ? 700 : 500,
+                            fontSize: "inherit",
+                            fontFamily: "inherit",
                             transition: theme.transitions.create(
                               ["color", "border-bottom-color"],
                               {
@@ -188,7 +198,7 @@ export default function Header({ contactsData }: Props) {
                           {IconComp ? <IconComp size={24} /> : null}
                           <ChevronDown size={24} />
                           {item.label}
-                        </MUILink>
+                        </Box>
                         <Popper
                           open={activeMenuIndex === idx}
                           anchorEl={anchorEl}

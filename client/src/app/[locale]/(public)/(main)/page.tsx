@@ -12,7 +12,12 @@ import { ELocale } from "@/src/i18n/routing";
 import { DEFAULT_TARIFF } from "@/src/shared/configs/calculator-profit.config";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
-import { buildMetadata, buildUrl } from "@/src/shared/utils/seo";
+import {
+  buildMetadata,
+  buildUrl,
+  OG_IMAGE_DEFAULT,
+  SITE_URL,
+} from "@/src/shared/utils/seo";
 import CalculatorProfit from "@/src/widgets/calculator-profit/CalcularoeProfit";
 import { IntroMain } from "@/src/widgets/intro-main/IntroMain";
 import { homeBenefitsList } from "./list-home-benefits";
@@ -25,12 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     locale,
     path: "/",
     titles: {
-      uk: "Сонячні електростанції в Одесі під ключ",
-      ru: "Солнечные электростанции в Одессе под ключ",
+      uk: "Сонячні станції в Одесі під ключ",
+      ru: "Солнечные станции в Одессе под ключ",
     },
     descriptions: {
-      uk: "Будуємо сонячні електростанції від 3 до 200 кВт у Одесі під ключ. Знижуємо тарифи на електроенергію: окупність 3 роки, гарантія 15 років, кредит 0%. Безкоштовна консультація!",
-      ru: "Строим солнечные электростанции от 3 до 200 кВт в Одессе под ключ. Снижаем тарифы на электроэнергию: окупаемость 3 года, гарантия 15 лет, кредит 0%. Бесплатная консультация!",
+      uk: "Сонячні станції в Одесі під ключ від 3 до 200 кВт. Знижуємо тарифи на електроенергію: окупність 3 роки, гарантія 15 років, кредит 0%.",
+      ru: "Солнечные станции в Одессе под ключ от 3 до 200 кВт. Снижаем тарифы на электроэнергию: окупаемость 3 года, гарантия 15 лет, кредит 0%.",
     },
     keywords: {
       uk: [
@@ -68,6 +73,37 @@ export default async function Home({ params }: Props) {
   const calculatorProfit = await getCalculatorProfit();
   const exchangeRate = await getExchangeRate();
 
+  const pageUrl = buildUrl(locale, "/");
+  const pageTitle =
+    locale === ELocale.UK
+      ? "Сонячні станції в Одесі під ключ | SolarMan"
+      : "Солнечные станции в Одессе под ключ | SolarMan";
+  const pageDescription =
+    locale === ELocale.UK
+      ? "Сонячні станції в Одесі під ключ від 3 до 200 кВт. Знижуємо тарифи на електроенергію: окупність 3 роки, гарантія 15 років, кредит 0%."
+      : "Солнечные станции в Одессе под ключ от 3 до 200 кВт. Снижаем тарифы на электроэнергию: окупаемость 3 года, гарантия 15 лет, кредит 0%.";
+
+  const webPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: pageTitle,
+    description: pageDescription,
+    inLanguage: locale === ELocale.UK ? "uk-UA" : "ru-UA",
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    image: {
+      "@type": "ImageObject",
+      url: OG_IMAGE_DEFAULT,
+      width: 1200,
+      height: 630,
+    },
+    potentialAction: {
+      "@type": "ReadAction",
+      target: [pageUrl],
+    },
+  };
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -83,6 +119,10 @@ export default async function Home({ params }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
