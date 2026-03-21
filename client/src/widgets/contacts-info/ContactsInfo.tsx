@@ -15,6 +15,10 @@ export default function ContactsInfo({ contactsData }: Props) {
   const locale = useLocale() as ELocale;
   const t = useTranslations("contacts");
 
+  const phoneFormatted = contactsData?.phone
+    ? `+${contactsData.phone.slice(0, 2)}(${contactsData.phone.slice(2, 5)})-${contactsData.phone.slice(5, 8)}-${contactsData.phone.slice(8, 10)}-${contactsData.phone.slice(10, 12)}`
+    : null;
+
   return (
     <>
       <Container maxWidth="xl" className="flex justify-end">
@@ -75,7 +79,7 @@ export default function ContactsInfo({ contactsData }: Props) {
                   }}
                   href={`tel:${contactsData?.phone}`}
                 >
-                  {contactsData?.phone}
+                  {phoneFormatted}
                 </Link>
               </Box>
             </Box>
