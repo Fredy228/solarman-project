@@ -54,7 +54,7 @@ export const BatterySpecForm: FC<SpecFormProps<TBatterySpecs>> = ({
         <Chip
           label={
             t("goods.fields.specs.capacity") +
-            ` (${t("goods.measurements.ampereHour")})`
+            ` (${t("goods.measurements.kilowattHour")})`
           }
           size="small"
         />
@@ -67,7 +67,7 @@ export const BatterySpecForm: FC<SpecFormProps<TBatterySpecs>> = ({
         render={({ field }) => (
           <NumericFormatSimple
             {...field}
-            suffix={` ${t("goods.measurements.ampereHour")}`}
+            suffix={` ${t("goods.measurements.kilowattHour")}`}
             label={t("goods.fields.specs.capacity")}
             error={!!errors?.specs}
             helperText={errors?.specs?.message}

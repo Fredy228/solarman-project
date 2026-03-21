@@ -335,6 +335,7 @@
       "watt": "Вт",
       "kilowatts": "кВт",
       "ampereHour": "Аг",
+      "kilowattHour": "кВт·г",
       "volt": "В",
       "phase": "фази",
       "years": "роки"

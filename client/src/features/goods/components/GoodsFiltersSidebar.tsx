@@ -139,7 +139,7 @@ const buildValueLabel = (
 
   const unitKeyMap: Record<string, string> = {
     power: "goods.measurements.kilowatts",
-    capacity: "goods.measurements.ampereHour",
+    capacity: "goods.measurements.kilowattHour",
     voltage: "goods.measurements.volt",
   };
 
