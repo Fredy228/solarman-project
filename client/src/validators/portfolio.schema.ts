@@ -73,8 +73,7 @@ export const portfolioSchema = (t: TranslatorType) =>
               t("common.symbol"),
           }),
       )
-      .min(1)
-      .required()
+      .default([])
       .messages({
         "array.base": t("hashtags.name") + t("common.required"),
         "array.min": t("hashtags.name") + t("common.required"),
