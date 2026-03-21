@@ -60,10 +60,8 @@ export const portfolioSchema = (t: TranslatorType) =>
           .trim()
           .min(5)
           .max(300)
-          .required()
           .messages({
             "string.empty": t("hashtags.name") + t("common.required"),
-            "any.required": t("hashtags.name") + t("common.required"),
             "string.min":
               t("hashtags.name") + t("common.min") + " 5 " + t("common.symbol"),
             "string.max":
