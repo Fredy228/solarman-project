@@ -7,12 +7,12 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { JoiPipe } from 'nestjs-joi';
 import { type Response } from 'express';
+import { JoiPipe } from 'nestjs-joi';
 
-import { PortfolioGetManyQueryDto } from '../dto/portfolio-get-many.query.dto';
-import { Language } from '../../../common/enums/language.enum';
 import { Lang } from '../../../common/decorator/lang.decorator';
+import { Language } from '../../../common/enums/language.enum';
+import { PortfolioGetManyQueryDto } from '../dto/portfolio-get-many.query.dto';
 import { PortfolioPublicService } from '../services/portfolio-public.service';
 
 @Controller('portfolio')
@@ -25,7 +25,7 @@ export class PortfolioPublicController {
   @HttpCode(HttpStatus.OK)
   async getMany(
     @Query(JoiPipe) query: PortfolioGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Lang() lang: Language,
   ) {
     const { data, total } = await this.portfolioPublicService.getMany(
@@ -33,7 +33,7 @@ export class PortfolioPublicController {
       lang,
     );
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 
   @Get('/tag/:tag')

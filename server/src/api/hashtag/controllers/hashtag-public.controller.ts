@@ -22,7 +22,7 @@ export class HashtagPublicController {
   @HttpCode(HttpStatus.OK)
   async getMany(
     @Query(JoiPipe) query: HashtagGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Lang() lang: Language,
   ) {
     const { data, total } = await this.hashtagPublicService.getMany(
@@ -30,6 +30,6 @@ export class HashtagPublicController {
       lang,
     );
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 }

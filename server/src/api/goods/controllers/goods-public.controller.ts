@@ -25,12 +25,12 @@ export class GoodsPublicController {
   @HttpCode(HttpStatus.OK)
   async getMany(
     @Query(JoiPipe) query: GoodsGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Lang() lang: Language,
   ) {
     const { data, total } = await this.goodsPublicService.getMany(query, lang);
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 
   @Get('/tag/:tag')

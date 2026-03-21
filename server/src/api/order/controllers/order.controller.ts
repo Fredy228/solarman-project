@@ -40,11 +40,11 @@ export class OrderController {
   @Roles(Role.ADMIN, Role.MODERATOR)
   async getAll(
     @Query(JoiPipe) query: OrderGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { data, total } = await this.orderService.getAll(query);
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 
   @Get('/:id')

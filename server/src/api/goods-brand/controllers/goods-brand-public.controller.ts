@@ -6,11 +6,11 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { JoiPipe } from 'nestjs-joi';
 import { type Response } from 'express';
+import { JoiPipe } from 'nestjs-joi';
 
-import { GoodsBrandPublicService } from '../services/goods-brand-public.service';
 import { GoodsBrandGetManyQueryDto } from '../dto/goods-brand-get-many.query.dto';
+import { GoodsBrandPublicService } from '../services/goods-brand-public.service';
 
 @Controller('goods-brand')
 export class GoodsBrandPublicController {
@@ -22,10 +22,10 @@ export class GoodsBrandPublicController {
   @HttpCode(HttpStatus.OK)
   async getMany(
     @Query(JoiPipe) query: GoodsBrandGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { data, total } = await this.goodsBrandPublicService.getMany(query);
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 }

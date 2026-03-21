@@ -23,12 +23,12 @@ export class BlogPublicController {
   @HttpCode(HttpStatus.OK)
   async getMany(
     @Query(JoiPipe) query: BlogGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Lang() lang: Language,
   ) {
     const { data, total } = await this.blogPublicService.getMany(query, lang);
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 
   @Get('/tag/:tag')

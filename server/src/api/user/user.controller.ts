@@ -44,11 +44,11 @@ export class UserController {
   @Roles(Role.ADMIN)
   async getAll(
     @Query(JoiPipe) query: UserGetManyQueryDto,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { data, total } = await this.userService.getAll(query);
     res.header('X-Total-Count', total.toString());
-    res.send(data);
+    return data;
   }
 
   @Get('/:userId')
