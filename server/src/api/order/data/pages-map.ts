@@ -1,5 +1,4 @@
 export const PagesMap = new Map<number, string>([
-  [1, '/'],
   [2, '/services/home'],
   [3, '/services/enterprise'],
   [4, '/services/backup-power'],
@@ -11,4 +10,5 @@ export const PagesMap = new Map<number, string>([
   [10, '/about'],
   [11, '/contacts'],
   [12, '/cart'],
+  [1, '/'],
 ]);
