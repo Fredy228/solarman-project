@@ -12,7 +12,7 @@ FROM base AS builder
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY client/ .
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # ===== dev (only deps, source mounted via volumes) =====
@@ -28,7 +28,7 @@ ENV NODE_ENV=production
 COPY client/package*.json ./
 RUN npm install --omit=dev
 COPY client/. .
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 

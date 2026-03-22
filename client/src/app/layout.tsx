@@ -1,8 +1,10 @@
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { Montserrat } from "next/font/google";
 import "./[locale]/globals.css";
 
+import envConfig from "@/src/configs/env.config";
 import {
   OG_IMAGE_DEFAULT,
   SITE_NAME,
@@ -41,6 +43,9 @@ export const metadata: Metadata = {
     creator: TWITTER_HANDLE,
     images: [OG_IMAGE_DEFAULT],
   },
+  ...(envConfig.GSC_VERIFICATION && {
+    verification: { google: envConfig.GSC_VERIFICATION },
+  }),
 };
 
 export default async function RootLayout({
@@ -72,13 +77,17 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      {envConfig.GTM_ID && <GoogleTagManager gtmId={envConfig.GTM_ID} />}
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body className={`${montserrat.variable} antialiased`}>{children}</body>
+      <body className={`${montserrat.variable} antialiased`}>
+        {children}
+        {envConfig.GA_ID && <GoogleAnalytics gaId={envConfig.GA_ID} />}
+      </body>
     </html>
   );
 }

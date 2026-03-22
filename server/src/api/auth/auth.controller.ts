@@ -56,7 +56,7 @@ export class AuthController {
       httpOnly: true,
       maxAge: this.COOKIES_EXPIRE,
     });
-    res.json({ accessToken: result.accessToken });
+    return { accessToken: result.accessToken };
   }
 
   @Get('/logout')
@@ -92,7 +92,7 @@ export class AuthController {
       httpOnly: true,
       maxAge: this.COOKIES_EXPIRE,
     });
-    res.json({ accessToken: tokens.accessToken });
+    return { accessToken: tokens.accessToken };
   }
 
   @Get('/check')

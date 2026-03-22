@@ -12,7 +12,7 @@ FROM base AS builder
 ENV NODE_ENV=development
 COPY --from=deps /app/node_modules ./node_modules
 COPY server/ .
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 RUN npm run prisma:generate \
     && npm run build
 
@@ -30,7 +30,7 @@ COPY server/package*.json ./
 RUN npm install --omit=dev \
     && npm install --no-save prisma
 COPY server/. .
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
