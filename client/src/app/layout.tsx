@@ -2,6 +2,7 @@ import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { Montserrat } from "next/font/google";
+import Script from "next/script";
 import "./[locale]/globals.css";
 
 import envConfig from "@/src/configs/env.config";
@@ -87,6 +88,17 @@ export default async function RootLayout({
       <body className={`${montserrat.variable} antialiased`}>
         {children}
         {envConfig.GA_ID && <GoogleAnalytics gaId={envConfig.GA_ID} />}
+        {envConfig.GTAG_ADS_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${envConfig.GTAG_ADS_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-ads-gtag" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${envConfig.GTAG_ADS_ID}');`}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

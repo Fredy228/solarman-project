@@ -8,6 +8,9 @@ const envConfig = {
   // Google Tag Manager — Container ID (GTM-XXXXXXX)
   GTM_ID: process.env.NEXT_PUBLIC_GTM_ID || "",
 
+  // Google Ads — Conversion ID (AW-XXXXXXXXXX)
+  GTAG_ADS_ID: process.env.NEXT_PUBLIC_GTAG_ADS_ID || "",
+
   // Google Search Console — verification token
   GSC_VERIFICATION: process.env.NEXT_PUBLIC_GSC_VERIFICATION || "",
 };
