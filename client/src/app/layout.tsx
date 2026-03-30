@@ -76,7 +76,7 @@ export default async function RootLayout({
     },
   };
 
-  const gtagIds = [envConfig.GA_ID, envConfig.GTAG_ADS_ID].filter(Boolean);
+  const gtagIds = [envConfig.GTAG_ADS_ID, envConfig.GA_ID].filter(Boolean);
   const primaryGtagId = gtagIds[0];
   const gtagConfigScript = gtagIds
     .map((id) => `gtag('config', '${id}');`)
