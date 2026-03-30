@@ -1,4 +1,4 @@
-import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { Montserrat } from "next/font/google";
@@ -76,10 +76,27 @@ export default async function RootLayout({
     },
   };
 
+  const gtagIds = [envConfig.GA_ID, envConfig.GTAG_ADS_ID].filter(Boolean);
+  const primaryGtagId = gtagIds[0];
+  const gtagConfigScript = gtagIds
+    .map((id) => `gtag('config', '${id}');`)
+    .join("");
+
   return (
     <html lang={locale}>
       {envConfig.GTM_ID && <GoogleTagManager gtmId={envConfig.GTM_ID} />}
       <head>
+        {primaryGtagId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${primaryGtagId}`}
+              strategy="beforeInteractive"
+            />
+            <Script id="google-gtag" strategy="beforeInteractive">
+              {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}window.gtag = gtag;gtag('js', new Date());${gtagConfigScript}`}
+            </Script>
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
@@ -87,18 +104,6 @@ export default async function RootLayout({
       </head>
       <body className={`${montserrat.variable} antialiased`}>
         {children}
-        {envConfig.GA_ID && <GoogleAnalytics gaId={envConfig.GA_ID} />}
-        {envConfig.GTAG_ADS_ID && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${envConfig.GTAG_ADS_ID}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-ads-gtag" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${envConfig.GTAG_ADS_ID}');`}
-            </Script>
-          </>
-        )}
       </body>
     </html>
   );

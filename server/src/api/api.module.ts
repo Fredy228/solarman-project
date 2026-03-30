@@ -10,6 +10,7 @@ import { OrderModule } from './order/order.module';
 import { PortfolioModule } from './potfolio/portfolio.module';
 import { UploadModule } from './upload/upload.module';
 import { UserModule } from './user/user.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from './user/user.module';
     HashtagModule,
     OrderModule,
     BlogModule,
+    ReviewsModule,
   ],
 })
 export class ApiModule {}

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { isAxiosError } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { TCreateLeadRequest } from '../types/create-lead-request.type';
+import { externalApiRoutes } from '../../../../configs/external-api-routes.config';
 
 @Injectable()
 export class KeyCrmApiService {
@@ -34,7 +35,7 @@ export class KeyCrmApiService {
 
     try {
       const response = await firstValueFrom(
-        this.httpService.post('/v1/pipelines/cards', data),
+        this.httpService.post(externalApiRoutes.keyCrm.lead, data),
       );
       this.logger.log(`Response from KeyCRM: ${JSON.stringify(response.data)}`);
     } catch (e) {
