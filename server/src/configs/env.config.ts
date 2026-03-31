@@ -25,7 +25,6 @@ export const envSchema = Joi.object({
   URL_KEY_CRM: Joi.string().default('').allow(''),
   TOKEN_KEY_CRM: Joi.string().default('').allow(''),
   SOURCES_KEY_CRM: Joi.string().default('').allow(''),
-  URL_GOOGLE_PLACE_API: Joi.string().default('').allow(''),
   TOKEN_GOOGLE_PLACE_API: Joi.string().default('').allow(''),
   GOOGLE_PLACE_ID: Joi.string().default('').allow(''),
   TELEGRAM_TOKEN: Joi.string().default('').allow(''),

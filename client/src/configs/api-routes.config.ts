@@ -51,4 +51,7 @@ export const API_ROUTES = {
   order: {
     send: "/order/public",
   },
+  reviews: {
+    list: "/google/reviews",
+  },
 };

@@ -1,16 +1,12 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GOOGLE_PLACES_API_NEW_BASE_URL } from '../../../configs/external-api-routes.config';
 import { GoogleReviewsApiService } from './google-reviews-api.service';
 
 @Module({
   imports: [
-    HttpModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        baseURL: configService.get<string>('URL_GOOGLE_PLACE_API'),
-      }),
-      inject: [ConfigService],
+    HttpModule.register({
+      baseURL: GOOGLE_PLACES_API_NEW_BASE_URL,
     }),
   ],
   providers: [GoogleReviewsApiService],

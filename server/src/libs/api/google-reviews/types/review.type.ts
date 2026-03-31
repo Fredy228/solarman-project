@@ -11,10 +11,25 @@ export type TReview = {
 };
 
 export type TGooglePlaceReviewsResponse = {
-  error_message?: string;
-  result?: {
-    name?: string;
-    reviews?: TReview[];
-  };
-  status: string;
+  reviews?: TGooglePlaceReview[];
+};
+
+export type TGooglePlaceReview = {
+  authorAttribution?: TGooglePlaceReviewAuthorAttribution;
+  originalText?: TGooglePlaceLocalizedText;
+  publishTime?: string;
+  rating?: number;
+  relativePublishTimeDescription?: string;
+  text?: TGooglePlaceLocalizedText;
+};
+
+type TGooglePlaceReviewAuthorAttribution = {
+  displayName?: string;
+  photoUri?: string;
+  uri?: string;
+};
+
+type TGooglePlaceLocalizedText = {
+  languageCode?: string;
+  text?: string;
 };

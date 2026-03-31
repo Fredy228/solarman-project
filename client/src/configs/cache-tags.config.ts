@@ -10,4 +10,5 @@ export const CACHE_TAGS = {
   contacts: "global-params-contacts",
   calculatorProfit: "global-params-calculator-profit",
   exchangeRate: "global-params-exchange-rate",
+  reviews: "google-reviews",
 };

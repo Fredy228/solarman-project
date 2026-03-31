@@ -8,6 +8,8 @@ import { getCalculatorProfit } from "@/src/features/global-params/api/get-calcul
 import { getExchangeRate } from "@/src/features/global-params/api/get-exchange-rate.api";
 import { getLastPortfolio } from "@/src/features/portfolio/api/get-last-portfolio.api";
 import PortfolioPreview from "@/src/features/portfolio/components/portfolio-preview/PortfolioPreview";
+import { getReviews } from "@/src/features/reviews/api/get-reviews.api";
+import ReviewsSection from "@/src/features/reviews/components/ReviewsSection";
 import { ELocale } from "@/src/i18n/routing";
 import { DEFAULT_TARIFF } from "@/src/shared/configs/calculator-profit.config";
 import BenefitsSimple from "@/src/shared/ui/sections/benefits-simple/BenefitsSimple";
@@ -70,6 +72,7 @@ export default async function Home({ params }: Props) {
 
   const portfolioList = await getLastPortfolio();
   const blogList = await getLastBlog();
+  const reviews = await getReviews(locale);
   const calculatorProfit = await getCalculatorProfit();
   const exchangeRate = await getExchangeRate();
 
@@ -141,6 +144,7 @@ export default async function Home({ params }: Props) {
       {portfolioList && portfolioList.length > 0 && (
         <PortfolioPreview data={portfolioList} />
       )}
+      {reviews && reviews.length > 0 && <ReviewsSection reviews={reviews} />}
       {blogList && blogList.length > 0 && <BlogPreview data={blogList} />}
       <ConsultSection />
     </>
