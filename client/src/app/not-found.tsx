@@ -1,5 +1,9 @@
 import { getLocale } from "next-intl/server";
 import Link from "next/link";
+import {
+  buildLocalizedPath,
+  normalizeLocale,
+} from "@/src/shared/utils/localized-path";
 
 const messages = {
   uk: {
@@ -76,7 +80,8 @@ export default async function NotFound() {
   } catch {
     // outside intl context — use default
   }
-  const t = messages[locale as keyof typeof messages] ?? messages.uk;
+  const resolvedLocale = normalizeLocale(locale);
+  const t = messages[resolvedLocale as keyof typeof messages] ?? messages.uk;
 
   return (
     <section
@@ -147,7 +152,7 @@ export default async function NotFound() {
 
         {/* Button */}
         <Link
-          href={`/${locale}`}
+          href={buildLocalizedPath(resolvedLocale, "/")}
           style={{
             display: "inline-flex",
             alignItems: "center",

@@ -10,7 +10,9 @@ import {
   SITE_NAME,
   SITE_URL,
   TWITTER_HANDLE,
+  buildUrl,
 } from "@/src/shared/utils/seo";
+import { normalizeLocale } from "@/src/shared/utils/localized-path";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -69,7 +71,8 @@ export default async function RootLayout({
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/${locale}/products?search={search_term_string}`,
+        urlTemplate: buildUrl(normalizeLocale(locale), "/products") +
+          "?search={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },

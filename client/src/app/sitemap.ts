@@ -2,7 +2,7 @@ import { getBlogList } from "@/src/features/blog/api/get-blog-list.api";
 import { getGoodsList } from "@/src/features/goods/api/goods-list.api";
 import { getPortfolio } from "@/src/features/portfolio/api/get-portfolio.api";
 import { ELocale } from "@/src/i18n/routing";
-import { SITE_URL } from "@/src/shared/utils/seo";
+import { buildUrl } from "@/src/shared/utils/seo";
 import type { MetadataRoute } from "next";
 
 const locales: ELocale[] = [ELocale.UK, ELocale.RU];
@@ -15,7 +15,7 @@ function buildEntry(
   priority: number,
 ): MetadataRoute.Sitemap[number] {
   return {
-    url: `${SITE_URL}/${locale}${path === "/" ? "" : path}`,
+    url: buildUrl(locale, path),
     lastModified,
     changeFrequency,
     priority,
@@ -23,7 +23,7 @@ function buildEntry(
       languages: Object.fromEntries(
         locales.map((locale) => [
           locale === ELocale.UK ? "uk-UA" : "ru-UA",
-          `${SITE_URL}/${locale}${path === "/" ? "" : path}`,
+          buildUrl(locale, path),
         ]),
       ),
     },

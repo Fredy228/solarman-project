@@ -26,6 +26,7 @@ import { useCartStore } from "@/src/features/cart/store/useCartStore";
 import type { TExchangeRates } from "@/src/features/global-params/types/exchange-rate.type";
 import type { ELocale } from "@/src/i18n/routing";
 import { ECurrency } from "@/src/shared/types/currency.enum";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 import CartOrderRequest from "@/src/widgets/cart/CartOrderRequest";
 
 type Props = {
@@ -162,7 +163,11 @@ export default function CartClient({ locale, exchangeRate }: Props) {
           <Typography variant="body1" mb={2}>
             {t("empty")}
           </Typography>
-          <Button component={Link} href="/products" variant="contained">
+          <Button
+            component={Link}
+            href={buildLocalizedPath(locale, "/products")}
+            variant="contained"
+          >
             {t("goToShop")}
           </Button>
         </Paper>
@@ -209,7 +214,10 @@ export default function CartClient({ locale, exchangeRate }: Props) {
                       variant="subtitle1"
                       fontWeight={600}
                       component={Link}
-                      href={`/products/${item.data.tag}`}
+                      href={buildLocalizedPath(
+                        locale,
+                        `/products/${item.data.tag}`,
+                      )}
                       sx={{
                         textDecoration: "none",
                         color: "inherit",
@@ -302,7 +310,7 @@ export default function CartClient({ locale, exchangeRate }: Props) {
                 variant="outlined"
                 color="primary"
                 component={Link}
-                href="/products"
+                href={buildLocalizedPath(locale, "/products")}
                 sx={{
                   textTransform: "none",
                   width: { xs: "100%", sm: "100%", md: "auto" },

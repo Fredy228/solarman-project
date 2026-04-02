@@ -8,5 +8,6 @@ export enum ELocale {
 export const routing = defineRouting({
   locales: [ELocale.UK, ELocale.RU],
   defaultLocale: ELocale.UK,
-  localePrefix: "always",
+  localePrefix: "as-needed",
+  localeDetection: false,
 });

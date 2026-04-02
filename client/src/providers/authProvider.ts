@@ -6,12 +6,19 @@ import {
   ADMIN_AUTH_ROUTES,
   ADMIN_PROTECTED_ROUTES,
 } from "../configs/routes.config";
+import { buildLocalizedPath, getStoredLocale } from "../shared/utils/localized-path";
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
     try {
       await authApi.login({ email, password });
-      return { success: true, redirectTo: ADMIN_PROTECTED_ROUTES.dashboard };
+      return {
+        success: true,
+        redirectTo: buildLocalizedPath(
+          getStoredLocale(),
+          ADMIN_PROTECTED_ROUTES.dashboard,
+        ),
+      };
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 401) {
         return {
@@ -28,7 +35,13 @@ export const authProvider: AuthProvider = {
   logout: async () => {
     try {
       await authApi.logout();
-      return { success: true, redirectTo: ADMIN_AUTH_ROUTES.login };
+      return {
+        success: true,
+        redirectTo: buildLocalizedPath(
+          getStoredLocale(),
+          ADMIN_AUTH_ROUTES.login,
+        ),
+      };
     } catch (error) {
       return {
         success: false,
@@ -43,7 +56,10 @@ export const authProvider: AuthProvider = {
     } catch {
       return {
         authenticated: false,
-        redirectTo: ADMIN_AUTH_ROUTES.login,
+        redirectTo: buildLocalizedPath(
+          getStoredLocale(),
+          ADMIN_AUTH_ROUTES.login,
+        ),
         error: {
           message: "Увійдіть в систему",
           name: "Unauthorized",

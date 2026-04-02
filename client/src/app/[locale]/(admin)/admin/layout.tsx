@@ -55,6 +55,7 @@ import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { accessControlProvider } from "@/src/providers/accessControlProvider";
 import { authProvider } from "@/src/providers/authProvider";
 import { dataProvider } from "@/src/providers/dataProvider";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 import { CustomHeader } from "@/src/widgets/refine/CustomHeader";
 import { ModifiedSider } from "@/src/widgets/refine/ModifiedSider";
 import Image from "next/image";
@@ -68,6 +69,7 @@ export default function AdminLayout({
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const buildAdminPath = (path: string) => buildLocalizedPath(locale, path);
 
   const i18nProvider = {
     translate: (key: string, params: any) => {
@@ -99,7 +101,7 @@ export default function AdminLayout({
             resources={[
               {
                 name: "Dashboard",
-                list: ADMIN_PROTECTED_ROUTES.dashboard,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.dashboard),
                 meta: {
                   label: t("common.main"),
                   icon: <DashboardIcon />,
@@ -107,7 +109,7 @@ export default function AdminLayout({
               },
               {
                 name: "main-site",
-                list: "/",
+                list: buildLocalizedPath(locale, "/"),
                 meta: {
                   label: t("common.site"),
                   icon: <FileCodeCorner />,
@@ -115,10 +117,10 @@ export default function AdminLayout({
               },
               {
                 name: "user",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.edit,
-                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.user.show,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.user.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.user.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.user.edit),
+                show: buildAdminPath(ADMIN_PROTECTED_ROUTES.user.show),
                 meta: {
                   label: t("user.user"),
                   icon: <Users />,
@@ -126,10 +128,10 @@ export default function AdminLayout({
               },
               {
                 name: "order",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.edit,
-                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.order.show,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.order.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.order.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.order.edit),
+                show: buildAdminPath(ADMIN_PROTECTED_ROUTES.order.show),
                 meta: {
                   label: t("order.order"),
                   icon: <Mails />,
@@ -137,10 +139,10 @@ export default function AdminLayout({
               },
               {
                 name: "blog",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.edit,
-                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.blog.show,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.blog.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.blog.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.blog.edit),
+                show: buildAdminPath(ADMIN_PROTECTED_ROUTES.blog.show),
                 meta: {
                   label: t("blog.blog"),
                   icon: <Rss />,
@@ -155,10 +157,10 @@ export default function AdminLayout({
               },
               {
                 name: "portfolio",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.edit,
-                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.portfolio.show,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.portfolio.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.portfolio.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.portfolio.edit),
+                show: buildAdminPath(ADMIN_PROTECTED_ROUTES.portfolio.show),
                 meta: {
                   label: t("portfolio.portfolio"),
                   icon: <Images />,
@@ -167,9 +169,9 @@ export default function AdminLayout({
               },
               {
                 name: "hashtag",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.hashtag.edit,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.hashtag.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.hashtag.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.hashtag.edit),
                 meta: {
                   label: t("hashtag.hashtag"),
                   parent: "portfolio-group",
@@ -185,10 +187,10 @@ export default function AdminLayout({
               },
               {
                 name: "goods",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.edit,
-                show: `/${locale}` + ADMIN_PROTECTED_ROUTES.goods.show,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.goods.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.goods.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.goods.edit),
+                show: buildAdminPath(ADMIN_PROTECTED_ROUTES.goods.show),
                 meta: {
                   label: t("goods.goods"),
                   parent: "goods-group",
@@ -197,9 +199,9 @@ export default function AdminLayout({
               },
               {
                 name: "goods-brand",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.list,
-                create: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.create,
-                edit: `/${locale}` + ADMIN_PROTECTED_ROUTES.goodsBrand.edit,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.goodsBrand.list),
+                create: buildAdminPath(ADMIN_PROTECTED_ROUTES.goodsBrand.create),
+                edit: buildAdminPath(ADMIN_PROTECTED_ROUTES.goodsBrand.edit),
                 meta: {
                   label: t("goods-brand.goods-brand"),
                   parent: "goods-group",
@@ -215,7 +217,7 @@ export default function AdminLayout({
               },
               {
                 name: "contacts",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.contacts,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.contacts),
                 meta: {
                   label: t("contacts.contacts"),
                   parent: "global-param-group",
@@ -224,7 +226,7 @@ export default function AdminLayout({
               },
               {
                 name: "calculator-profit",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.calculatorProfit,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.calculatorProfit),
                 meta: {
                   label: t("calculator-profit.calculator_profit"),
                   parent: "global-param-group",
@@ -233,7 +235,7 @@ export default function AdminLayout({
               },
               {
                 name: "exchange-rate",
-                list: `/${locale}` + ADMIN_PROTECTED_ROUTES.exchangeRate,
+                list: buildAdminPath(ADMIN_PROTECTED_ROUTES.exchangeRate),
                 meta: {
                   label: t("exchange-rate.exchange_rate"),
                   parent: "global-param-group",

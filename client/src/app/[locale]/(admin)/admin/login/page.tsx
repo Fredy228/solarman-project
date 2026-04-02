@@ -5,6 +5,7 @@ import { AuthPage } from "@refinedev/mui";
 import { useLocale } from "next-intl";
 
 import { ADMIN_AUTH_ROUTES } from "@/src/configs/routes.config";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 
 export default function Login() {
   const locale = useLocale();
@@ -15,7 +16,7 @@ export default function Login() {
       registerLink={false}
       forgotPasswordLink={
         <a
-          href={`/${locale}${ADMIN_AUTH_ROUTES.forgotPassword}`}
+          href={buildLocalizedPath(locale, ADMIN_AUTH_ROUTES.forgotPassword)}
           style={{ fontSize: "0.85rem" }}
         >
           Забули пароль?

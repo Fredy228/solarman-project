@@ -26,6 +26,7 @@ import { Controller, useForm } from "react-hook-form";
 import { URL_BASE } from "@/src/configs/routes.config";
 import { useCartStore } from "@/src/features/cart/store/useCartStore";
 import type { ELocale } from "@/src/i18n/routing";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 
 type FormValues = {
   email: string;
@@ -121,7 +122,7 @@ const buildOrderNotes = (
     const title = getTitle(item.data.title, locale);
     const pricePerItem = item.data.discountPrice ?? item.data.price;
     const lineTotal = pricePerItem * item.quantity;
-    const productUrl = `${baseUrl}/${locale}/products/${item.data.tag}`;
+    const productUrl = `${baseUrl}${buildLocalizedPath(locale, `/products/${item.data.tag}`)}`;
     const safeTitle = escapeHtml(title);
     const safeUrl = escapeHtml(productUrl);
     const titleWithLink = baseUrl

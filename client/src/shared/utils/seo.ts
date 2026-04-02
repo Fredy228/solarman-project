@@ -1,6 +1,7 @@
 import envConfig from "@/src/configs/env.config";
 import { ELocale } from "@/src/i18n/routing";
 import type { Metadata } from "next";
+import { buildLocalizedPath, buildLocalizedUrl } from "./localized-path";
 
 export const SITE_URL = `${envConfig.SERVER_PROTOCOL}://${envConfig.SERVER_HOST}`;
 
@@ -9,10 +10,14 @@ export const TWITTER_HANDLE = "@solarman_od";
 
 export const OG_IMAGE_DEFAULT = `${SITE_URL}/og-default.jpg`;
 
-/** Build a full URL for a given pathname respecting locale prefix. */
+/** Build a locale-aware relative pathname. */
+export function buildPath(locale: ELocale, path: string): string {
+  return buildLocalizedPath(locale, path);
+}
+
+/** Build a full URL for a given pathname respecting locale prefix rules. */
 export function buildUrl(locale: ELocale, path: string): string {
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return `${SITE_URL}/${locale}${cleanPath === "/" ? "" : cleanPath}`;
+  return buildLocalizedUrl(SITE_URL, locale, path);
 }
 
 /**

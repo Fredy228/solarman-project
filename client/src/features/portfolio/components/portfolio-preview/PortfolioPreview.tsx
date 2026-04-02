@@ -2,6 +2,7 @@ import { PUBLIC_ROUTES } from "@/src/configs/routes.config";
 import type { ELocale } from "@/src/i18n/routing";
 import Section from "@/src/shared/ui/sections/Section";
 import SectionTitle from "@/src/shared/ui/title/SectionTitle";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import type { IPortfolioItem } from "../../types/portfolio.interface";
@@ -50,7 +51,7 @@ export default function PortfolioPreview({ data, hashtags }: Props) {
           <Button
             component="a"
             variant="contained"
-            href={`/${locale}${PUBLIC_ROUTES.projects}` + queryParams}
+            href={buildLocalizedPath(locale, PUBLIC_ROUTES.projects) + queryParams}
           >
             {tCommon("button.viewMore")}
           </Button>

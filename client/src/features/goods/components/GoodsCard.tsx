@@ -14,6 +14,7 @@ import { EBadgeType } from "@/src/features/goods/types/goods-badge-type.enum";
 import type { TGoodsListItem } from "@/src/features/goods/types/goods.interface";
 import type { ELocale } from "@/src/i18n/routing";
 import { ECurrency } from "@/src/shared/types/currency.enum";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 
 type Props = {
   item: TGoodsListItem;
@@ -118,7 +119,7 @@ export default function GoodsCard({ item, locale, exchangeRate }: Props) {
       }}
     >
       <Link
-        href={`/products/${item.tag}`}
+        href={buildLocalizedPath(locale, `/products/${item.tag}`)}
         prefetch={false}
         style={{
           textDecoration: "none",
