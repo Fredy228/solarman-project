@@ -2,7 +2,6 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { Montserrat } from "next/font/google";
-import Script from "next/script";
 import "./[locale]/globals.css";
 
 import envConfig from "@/src/configs/env.config";
@@ -76,27 +75,10 @@ export default async function RootLayout({
     },
   };
 
-  const gtagIds = [envConfig.GTAG_ADS_ID, envConfig.GA_ID].filter(Boolean);
-  const primaryGtagId = gtagIds[0];
-  const gtagConfigScript = gtagIds
-    .map((id) => `gtag('config', '${id}');`)
-    .join("");
-
   return (
     <html lang={locale}>
       {envConfig.GTM_ID && <GoogleTagManager gtmId={envConfig.GTM_ID} />}
       <head>
-        {primaryGtagId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${primaryGtagId}`}
-              strategy="beforeInteractive"
-            />
-            <Script id="google-gtag" strategy="beforeInteractive">
-              {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}window.gtag = gtag;gtag('js', new Date());${gtagConfigScript}`}
-            </Script>
-          </>
-        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
