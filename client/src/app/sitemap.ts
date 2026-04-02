@@ -8,13 +8,14 @@ import type { MetadataRoute } from "next";
 const locales: ELocale[] = [ELocale.UK, ELocale.RU];
 
 function buildEntry(
+  locale: ELocale,
   path: string,
   lastModified: Date,
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
   priority: number,
 ): MetadataRoute.Sitemap[number] {
   return {
-    url: `${SITE_URL}${path}`,
+    url: `${SITE_URL}/${locale}${path === "/" ? "" : path}`,
     lastModified,
     changeFrequency,
     priority,
@@ -58,8 +59,10 @@ const STATIC_PATHS = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const staticEntries = STATIC_PATHS.map(({ path, changeFreq, priority }) =>
-    buildEntry(path, now, changeFreq, priority),
+  const staticEntries = STATIC_PATHS.flatMap(({ path, changeFreq, priority }) =>
+    locales.map((locale) =>
+      buildEntry(locale, path, now, changeFreq, priority),
+    ),
   );
 
   // Fetch dynamic routes with graceful fallback
@@ -73,14 +76,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (blogResult.status === "fulfilled" && blogResult.value) {
     const [items] = blogResult.value;
     for (const item of items) {
-      blogEntries.push(
-        buildEntry(
-          `/blog/${item.tag}`,
-          new Date(item.updatedAt),
-          "weekly",
-          0.7,
-        ),
-      );
+      for (const locale of locales) {
+        blogEntries.push(
+          buildEntry(
+            locale,
+            `/blog/${item.tag}`,
+            new Date(item.updatedAt),
+            "weekly",
+            0.7,
+          ),
+        );
+      }
     }
   }
 
@@ -88,14 +94,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (portfolioResult.status === "fulfilled" && portfolioResult.value) {
     const [items] = portfolioResult.value;
     for (const item of items) {
-      projectEntries.push(
-        buildEntry(
-          `/projects/${item.tag}`,
-          new Date(item.date),
-          "monthly",
-          0.6,
-        ),
-      );
+      for (const locale of locales) {
+        projectEntries.push(
+          buildEntry(
+            locale,
+            `/projects/${item.tag}`,
+            new Date(item.date),
+            "monthly",
+            0.6,
+          ),
+        );
+      }
     }
   }
 
@@ -103,9 +112,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (goodsResult.status === "fulfilled" && goodsResult.value) {
     const { items } = goodsResult.value;
     for (const item of items) {
-      productEntries.push(
-        buildEntry(`/products/${item.tag}`, now, "weekly", 0.7),
-      );
+      for (const locale of locales) {
+        productEntries.push(
+          buildEntry(locale, `/products/${item.tag}`, now, "weekly", 0.7),
+        );
+      }
     }
   }
 
