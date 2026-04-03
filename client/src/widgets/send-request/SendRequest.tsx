@@ -58,7 +58,7 @@ export default function SendRequest() {
         utmTags: utmStorage.get(),
       });
 
-      reportGoogleAdsRequestConversion();
+      reportGoogleAdsRequestConversion({ formType: "consultation" });
       setSubmitStatus("success");
     } catch (error) {
       console.error("Failed to send request:", error);
