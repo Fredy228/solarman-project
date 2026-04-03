@@ -1,5 +1,6 @@
 import { EOrderType } from "@/src/features/order";
 import { sendRequestApi } from "@/src/features/order/api/sendRequest.api";
+import { reportGoogleAdsRequestConversion } from "@/src/libs/google-ads";
 import { utmStorage } from "@/src/libs/utm-storage";
 import NumericFormatPhone from "@/src/shared/ui/number-input/NumericFormatPhone";
 import { orderConsultationSchema } from "@/src/validators/order.schema";
@@ -57,6 +58,7 @@ export default function SendRequest() {
         utmTags: utmStorage.get(),
       });
 
+      reportGoogleAdsRequestConversion();
       setSubmitStatus("success");
     } catch (error) {
       console.error("Failed to send request:", error);
