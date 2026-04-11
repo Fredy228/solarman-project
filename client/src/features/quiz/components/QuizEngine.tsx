@@ -267,7 +267,7 @@ export default function QuizEngine({ config, locale }: Props) {
 
     try {
       await sendRequestApi(request);
-      reportGoogleAdsRequestConversion({ formType: "quiz" });
+      reportGoogleAdsRequestConversion({ formType: "consultation" });
       setScreen("success");
     } catch (error) {
       console.error("Failed to send quiz request:", error);

@@ -15,4 +15,8 @@ services:
     volumes:
       - ./nginx:/etc/nginx/templates
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - nginx-cache:/var/cache/nginx
     restart: unless-stopped
+
+volumes:
+  nginx-cache:
