@@ -1,7 +1,7 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Poppins } from "next/font/google";
 import "./[locale]/globals.css";
 
 import envConfig from "@/src/configs/env.config";
@@ -19,6 +19,13 @@ const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
   display: "optional",
   weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin", "latin-ext"],
+  display: "optional",
+  weight: ["500"],
 });
 
 export const metadata: Metadata = {
@@ -87,7 +94,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body className={`${montserrat.variable} antialiased`}>
+      <body className={`${montserrat.variable} ${poppins.variable} antialiased`}>
         {children}
       </body>
     </html>

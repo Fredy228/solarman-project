@@ -1,0 +1,144 @@
+{
+  "id": "solar-station-cost",
+  "slug": "quiz",
+  "pageTitle": "Розрахуйте вартість вашої сонячної станції",
+  "meta": {
+    "title": "Розрахунок вартості сонячної станції | SolarMan",
+    "description": "Дайте відповідь на 5 питань, щоб отримати безкоштовний проект і кошторис сонячної станції."
+  },
+  "ui": {
+    "progressLabel": "Питання",
+    "back": "Назад",
+    "next": "Далі",
+    "submit": "Надіслати",
+    "home": "На головну",
+    "requiredMessage": "Заповніть поле, щоб продовжити",
+    "submitError": "Не вдалося надіслати заявку. Спробуйте ще раз."
+  },
+  "intro": {
+    "title": [
+      { "text": "Отримайте " },
+      { "text": "безкоштовний", "accent": true },
+      { "text": "\nпроект і кошторис\nвашої станції" }
+    ],
+    "subtitle": "Для цього дайте відповідь\nлише на 5 питань",
+    "buttonLabel": "Почати розрахунок",
+    "leftImage": "asset:quizStart",
+    "leftImageAlt": "Сонячні панелі на об'єкті",
+    "rightImage": "asset:quizDiagram",
+    "rightImageAlt": "Кошторис сонячної станції"
+  },
+  "success": {
+    "title": "Дякуємо!",
+    "subtitle": "Найближчим часом ми зв’яжемося з вами\nі надамо детальну інформацію",
+    "image": "asset:quizThanks",
+    "imageAlt": "Сонячна станція"
+  },
+  "steps": [
+    {
+      "id": "purpose",
+      "module": "image-options",
+      "question": "Для чого встановлюється станція?",
+      "required": true,
+      "options": [
+        {
+          "id": "business",
+          "title": "Підприємство (офіс, ТРЦ, готель, ресторан)",
+          "image": {
+            "desktop": "asset:quizPurposeBusinessPc",
+            "mobile": "asset:quizPurposeBusinessMobile"
+          },
+          "imageAlt": "Сонячні панелі для підприємства"
+        },
+        {
+          "id": "home",
+          "title": "Власний будинок",
+          "image": {
+            "desktop": "asset:quizPurposeHomePc",
+            "mobile": "asset:quizPurposeHomeMobile"
+          },
+          "imageAlt": "Сонячні панелі на будинку"
+        },
+        {
+          "id": "income",
+          "title": "Заробіток на зеленому тарифі",
+          "image": {
+            "desktop": "asset:quizPurposeIncomePc",
+            "mobile": "asset:quizPurposeIncomeMobile"
+          },
+          "imageAlt": "Зелений тариф"
+        }
+      ]
+    },
+    {
+      "id": "need",
+      "module": "text-options",
+      "question": "Яку потребу вирішуємо?",
+      "required": true,
+      "options": [
+        { "id": "independence", "title": "Повна незалежність\nвід електромережі" },
+        { "id": "compensation", "title": "Компенсація\nчастини споживання" },
+        { "id": "backup", "title": "Резервне живлення" },
+        { "id": "passive-income", "title": "Пасивний дохід" }
+      ]
+    },
+    {
+      "id": "power",
+      "module": "slider",
+      "question": "Яка потужність вас цікавить?",
+      "required": true,
+      "defaultOptionId": "up-to-5",
+      "options": [
+        { "id": "up-to-5", "label": "до 5 кВт", "mobileLabel": "5 кВт", "value": 5 },
+        { "id": "up-to-10", "label": "до 10 кВт", "mobileLabel": "10 кВт", "value": 10 },
+        { "id": "up-to-20", "label": "до 20 кВт", "mobileLabel": "20 кВт", "value": 20 },
+        { "id": "up-to-30", "label": "до 30 кВт", "mobileLabel": "30 кВт", "value": 30 },
+        { "id": "more-than-30", "label": "більше 30 кВт", "mobileLabel": "30+ кВт", "value": 31 }
+      ]
+    },
+    {
+      "id": "city",
+      "module": "text-options",
+      "question": "Вкажіть ваше місто",
+      "required": true,
+      "options": [
+        { "id": "odesa", "title": "Одеса" },
+        { "id": "mykolaiv", "title": "Миколаїв" },
+        { "id": "region", "title": "Область" },
+        {
+          "id": "other",
+          "title": "Інше",
+          "input": {
+            "id": "city",
+            "placeholder": "Вкажіть ваше місто",
+            "required": true,
+            "maxLength": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "contacts",
+      "module": "contact-form",
+      "question": "Вкажіть ім’я та номер телефону",
+      "required": true,
+      "fields": [
+        {
+          "id": "name",
+          "label": "Ваше ім’я",
+          "placeholder": "Ваше ім’я",
+          "inputType": "text",
+          "required": true,
+          "maxLength": 100
+        },
+        {
+          "id": "phone",
+          "label": "Ваш номер телефону",
+          "placeholder": "Ваш номер телефону",
+          "inputType": "tel",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
