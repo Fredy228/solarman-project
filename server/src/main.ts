@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import * as process from 'process';
 import { join } from 'path';
 import cookieParser from 'cookie-parser';
+import type { ServerResponse } from 'http';
 
 import { MainModule } from './main.module';
 import { HttpExceptionFilter } from './common/filters/http-exeption.filter';
@@ -25,6 +26,9 @@ async function bootstrap() {
   app.setGlobalPrefix('/api');
   app.useStaticAssets(join(process.cwd(), 'static'), {
     prefix: '/api/static',
+    setHeaders: (res: ServerResponse) => {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    },
   });
 
   app.enableShutdownHooks();
@@ -35,4 +39,4 @@ async function bootstrap() {
     console.log(`Server started on port ${PORT}`);
   });
 }
-bootstrap();
+void bootstrap();

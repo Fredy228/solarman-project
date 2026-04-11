@@ -316,6 +316,7 @@ export class GoodsPublicService implements OnModuleInit {
         where: whereOption,
         select: {
           id: true,
+          updatedAt: true,
           cover: true,
           title: true,
           tag: true,

@@ -4,7 +4,10 @@ import { getPortfolio } from "@/src/features/portfolio/api/get-portfolio.api";
 import type { ELocale } from "@/src/i18n/routing";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
-import { buildMetadata } from "@/src/shared/utils/seo";
+import {
+  buildMetadata,
+  hasMeaningfulSearchParams,
+} from "@/src/shared/utils/seo";
 import Projects from "@/src/widgets/projects/Projects";
 import Box from "@mui/material/Box/Box";
 import type { Metadata } from "next";
@@ -14,8 +17,13 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { locale } = await params;
+  const searchParamsResolved = await searchParams;
+
   return buildMetadata({
     locale,
     path: "/projects",
@@ -41,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "реализованные проекты",
       ],
     },
+    noIndex: hasMeaningfulSearchParams(searchParamsResolved),
   });
 }
 
@@ -53,11 +62,13 @@ export default async function ProjectsPage({ searchParams }: Props) {
       : parseInt(searchParamsResolved.page)
     : 1;
 
-  const portfolioResponse = await getPortfolio({
-    page,
-    hashtags: searchParamsResolved.hashtag,
-  });
-  const hashtags = await getHashtagsList();
+  const [portfolioResponse, hashtags] = await Promise.all([
+    getPortfolio({
+      page,
+      hashtags: searchParamsResolved.hashtag,
+    }),
+    getHashtagsList(),
+  ]);
 
   const [portfolioList, totalCount] = portfolioResponse ?? [[], 0];
 

@@ -110,6 +110,7 @@ export class PortfolioPublicService {
         where: whereOption,
         select: {
           id: true,
+          updatedAt: true,
           title: true,
           date: true,
           cover: true,

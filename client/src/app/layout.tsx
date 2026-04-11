@@ -13,6 +13,7 @@ import {
   buildUrl,
 } from "@/src/shared/utils/seo";
 import { normalizeLocale } from "@/src/shared/utils/localized-path";
+import { buildOrganizationSchema } from "@/src/shared/utils/structured-data";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -72,18 +73,22 @@ export default async function RootLayout({
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
     name: SITE_NAME,
     url: SITE_URL,
+    publisher: { "@id": `${SITE_URL}/#organization` },
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: buildUrl(normalizeLocale(locale), "/products") +
-          "?search={search_term_string}",
+        urlTemplate:
+          buildUrl(normalizeLocale(locale), "/products") +
+          "?title_like={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
   };
+  const organizationSchema = buildOrganizationSchema();
 
   return (
     <html lang={locale}>
@@ -91,10 +96,14 @@ export default async function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationSchema, websiteSchema]),
+          }}
         />
       </head>
-      <body className={`${montserrat.variable} ${poppins.variable} antialiased`}>
+      <body
+        className={`${montserrat.variable} ${poppins.variable} antialiased`}
+      >
         {children}
       </body>
     </html>

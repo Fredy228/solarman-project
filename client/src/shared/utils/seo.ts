@@ -10,6 +10,29 @@ export const TWITTER_HANDLE = "@solarman_od";
 
 export const OG_IMAGE_DEFAULT = `${SITE_URL}/og-default.jpg`;
 
+export function buildLanguageAlternates(path: string): Record<string, string> {
+  return {
+    "uk-UA": buildUrl(ELocale.UK, path),
+    "ru-UA": buildUrl(ELocale.RU, path),
+    "x-default": buildUrl(ELocale.UK, path),
+  };
+}
+
+export function absoluteUrl(url: string | null | undefined): string {
+  if (!url) return OG_IMAGE_DEFAULT;
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${SITE_URL}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
+export function hasMeaningfulSearchParams(
+  searchParams: Record<string, string | string[] | undefined>,
+): boolean {
+  return Object.values(searchParams).some((value) => {
+    if (Array.isArray(value)) return value.some((item) => item.length > 0);
+    return Boolean(value);
+  });
+}
+
 /** Build a locale-aware relative pathname. */
 export function buildPath(locale: ELocale, path: string): string {
   return buildLocalizedPath(locale, path);
@@ -52,10 +75,7 @@ export function buildMetadata({
     metadataBase: new URL(SITE_URL),
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        "uk-UA": buildUrl(ELocale.UK, path),
-        "ru-UA": buildUrl(ELocale.RU, path),
-      },
+      languages: buildLanguageAlternates(path),
     },
     openGraph: {
       type: "website",

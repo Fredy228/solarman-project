@@ -6,7 +6,10 @@ import { getBlogList } from "@/src/features/blog/api/get-blog-list.api";
 import type { ELocale } from "@/src/i18n/routing";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
-import { buildMetadata } from "@/src/shared/utils/seo";
+import {
+  buildMetadata,
+  hasMeaningfulSearchParams,
+} from "@/src/shared/utils/seo";
 import BlogList from "@/src/widgets/blog/BlogList";
 
 type Props = {
@@ -14,8 +17,13 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { locale } = await params;
+  const searchParamsResolved = await searchParams;
+
   return buildMetadata({
     locale,
     path: "/blog",
@@ -41,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         "энергонезависимость",
       ],
     },
+    noIndex: hasMeaningfulSearchParams(searchParamsResolved),
   });
 }
 

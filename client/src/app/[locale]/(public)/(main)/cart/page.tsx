@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       uk: "Ваш кошик — SolarMan. Оформте замовлення на обладнання для сонячних електростанцій.",
       ru: "Ваша корзина — SolarMan. Оформите заказ на оборудование для солнечных электростанций.",
     },
+    noIndex: true,
   });
 }
 

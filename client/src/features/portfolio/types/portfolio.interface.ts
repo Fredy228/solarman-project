@@ -7,6 +7,8 @@ import type { IHashtag } from "../../hashtag";
 
 interface IPortfolioBase {
   id: string;
+  createdAt?: string;
+  updatedAt?: string;
   date: string;
   images: string[];
   cover: string;
@@ -23,7 +25,7 @@ export interface IPortfolio extends IPortfolioBase {
 
 export type IPortfolioItem = Pick<
   IPortfolio,
-  "id" | "date" | "cover" | "title" | "tag"
+  "id" | "date" | "cover" | "title" | "tag" | "updatedAt"
 >;
 
 export interface IPortfolioLocalized extends IPortfolioBase {

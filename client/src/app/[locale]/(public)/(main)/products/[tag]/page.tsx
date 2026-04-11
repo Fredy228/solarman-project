@@ -18,7 +18,18 @@ import ProductAddToCart from "@/src/features/goods/components/internal/ProductAd
 import type { IGoodsLocalized } from "@/src/features/goods/types/goods.interface";
 import { ECurrency } from "@/src/shared/types/currency.enum";
 import MuiBlockNoteViewer from "@/src/shared/ui/editor/BlockNoteRenderer";
-import { buildUrl, OG_IMAGE_DEFAULT, SITE_NAME } from "@/src/shared/utils/seo";
+import { toPlainText, truncateText } from "@/src/shared/utils/plain-text";
+import {
+  absoluteUrl,
+  buildLanguageAlternates,
+  buildUrl,
+  OG_IMAGE_DEFAULT,
+  SITE_NAME,
+} from "@/src/shared/utils/seo";
+import {
+  buildProductBreadcrumbSchema,
+  withoutEmptyValues,
+} from "@/src/shared/utils/structured-data";
 
 import { ELocale } from "@/src/i18n/routing";
 
@@ -32,23 +43,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return {};
 
   const title = `${data.title} | ${SITE_NAME}`;
-  const description = data.description
-    ? String(data.description)
-        .replace(/<[^>]*>/g, "")
-        .slice(0, 160)
-    : "";
+  const description = truncateText(toPlainText(data.description));
   const canonicalUrl = buildUrl(locale, `/products/${tag}`);
-  const ogImage = data.cover || OG_IMAGE_DEFAULT;
+  const ogImage = data.cover ? absoluteUrl(data.cover) : OG_IMAGE_DEFAULT;
 
   return {
     title,
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        "uk-UA": buildUrl(ELocale.UK, `/products/${tag}`),
-        "ru-UA": buildUrl(ELocale.RU, `/products/${tag}`),
-      },
+      languages: buildLanguageAlternates(`/products/${tag}`),
     },
     openGraph: {
       type: "website",
@@ -188,233 +192,279 @@ export default async function ProductPage({ params }: Props) {
   });
 
   const images = normalizeImages(data);
+  const productPath = `/products/${tag}`;
+  const canonicalUrl = buildUrl(locale, productPath);
+  const productDescription =
+    truncateText(toPlainText(data.description), 5000) || data.title;
+  const productSchema = withoutEmptyValues({
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "@id": `${canonicalUrl}#product`,
+    name: data.title,
+    description: productDescription,
+    image: images.map(absoluteUrl),
+    sku: data.id,
+    category: data.category,
+    brand: data.brand?.name
+      ? {
+          "@type": "Brand",
+          name: data.brand.name,
+        }
+      : undefined,
+    offers: {
+      "@type": "Offer",
+      url: canonicalUrl,
+      priceCurrency: data.currency,
+      price: ((data.discountPrice ?? data.price) / 100).toFixed(2),
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  });
+  const breadcrumbSchema = buildProductBreadcrumbSchema(
+    locale,
+    data.title,
+    productPath,
+  );
 
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 }, mt: 5 }}>
-      <Box className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <GoodsGallery key={tag} images={images} title={data.title} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 6 }, mt: 5 }}>
+        <Box className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <GoodsGallery key={tag} images={images} title={data.title} />
+
+          <Box
+            sx={{
+              p: { xs: 2, md: 3 },
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              bgcolor: "background.paper",
+              color: "var(--color-text-g2)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: 2,
+            }}
+          >
+            <Box>
+              <Typography
+                component={"h1"}
+                fontWeight={700}
+                gutterBottom
+                fontSize={{
+                  xs: "16px",
+                  md: "18px",
+                  lg: "20px",
+                }}
+              >
+                {data.title}
+              </Typography>
+              {data.badge && (
+                <Box
+                  sx={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    px: 1.25,
+                    py: 0.5,
+                    borderRadius: "12px",
+                    bgcolor:
+                      BADGE_COLORS[data.badge]?.bgcolor ?? "primary.main",
+                    color:
+                      BADGE_COLORS[data.badge]?.color ?? "primary.contrastText",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 0.2,
+                  }}
+                >
+                  {t(`goods.badge.${data.badge}`)}
+                </Box>
+              )}
+            </Box>
+
+            <Box>
+              {discountPrice ? (
+                <Stack spacing={0.5} alignItems="flex-start">
+                  <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{ textDecoration: "line-through" }}
+                  >
+                    {price}
+                  </Typography>
+                  <Typography variant="h5" color="error" fontWeight={700}>
+                    {discountPrice}
+                  </Typography>
+                </Stack>
+              ) : (
+                <Typography variant="h5" color="primary" fontWeight={700}>
+                  {price}
+                </Typography>
+              )}
+            </Box>
+
+            <ProductAddToCart
+              locale={locale}
+              product={{
+                id: data.id,
+                title: data.title,
+                price: data.price,
+                discountPrice: data.discountPrice,
+                currency: data.currency,
+                cover: data.cover,
+                tag: data.tag,
+              }}
+              size="small"
+            />
+
+            {data.instructions && data.instructions.length > 0 && (
+              <Box width="100%">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontWeight={600}
+                  mb={1}
+                >
+                  {t("goods.fields.instructions")}
+                </Typography>
+                <Stack spacing={1}>
+                  {data.instructions.map((instruction) => (
+                    <Button
+                      key={instruction.filePath}
+                      component="a"
+                      href={instruction.filePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="outlined"
+                      size="small"
+                      startIcon={<FileText size={16} />}
+                      sx={{
+                        justifyContent: "flex-start",
+                        textAlign: "left",
+                        textTransform: "none",
+                        fontWeight: 500,
+                        fontSize: 13,
+                        px: 1.5,
+                        py: 0.75,
+                        borderRadius: 2,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {instruction.fileName}
+                    </Button>
+                  ))}
+                </Stack>
+              </Box>
+            )}
+
+            {specsEntries.length > 0 && (
+              <Box>
+                <Stack spacing={1.25}>
+                  {specsEntries.map(([key, value]) => {
+                    const labelKey = specsLabelMap[key] ?? key;
+                    const label = labelKey.startsWith("goods.")
+                      ? t(labelKey as `goods.${string}`)
+                      : key;
+
+                    let valueLabel: string;
+                    if (key === "country") {
+                      valueLabel = getCountryName(String(value), locale);
+                    } else if (key === "brand") {
+                      valueLabel = String(value);
+                    } else if (key === "type") {
+                      const prefix = getTypeTranslationPrefix(data.category);
+                      valueLabel = prefix
+                        ? t(`${prefix}.${value}` as `goods.specs.${string}`)
+                        : String(value);
+                    } else if (key === "material") {
+                      const prefix = getMaterialTranslationPrefix(
+                        data.category,
+                      );
+                      valueLabel = prefix
+                        ? t(`${prefix}.${value}` as `goods.specs.${string}`)
+                        : String(value);
+                    } else {
+                      const rawValue = Array.isArray(value)
+                        ? value.join(", ")
+                        : String(value);
+
+                      // Add measurement units for numeric fields
+                      const unitKeyMap: Record<string, string> = {
+                        power: "goods.measurements.kilowatts",
+                        capacity: "goods.measurements.ampereHour",
+                        voltage: "goods.measurements.volt",
+                        phase: "goods.measurements.phase",
+                      };
+
+                      const unitKey = unitKeyMap[key];
+                      valueLabel = unitKey
+                        ? `${rawValue} ${t(unitKey as `goods.measurements.${string}`)}`
+                        : rawValue;
+                    }
+
+                    return (
+                      <Box
+                        key={key}
+                        sx={{
+                          display: "grid",
+                          gridTemplateColumns: {
+                            xs: "110px 1fr",
+                            sm: "160px 1fr",
+                          },
+                          gap: 1.5,
+                          alignItems: "start",
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ wordBreak: "break-word" }}
+                        >
+                          {label}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          fontWeight={600}
+                          sx={{ wordBreak: "break-word" }}
+                        >
+                          {valueLabel}
+                        </Typography>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        <Divider sx={{ my: 4 }} />
 
         <Box
           sx={{
+            bgcolor: "background.paper",
             p: { xs: 2, md: 3 },
             borderRadius: 2,
             border: "1px solid",
             borderColor: "divider",
-            bgcolor: "background.paper",
-            color: "var(--color-text-g2)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: 2,
           }}
         >
-          <Box>
-            <Typography
-              component={"h1"}
-              fontWeight={700}
-              gutterBottom
-              fontSize={{
-                xs: "16px",
-                md: "18px",
-                lg: "20px",
-              }}
-            >
-              {data.title}
-            </Typography>
-            {data.badge && (
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  px: 1.25,
-                  py: 0.5,
-                  borderRadius: "12px",
-                  bgcolor: BADGE_COLORS[data.badge]?.bgcolor ?? "primary.main",
-                  color:
-                    BADGE_COLORS[data.badge]?.color ?? "primary.contrastText",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 0.2,
-                }}
-              >
-                {t(`goods.badge.${data.badge}`)}
-              </Box>
-            )}
-          </Box>
-
-          <Box>
-            {discountPrice ? (
-              <Stack spacing={0.5} alignItems="flex-start">
-                <Typography
-                  variant="h6"
-                  color="text.secondary"
-                  sx={{ textDecoration: "line-through" }}
-                >
-                  {price}
-                </Typography>
-                <Typography variant="h5" color="error" fontWeight={700}>
-                  {discountPrice}
-                </Typography>
-              </Stack>
-            ) : (
-              <Typography variant="h5" color="primary" fontWeight={700}>
-                {price}
-              </Typography>
-            )}
-          </Box>
-
-          <ProductAddToCart
-            locale={locale}
-            product={{
-              id: data.id,
-              title: data.title,
-              price: data.price,
-              discountPrice: data.discountPrice,
-              currency: data.currency,
-              cover: data.cover,
-              tag: data.tag,
-            }}
-            size="small"
-          />
-
-          {data.instructions && data.instructions.length > 0 && (
-            <Box width="100%">
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontWeight={600}
-                mb={1}
-              >
-                {t("goods.fields.instructions")}
-              </Typography>
-              <Stack spacing={1}>
-                {data.instructions.map((instruction) => (
-                  <Button
-                    key={instruction.filePath}
-                    component="a"
-                    href={instruction.filePath}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="outlined"
-                    size="small"
-                    startIcon={<FileText size={16} />}
-                    sx={{
-                      justifyContent: "flex-start",
-                      textAlign: "left",
-                      textTransform: "none",
-                      fontWeight: 500,
-                      fontSize: 13,
-                      px: 1.5,
-                      py: 0.75,
-                      borderRadius: 2,
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {instruction.fileName}
-                  </Button>
-                ))}
-              </Stack>
-            </Box>
-          )}
-
-          {specsEntries.length > 0 && (
-            <Box>
-              <Stack spacing={1.25}>
-                {specsEntries.map(([key, value]) => {
-                  const labelKey = specsLabelMap[key] ?? key;
-                  const label = labelKey.startsWith("goods.")
-                    ? t(labelKey as `goods.${string}`)
-                    : key;
-
-                  let valueLabel: string;
-                  if (key === "country") {
-                    valueLabel = getCountryName(String(value), locale);
-                  } else if (key === "brand") {
-                    valueLabel = String(value);
-                  } else if (key === "type") {
-                    const prefix = getTypeTranslationPrefix(data.category);
-                    valueLabel = prefix
-                      ? t(`${prefix}.${value}` as `goods.specs.${string}`)
-                      : String(value);
-                  } else if (key === "material") {
-                    const prefix = getMaterialTranslationPrefix(data.category);
-                    valueLabel = prefix
-                      ? t(`${prefix}.${value}` as `goods.specs.${string}`)
-                      : String(value);
-                  } else {
-                    const rawValue = Array.isArray(value)
-                      ? value.join(", ")
-                      : String(value);
-
-                    // Add measurement units for numeric fields
-                    const unitKeyMap: Record<string, string> = {
-                      power: "goods.measurements.kilowatts",
-                      capacity: "goods.measurements.ampereHour",
-                      voltage: "goods.measurements.volt",
-                      phase: "goods.measurements.phase",
-                    };
-
-                    const unitKey = unitKeyMap[key];
-                    valueLabel = unitKey
-                      ? `${rawValue} ${t(unitKey as `goods.measurements.${string}`)}`
-                      : rawValue;
-                  }
-
-                  return (
-                    <Box
-                      key={key}
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns: {
-                          xs: "110px 1fr",
-                          sm: "160px 1fr",
-                        },
-                        gap: 1.5,
-                        alignItems: "start",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ wordBreak: "break-word" }}
-                      >
-                        {label}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        fontWeight={600}
-                        sx={{ wordBreak: "break-word" }}
-                      >
-                        {valueLabel}
-                      </Typography>
-                    </Box>
-                  );
-                })}
-              </Stack>
-            </Box>
-          )}
+          <Typography variant="h5" fontWeight={700} mb={2}>
+            {t("goods.fields.description")}
+          </Typography>
+          <MuiBlockNoteViewer content={descriptionContent} />
         </Box>
-      </Box>
-
-      <Divider sx={{ my: 4 }} />
-
-      <Box
-        sx={{
-          bgcolor: "background.paper",
-          p: { xs: 2, md: 3 },
-          borderRadius: 2,
-          border: "1px solid",
-          borderColor: "divider",
-        }}
-      >
-        <Typography variant="h5" fontWeight={700} mb={2}>
-          {t("goods.fields.description")}
-        </Typography>
-        <MuiBlockNoteViewer content={descriptionContent} />
-      </Box>
-    </Container>
+      </Container>
+    </>
   );
 }

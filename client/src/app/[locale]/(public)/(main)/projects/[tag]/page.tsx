@@ -3,7 +3,19 @@ import { PortfolioInfo } from "@/src/features/portfolio/components/portgolio-inf
 import { Link } from "@/src/i18n/navigation";
 import { ELocale } from "@/src/i18n/routing";
 import ImageSlider from "@/src/shared/ui/image-slider/ImageSlider";
-import { buildUrl, OG_IMAGE_DEFAULT, SITE_NAME } from "@/src/shared/utils/seo";
+import { toPlainText, truncateText } from "@/src/shared/utils/plain-text";
+import {
+  absoluteUrl,
+  buildLanguageAlternates,
+  buildUrl,
+  OG_IMAGE_DEFAULT,
+  SITE_NAME,
+  SITE_URL,
+} from "@/src/shared/utils/seo";
+import {
+  buildProjectBreadcrumbSchema,
+  withoutEmptyValues,
+} from "@/src/shared/utils/structured-data";
 import { Box, Chip, Container, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { Clock } from "lucide-react";
@@ -20,21 +32,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!projectItem) return {};
 
   const title = `${projectItem.title[locale]} | ${SITE_NAME}`;
-  const description = projectItem.description?.[locale]
-    ? String(projectItem.description[locale]).slice(0, 160)
-    : "";
+  const description = truncateText(
+    toPlainText(projectItem.description?.[locale]),
+  );
   const canonicalUrl = buildUrl(locale, `/projects/${tag}`);
-  const ogImage = projectItem.cover || OG_IMAGE_DEFAULT;
+  const ogImage = projectItem.cover
+    ? absoluteUrl(projectItem.cover)
+    : OG_IMAGE_DEFAULT;
 
   return {
     title,
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        "uk-UA": buildUrl(ELocale.UK, `/projects/${tag}`),
-        "ru-UA": buildUrl(ELocale.RU, `/projects/${tag}`),
-      },
+      languages: buildLanguageAlternates(`/projects/${tag}`),
     },
     openGraph: {
       type: "website",
@@ -61,8 +72,42 @@ export default async function ProjectItemPage({ params }: Props) {
   const projectItem = await getPortfolioItem({ tag });
   if (!projectItem) notFound();
 
+  const projectPath = `/projects/${tag}`;
+  const canonicalUrl = buildUrl(locale, projectPath);
+  const projectTitle = projectItem.title[locale];
+  const projectDescription =
+    truncateText(toPlainText(projectItem.description?.[locale]), 5000) ||
+    projectTitle;
+  const projectSchema = withoutEmptyValues({
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": `${canonicalUrl}#project`,
+    name: projectTitle,
+    description: projectDescription,
+    image: [projectItem.cover, ...projectItem.images]
+      .filter(Boolean)
+      .map(absoluteUrl),
+    datePublished: projectItem.date,
+    inLanguage: locale === ELocale.UK ? "uk-UA" : "ru-UA",
+    author: { "@id": `${SITE_URL}/#organization` },
+    mainEntityOfPage: canonicalUrl,
+  });
+  const breadcrumbSchema = buildProjectBreadcrumbSchema(
+    locale,
+    projectTitle,
+    projectPath,
+  );
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(projectSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Container maxWidth="xl">
         <Typography
           component={"h1"}

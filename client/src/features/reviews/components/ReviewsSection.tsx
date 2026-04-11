@@ -57,7 +57,10 @@ export default function ReviewsSection({ reviews }: Props) {
           <Box
             sx={{
               position: "absolute",
-              inset: { xs: "-40px auto auto -30px", md: "-70px auto auto -40px" },
+              inset: {
+                xs: "-40px auto auto -30px",
+                md: "-70px auto auto -40px",
+              },
               width: { xs: 120, md: 180 },
               height: { xs: 120, md: 180 },
               borderRadius: "999px",
@@ -144,6 +147,13 @@ export default function ReviewsSection({ reviews }: Props) {
                       <Avatar
                         src={review.profile_photo_url || undefined}
                         alt={review.author_name}
+                        slotProps={{
+                          img: {
+                            loading: "lazy",
+                            decoding: "async",
+                            referrerPolicy: "no-referrer",
+                          },
+                        }}
                         sx={{
                           width: 52,
                           height: 52,
@@ -250,7 +260,9 @@ export default function ReviewsSection({ reviews }: Props) {
               );
 
               if (!review.author_url) {
-                return <Box key={`${review.author_name}-${index}`}>{content}</Box>;
+                return (
+                  <Box key={`${review.author_name}-${index}`}>{content}</Box>
+                );
               }
 
               return (

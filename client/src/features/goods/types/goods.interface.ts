@@ -16,6 +16,8 @@ import { PartialBlock } from "@blocknote/core";
 
 interface IGoodsBase {
   id: string;
+  createdAt?: string;
+  updatedAt?: string;
   cover: string;
   images: string[];
   instructions: PdfInfo[];
@@ -120,6 +122,7 @@ export type TGoodsListItem = Pick<
   | "status"
   | "brand"
   | "tag"
+  | "updatedAt"
 >;
 
 export type TGetGoodsListParams = {

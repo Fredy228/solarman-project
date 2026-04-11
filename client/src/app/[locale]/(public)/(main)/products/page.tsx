@@ -1,4 +1,4 @@
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -14,42 +14,55 @@ import {
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
 import { ELocale } from "@/src/i18n/routing";
 import PaginationCustom from "@/src/shared/ui/pagination/PaginationCustom";
-import { buildMetadata } from "@/src/shared/utils/seo";
+import {
+  buildMetadata,
+  hasMeaningfulSearchParams,
+} from "@/src/shared/utils/seo";
 
 type Props = {
   params: Promise<{ locale: ELocale }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+const PRODUCTS_SEO = {
+  titles: {
+    uk: "Каталог обладнання для сонячних електростанцій",
+    ru: "Каталог оборудования для солнечных электростанций",
+  },
+  descriptions: {
+    uk: "Купіть сонячні панелі, акумулятори, інвертори та інше обладнання для СЕС в Одесі. Широкий асортимент, гарантія якості, доставка по Україні.",
+    ru: "Купите солнечные панели, аккумуляторы, инверторы и другое оборудование для СЭС в Одессе. Широкий ассортимент, гарантия качества, доставка по Украине.",
+  },
+  keywords: {
+    uk: [
+      "купити сонячні панелі",
+      "інвертор для СЕС",
+      "акумулятор LiFePO4",
+      "обладнання для сонячної станції",
+      "ціни на СЕС",
+    ],
+    ru: [
+      "купить солнечные панели",
+      "инвертор для СЭС",
+      "аккумулятор LiFePO4",
+      "оборудование для солнечной станции",
+      "цены на СЭС",
+    ],
+  },
+};
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { locale } = await params;
+  const searchParamsResolved = await searchParams;
+
   return buildMetadata({
     locale,
     path: "/products",
-    titles: {
-      uk: "Каталог обладнання для сонячних електростанцій",
-      ru: "Каталог оборудования для солнечных электростанций",
-    },
-    descriptions: {
-      uk: "Купіть сонячні панелі, акумулятори, інвертори та інше обладнання для СЕС в Одесі. Широкий асортимент, гарантія якості, доставка по Україні.",
-      ru: "Купите солнечные панели, аккумуляторы, инверторы и другое оборудование для СЭС в Одессе. Широкий ассортимент, гарантия качества, доставка по Украине.",
-    },
-    keywords: {
-      uk: [
-        "купити сонячні панелі",
-        "інвертор для СЕС",
-        "акумулятор LiFePO4",
-        "обладнання для сонячної станції",
-        "ціни на СЕС",
-      ],
-      ru: [
-        "купить солнечные панели",
-        "инвертор для СЭС",
-        "аккумулятор LiFePO4",
-        "оборудование для солнечной станции",
-        "цены на СЭС",
-      ],
-    },
+    ...PRODUCTS_SEO,
+    noIndex: hasMeaningfulSearchParams(searchParamsResolved),
   });
 }
 
@@ -104,25 +117,26 @@ export default async function ProductsPage({ params, searchParams }: Props) {
     return numbers.length > 0 ? numbers : undefined;
   };
 
-  const goodsFilters = await getGoodsFilters({ category });
-  const exchangeRate = await getExchangeRate();
-
-  const goodsListResponse = await getGoodsList({
-    _start: (page - 1) * API_LIMITS_ITEMS.goods,
-    _end: page * API_LIMITS_ITEMS.goods,
-    _sort: sortValue || "updatedAt",
-    _order: orderValue === "asc" ? "asc" : "desc",
-    category,
-    title_like: titleValue || "",
-    type: toStringArray(searchParamsResolved.type),
-    material: toStringArray(searchParamsResolved.material),
-    power: toNumberArray(searchParamsResolved.power),
-    phase: toNumberArray(searchParamsResolved.phase),
-    capacity: toNumberArray(searchParamsResolved.capacity),
-    voltage: toNumberArray(searchParamsResolved.voltage),
-    country: toStringArray(searchParamsResolved.country),
-    brand: toStringArray(searchParamsResolved.brand),
-  });
+  const [goodsFilters, exchangeRate, goodsListResponse] = await Promise.all([
+    getGoodsFilters({ category }),
+    getExchangeRate(),
+    getGoodsList({
+      _start: (page - 1) * API_LIMITS_ITEMS.goods,
+      _end: page * API_LIMITS_ITEMS.goods,
+      _sort: sortValue || "updatedAt",
+      _order: orderValue === "asc" ? "asc" : "desc",
+      category,
+      title_like: titleValue || "",
+      type: toStringArray(searchParamsResolved.type),
+      material: toStringArray(searchParamsResolved.material),
+      power: toNumberArray(searchParamsResolved.power),
+      phase: toNumberArray(searchParamsResolved.phase),
+      capacity: toNumberArray(searchParamsResolved.capacity),
+      voltage: toNumberArray(searchParamsResolved.voltage),
+      country: toStringArray(searchParamsResolved.country),
+      brand: toStringArray(searchParamsResolved.brand),
+    }),
+  ]);
 
   const goodsItems = goodsListResponse.items ?? [];
   const goodsTotal = goodsListResponse.total ?? 0;
@@ -149,6 +163,15 @@ export default async function ProductsPage({ params, searchParams }: Props) {
     <Box>
       <Container maxWidth="xl">
         <Box height={70} />
+        <Typography
+          component="h1"
+          fontSize={{ xs: "24px", md: "32px" }}
+          fontWeight={700}
+          color="var(--color-text-g2)"
+          mb={2}
+        >
+          {PRODUCTS_SEO.titles[locale]}
+        </Typography>
         <GoodsShopToolbar />
 
         <Box

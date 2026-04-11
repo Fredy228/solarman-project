@@ -4,7 +4,18 @@ import MuiBlockNoteViewer, {
   type Block,
 } from "@/src/shared/ui/editor/BlockNoteRenderer";
 import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
-import { buildUrl, OG_IMAGE_DEFAULT, SITE_NAME } from "@/src/shared/utils/seo";
+import {
+  absoluteUrl,
+  buildLanguageAlternates,
+  buildUrl,
+  OG_IMAGE_DEFAULT,
+  SITE_NAME,
+  SITE_URL,
+} from "@/src/shared/utils/seo";
+import {
+  buildBlogBreadcrumbSchema,
+  withoutEmptyValues,
+} from "@/src/shared/utils/structured-data";
 import { Box, Container, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { Clock, RefreshCw } from "lucide-react";
@@ -25,17 +36,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${article.title[locale]} | ${SITE_NAME}`;
   const description = article.description?.[locale] ?? "";
   const canonicalUrl = buildUrl(locale, `/blog/${tag}`);
-  const ogImage = article.cover || OG_IMAGE_DEFAULT;
+  const ogImage = article.cover ? absoluteUrl(article.cover) : OG_IMAGE_DEFAULT;
 
   return {
     title,
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages: {
-        "uk-UA": buildUrl(ELocale.UK, `/blog/${tag}`),
-        "ru-UA": buildUrl(ELocale.RU, `/blog/${tag}`),
-      },
+      languages: buildLanguageAlternates(`/blog/${tag}`),
     },
     openGraph: {
       type: "article",
@@ -73,8 +81,44 @@ export default async function BlogItemPage({ params }: Props) {
     textContent = null;
   }
 
+  const articlePath = `/blog/${tag}`;
+  const canonicalUrl = buildUrl(locale, articlePath);
+  const articleTitle = article.title[locale];
+  const articleDescription = article.description?.[locale] ?? articleTitle;
+  const articleSchema = withoutEmptyValues({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${canonicalUrl}#article`,
+    headline: articleTitle,
+    description: articleDescription,
+    image: article.cover ? [absoluteUrl(article.cover)] : undefined,
+    datePublished: article.createdAt,
+    dateModified: article.updatedAt,
+    inLanguage: locale === ELocale.UK ? "uk-UA" : "ru-UA",
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    mainEntityOfPage: canonicalUrl,
+  });
+  const breadcrumbSchema = buildBlogBreadcrumbSchema(
+    locale,
+    articleTitle,
+    articlePath,
+  );
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Container maxWidth="xl">
         <Box mt={10} mb={6}>
           {/* Title */}
