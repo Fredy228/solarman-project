@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import { EGoodsCategory } from "@/src/features/goods/types/goods-category.enum";
+import { buildLocalizedPath } from "@/src/shared/utils/localized-path";
 
 export type TGoodsSortMode = "default" | "price_desc" | "price_asc";
 
@@ -26,6 +27,13 @@ export type TGoodsShopToolbarFilters = {
 
 type GoodsShopToolbarProps = {
   onFiltersChange?: (filters: TGoodsShopToolbarFilters) => void;
+  fixedCategory?: EGoodsCategory;
+  hideCategorySelect?: boolean;
+  categoryOptions?: Array<{
+    value: EGoodsCategory;
+    label: string;
+    href?: string;
+  }>;
 };
 
 const isGoodsCategory = (value: string | null): value is EGoodsCategory => {
@@ -44,6 +52,9 @@ const getSortModeFromQuery = (
 
 export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
   onFiltersChange,
+  fixedCategory,
+  hideCategorySelect = false,
+  categoryOptions: categoryOptionsProp,
 }) => {
   const t = useTranslations("refine");
   const router = useRouter();
@@ -52,9 +63,11 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
 
   const filters = useMemo<TGoodsShopToolbarFilters>(() => {
     const categoryFromQuery = searchParams.get("category");
-    const category = isGoodsCategory(categoryFromQuery)
-      ? categoryFromQuery
-      : EGoodsCategory.PANEL;
+    const category =
+      fixedCategory ??
+      (isGoodsCategory(categoryFromQuery)
+        ? categoryFromQuery
+        : EGoodsCategory.PANEL);
 
     return {
       title_like: searchParams.get("title_like") ?? "",
@@ -64,7 +77,7 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
       ),
       category,
     };
-  }, [searchParams]);
+  }, [fixedCategory, searchParams]);
 
   const [searchValue, setSearchValue] = useState(
     () => searchParams.get("title_like") ?? "",
@@ -95,8 +108,8 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
       return;
     }
 
-    params.set("_sort", "updatedAt");
-    params.set("_order", "desc");
+    params.delete("_sort");
+    params.delete("_order");
   };
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -132,30 +145,19 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
 
   const handleCategoryChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value as EGoodsCategory;
+    const option = categoryOptionsProp?.find((item) => item.value === value);
+
+    if (option?.href) {
+      router.replace(buildLocalizedPath(locale, option.href), {
+        scroll: false,
+      });
+      return;
+    }
+
     updateQuery((params) => {
       params.set("category", value);
     });
   };
-
-  useEffect(() => {
-    const categoryFromQuery = searchParams.get("category");
-    const sortFromQuery = searchParams.get("_sort");
-    const orderFromQuery = searchParams.get("_order");
-
-    const shouldSetDefaultCategory = !isGoodsCategory(categoryFromQuery);
-    const shouldSetDefaultSort = !sortFromQuery || !orderFromQuery;
-
-    if (!shouldSetDefaultCategory && !shouldSetDefaultSort) return;
-
-    updateQuery((params) => {
-      if (shouldSetDefaultCategory) {
-        params.set("category", EGoodsCategory.PANEL);
-      }
-      if (shouldSetDefaultSort) {
-        setSortInQuery(params, "default");
-      }
-    });
-  }, [searchParams, updateQuery]);
 
   useEffect(() => {
     onFiltersChange?.(filters);
@@ -186,18 +188,25 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
 
   const titlePlaceholder = t("goods.fields.title");
 
-  const categoryOptions = Object.values(EGoodsCategory);
+  const categoryOptions =
+    categoryOptionsProp ??
+    Object.values(EGoodsCategory).map((category) => ({
+      value: category,
+      label: t(`${categoryTitlePrefix}${category}`),
+    }));
 
   const toolbarGridTemplateColumns = {
     xs: "1fr",
-    md: "minmax(0, 500px) 1fr",
+    md: hideCategorySelect
+      ? "minmax(0, 500px) minmax(200px, 240px)"
+      : "minmax(0, 500px) 1fr",
   };
 
   return (
     <Box
       sx={{
-        p: { xs: 1.5, md: 2 },
-        borderRadius: 3,
+        p: { xs: 1, md: 1.5 },
+        borderRadius: 1,
         border: "1px solid",
         borderColor: "divider",
         bgcolor: "secondary.main",
@@ -205,9 +214,9 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
         boxShadow: 1,
         display: "grid",
         gridTemplateColumns: toolbarGridTemplateColumns,
-        gap: 1.5,
+        gap: 1,
         alignItems: "center",
-        mb: 3,
+        mb: 2,
       }}
     >
       <Box
@@ -303,7 +312,9 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           display: "grid",
           gridTemplateColumns: {
             xs: "1fr 1fr",
-            md: "repeat(2, minmax(200px, 1fr))",
+            md: hideCategorySelect
+              ? "minmax(200px, 1fr)"
+              : "repeat(2, minmax(200px, 1fr))",
           },
           gap: 1,
           justifySelf: { md: "end" },
@@ -354,55 +365,60 @@ export const GoodsShopToolbar: FC<GoodsShopToolbarProps> = ({
           <MenuItem value="price_asc">{priceAscLabel}</MenuItem>
         </TextField>
 
-        <TextField
-          size="small"
-          select
-          value={filters.category}
-          onChange={handleCategoryChange}
-          label={categoryLabel}
-          fullWidth
-          slotProps={{
-            inputLabel: {
-              sx: {
+        {!hideCategorySelect && (
+          <TextField
+            size="small"
+            select
+            value={filters.category}
+            onChange={handleCategoryChange}
+            label={categoryLabel}
+            fullWidth
+            slotProps={{
+              inputLabel: {
+                sx: {
+                  color: "var(--color-text-light)",
+                  "&.Mui-focused": { color: "var(--color-text-light)" },
+                },
+              },
+            }}
+            sx={{
+              minWidth: { md: 200 },
+              "& .MuiInputBase-root": { backgroundColor: "transparent" },
+              "& .MuiInputBase-root:hover .MuiInputBase-input": {
                 color: "var(--color-text-light)",
-                "&.Mui-focused": { color: "var(--color-text-light)" },
               },
-            },
-          }}
-          sx={{
-            minWidth: { md: 200 },
-            "& .MuiInputBase-root": { backgroundColor: "transparent" },
-            "& .MuiInputBase-root:hover .MuiInputBase-input": {
-              color: "var(--color-text-light)",
-            },
-            "& .MuiInputBase-input": {
-              color: "var(--color-text-light)",
-              fontSize: "0.875rem",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(255, 255, 255, 0.35)",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "rgba(255, 255, 255, 0.8)",
+              "& .MuiInputBase-input": {
+                color: "var(--color-text-light)",
+                fontSize: "0.875rem",
               },
-            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(255, 255, 255, 0.8)",
-            },
-            "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
-          }}
-        >
-          <MenuItem value={EGoodsCategory.PANEL}>
-            {t(`${categoryTitlePrefix}${EGoodsCategory.PANEL}`)}
-          </MenuItem>
-          {categoryOptions
-            .filter((category) => category !== EGoodsCategory.PANEL)
-            .map((category) => (
-              <MenuItem key={category} value={category}>
-                {t(`${categoryTitlePrefix}${category}`)}
-              </MenuItem>
-            ))}
-        </TextField>
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(255, 255, 255, 0.35)",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "rgba(255, 255, 255, 0.8)",
+                },
+              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "rgba(255, 255, 255, 0.8)",
+                },
+              "& .MuiSvgIcon-root": { color: "var(--color-text-light)" },
+            }}
+          >
+            <MenuItem value={EGoodsCategory.PANEL}>
+              {categoryOptions.find(
+                (item) => item.value === EGoodsCategory.PANEL,
+              )?.label ?? t(`${categoryTitlePrefix}${EGoodsCategory.PANEL}`)}
+            </MenuItem>
+            {categoryOptions
+              .filter((category) => category.value !== EGoodsCategory.PANEL)
+              .map((category) => (
+                <MenuItem key={category.value} value={category.value}>
+                  {category.label}
+                </MenuItem>
+              ))}
+          </TextField>
+        )}
       </Box>
     </Box>
   );

@@ -165,7 +165,7 @@ export default function CartClient({ locale, exchangeRate }: Props) {
           </Typography>
           <Button
             component={Link}
-            href={buildLocalizedPath(locale, "/products")}
+            href={buildLocalizedPath(locale, "/products/solar-panels")}
             variant="contained"
           >
             {t("goToShop")}
@@ -310,7 +310,7 @@ export default function CartClient({ locale, exchangeRate }: Props) {
                 variant="outlined"
                 color="primary"
                 component={Link}
-                href={buildLocalizedPath(locale, "/products")}
+                href={buildLocalizedPath(locale, "/products/solar-panels")}
                 sx={{
                   textTransform: "none",
                   width: { xs: "100%", sm: "100%", md: "auto" },

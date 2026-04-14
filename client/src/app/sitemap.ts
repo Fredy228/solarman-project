@@ -93,7 +93,25 @@ const STATIC_PATHS = [
   { path: "/about", changeFreq: "monthly" as const, priority: 0.7 },
   { path: "/contacts", changeFreq: "monthly" as const, priority: 0.7 },
   { path: "/blog", changeFreq: "daily" as const, priority: 0.9 },
-  { path: "/products", changeFreq: "daily" as const, priority: 0.9 },
+  {
+    path: "/products/solar-panels",
+    changeFreq: "daily" as const,
+    priority: 0.8,
+  },
+  { path: "/products/inverters", changeFreq: "daily" as const, priority: 0.8 },
+  { path: "/products/batteries", changeFreq: "daily" as const, priority: 0.8 },
+  {
+    path: "/products/mounting-systems",
+    changeFreq: "daily" as const,
+    priority: 0.7,
+  },
+  { path: "/products/components", changeFreq: "daily" as const, priority: 0.7 },
+  {
+    path: "/products/charge-stations",
+    changeFreq: "daily" as const,
+    priority: 0.7,
+  },
+  { path: "/products/solar-kits", changeFreq: "daily" as const, priority: 0.8 },
   { path: "/projects", changeFreq: "weekly" as const, priority: 0.8 },
   { path: "/services/home", changeFreq: "monthly" as const, priority: 0.8 },
   {

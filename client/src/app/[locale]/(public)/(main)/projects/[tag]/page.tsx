@@ -7,6 +7,7 @@ import { toPlainText, truncateText } from "@/src/shared/utils/plain-text";
 import {
   absoluteUrl,
   buildLanguageAlternates,
+  buildSeoTitle,
   buildUrl,
   OG_IMAGE_DEFAULT,
   SITE_NAME,
@@ -31,9 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const projectItem = await getPortfolioItem({ tag });
   if (!projectItem) return {};
 
-  const title = `${projectItem.title[locale]} | ${SITE_NAME}`;
+  const title = projectItem.title[locale];
+  const brandedTitle = buildSeoTitle(title);
   const description = truncateText(
-    toPlainText(projectItem.description?.[locale]),
+    toPlainText(projectItem.description?.[locale]) || title,
   );
   const canonicalUrl = buildUrl(locale, `/projects/${tag}`);
   const ogImage = projectItem.cover
@@ -51,15 +53,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       url: canonicalUrl,
       siteName: SITE_NAME,
-      title,
+      title: brandedTitle,
       description,
       locale: locale === ELocale.UK ? "uk_UA" : "ru_UA",
       alternateLocale: locale === ELocale.UK ? "ru_UA" : "uk_UA",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: brandedTitle }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: brandedTitle,
       description,
       images: [ogImage],
     },
@@ -88,8 +90,11 @@ export default async function ProjectItemPage({ params }: Props) {
       .filter(Boolean)
       .map(absoluteUrl),
     datePublished: projectItem.date,
+    dateModified: projectItem.updatedAt,
     inLanguage: locale === ELocale.UK ? "uk-UA" : "ru-UA",
     author: { "@id": `${SITE_URL}/#organization` },
+    provider: { "@id": `${SITE_URL}/#organization` },
+    keywords: projectItem.hashtags?.map((item) => item.name[locale]).join(", "),
     mainEntityOfPage: canonicalUrl,
   });
   const breadcrumbSchema = buildProjectBreadcrumbSchema(

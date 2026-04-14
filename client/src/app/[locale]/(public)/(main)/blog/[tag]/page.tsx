@@ -7,11 +7,13 @@ import ConsultSection from "@/src/shared/ui/sections/consult/ConsultSection";
 import {
   absoluteUrl,
   buildLanguageAlternates,
+  buildSeoTitle,
   buildUrl,
   OG_IMAGE_DEFAULT,
   SITE_NAME,
   SITE_URL,
 } from "@/src/shared/utils/seo";
+import { toPlainText, truncateText } from "@/src/shared/utils/plain-text";
 import {
   buildBlogBreadcrumbSchema,
   withoutEmptyValues,
@@ -33,8 +35,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await getBlogItem({ tag });
   if (!article) return {};
 
-  const title = `${article.title[locale]} | ${SITE_NAME}`;
-  const description = article.description?.[locale] ?? "";
+  const title = article.title[locale];
+  const brandedTitle = buildSeoTitle(title);
+  const plainArticleText = toPlainText(article.text?.[locale]);
+  const description = truncateText(
+    article.description?.[locale] || plainArticleText || title,
+  );
   const canonicalUrl = buildUrl(locale, `/blog/${tag}`);
   const ogImage = article.cover ? absoluteUrl(article.cover) : OG_IMAGE_DEFAULT;
 
@@ -49,17 +55,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       url: canonicalUrl,
       siteName: SITE_NAME,
-      title,
+      title: brandedTitle,
       description,
       locale: locale === ELocale.UK ? "uk_UA" : "ru_UA",
       alternateLocale: locale === ELocale.UK ? "ru_UA" : "uk_UA",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: brandedTitle }],
       publishedTime: article.createdAt,
       modifiedTime: article.updatedAt,
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: brandedTitle,
       description,
       images: [ogImage],
     },
@@ -84,7 +90,10 @@ export default async function BlogItemPage({ params }: Props) {
   const articlePath = `/blog/${tag}`;
   const canonicalUrl = buildUrl(locale, articlePath);
   const articleTitle = article.title[locale];
-  const articleDescription = article.description?.[locale] ?? articleTitle;
+  const articlePlainText = toPlainText(article.text?.[locale]);
+  const articleDescription = truncateText(
+    article.description?.[locale] || articlePlainText || articleTitle,
+  );
   const articleSchema = withoutEmptyValues({
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -101,6 +110,10 @@ export default async function BlogItemPage({ params }: Props) {
       url: SITE_URL,
     },
     publisher: { "@id": `${SITE_URL}/#organization` },
+    wordCount: articlePlainText
+      ? articlePlainText.split(/\s+/).filter(Boolean).length
+      : undefined,
+    isAccessibleForFree: true,
     mainEntityOfPage: canonicalUrl,
   });
   const breadcrumbSchema = buildBlogBreadcrumbSchema(

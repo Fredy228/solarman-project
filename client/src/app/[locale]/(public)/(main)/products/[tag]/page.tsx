@@ -22,9 +22,11 @@ import { toPlainText, truncateText } from "@/src/shared/utils/plain-text";
 import {
   absoluteUrl,
   buildLanguageAlternates,
+  buildSeoTitle,
   buildUrl,
   OG_IMAGE_DEFAULT,
   SITE_NAME,
+  SITE_URL,
 } from "@/src/shared/utils/seo";
 import {
   buildProductBreadcrumbSchema,
@@ -42,8 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getGoodsByTag(tag);
   if (!data) return {};
 
-  const title = `${data.title} | ${SITE_NAME}`;
-  const description = truncateText(toPlainText(data.description));
+  const title = data.title;
+  const brandedTitle = buildSeoTitle(title);
+  const description = truncateText(toPlainText(data.description) || title);
   const canonicalUrl = buildUrl(locale, `/products/${tag}`);
   const ogImage = data.cover ? absoluteUrl(data.cover) : OG_IMAGE_DEFAULT;
 
@@ -58,15 +61,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "website",
       url: canonicalUrl,
       siteName: SITE_NAME,
-      title,
+      title: brandedTitle,
       description,
       locale: locale === ELocale.UK ? "uk_UA" : "ru_UA",
       alternateLocale: locale === ELocale.UK ? "ru_UA" : "uk_UA",
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: brandedTitle }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: brandedTitle,
       description,
       images: [ogImage],
     },
@@ -191,6 +194,12 @@ export default async function ProductPage({ params }: Props) {
     return String(value).length > 0;
   });
 
+  const additionalProperties = specsEntries.map(([name, value]) => ({
+    "@type": "PropertyValue",
+    name,
+    value: Array.isArray(value) ? value.join(", ") : String(value),
+  }));
+
   const images = normalizeImages(data);
   const productPath = `/products/${tag}`;
   const canonicalUrl = buildUrl(locale, productPath);
@@ -202,6 +211,7 @@ export default async function ProductPage({ params }: Props) {
     "@id": `${canonicalUrl}#product`,
     name: data.title,
     description: productDescription,
+    url: canonicalUrl,
     image: images.map(absoluteUrl),
     sku: data.id,
     category: data.category,
@@ -211,6 +221,13 @@ export default async function ProductPage({ params }: Props) {
           name: data.brand.name,
         }
       : undefined,
+    manufacturer: data.brand?.name
+      ? {
+          "@type": "Organization",
+          name: data.brand.name,
+        }
+      : undefined,
+    additionalProperty: additionalProperties,
     offers: {
       "@type": "Offer",
       url: canonicalUrl,
@@ -218,6 +235,7 @@ export default async function ProductPage({ params }: Props) {
       price: ((data.discountPrice ?? data.price) / 100).toFixed(2),
       availability: "https://schema.org/InStock",
       itemCondition: "https://schema.org/NewCondition",
+      seller: { "@id": `${SITE_URL}/#organization` },
     },
   });
   const breadcrumbSchema = buildProductBreadcrumbSchema(

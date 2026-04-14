@@ -10,6 +10,18 @@ export const TWITTER_HANDLE = "@solarman_od";
 
 export const OG_IMAGE_DEFAULT = `${SITE_URL}/og-default.jpg`;
 
+export function stripSiteNameSuffix(title: string): string {
+  return title
+    .replace(new RegExp(`\\s*\\|\\s*${SITE_NAME}\\s*$`, "i"), "")
+    .trim();
+}
+
+export function buildSeoTitle(title: string): string {
+  const cleanTitle = stripSiteNameSuffix(title);
+  if (!cleanTitle || cleanTitle === SITE_NAME) return SITE_NAME;
+  return `${cleanTitle} | ${SITE_NAME}`;
+}
+
 export function buildLanguageAlternates(path: string): Record<string, string> {
   return {
     "uk-UA": buildUrl(ELocale.UK, path),
@@ -45,8 +57,9 @@ export function buildUrl(locale: ELocale, path: string): string {
 
 /**
  * Returns localized metadata for a page.
- * Handles: title (with "| SolarMan" suffix), description, canonical, Open Graph,
- * Twitter Cards, and hreflang alternates.
+ * Handles: title, description, canonical, Open Graph, Twitter Cards, and
+ * hreflang alternates. The HTML title is branded by Next metadata template;
+ * social titles are branded here because templates do not affect them.
  */
 export function buildMetadata({
   locale,
@@ -64,12 +77,13 @@ export function buildMetadata({
   keywords?: Record<ELocale, string[]>;
   noIndex?: boolean;
 }): Metadata {
-  const fullTitle = `${titles[locale]} | ${SITE_NAME}`;
+  const title = stripSiteNameSuffix(titles[locale]);
+  const fullTitle = buildSeoTitle(title);
   const description = descriptions[locale];
   const canonicalUrl = buildUrl(locale, path);
 
   const metadata: Metadata = {
-    title: { absolute: fullTitle },
+    title,
     description,
     keywords: keywords?.[locale],
     metadataBase: new URL(SITE_URL),

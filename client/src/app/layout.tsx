@@ -82,7 +82,7 @@ export default async function RootLayout({
       target: {
         "@type": "EntryPoint",
         urlTemplate:
-          buildUrl(normalizeLocale(locale), "/products") +
+          buildUrl(normalizeLocale(locale), "/products/solar-panels") +
           "?title_like={search_term_string}",
       },
       "query-input": "required name=search_term_string",
