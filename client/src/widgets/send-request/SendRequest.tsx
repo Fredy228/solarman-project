@@ -1,6 +1,7 @@
 import { EOrderType } from "@/src/features/order";
 import { sendRequestApi } from "@/src/features/order/api/sendRequest.api";
 import { reportGoogleAdsRequestConversion } from "@/src/libs/google-ads";
+import { trackMetaPixelLead } from "@/src/libs/meta-pixel";
 import { utmStorage } from "@/src/libs/utm-storage";
 import NumericFormatPhone from "@/src/shared/ui/number-input/NumericFormatPhone";
 import { orderConsultationSchema } from "@/src/validators/order.schema";
@@ -59,6 +60,7 @@ export default function SendRequest() {
       });
 
       reportGoogleAdsRequestConversion({ formType: "consultation" });
+      trackMetaPixelLead({ formType: "consultation" });
       setSubmitStatus("success");
     } catch (error) {
       console.error("Failed to send request:", error);

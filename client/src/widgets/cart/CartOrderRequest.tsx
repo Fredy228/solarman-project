@@ -3,6 +3,7 @@
 import type { TExchangeRates } from "@/src/features/global-params/types/exchange-rate.type";
 import { EOrderType } from "@/src/features/order";
 import { sendRequestApi } from "@/src/features/order/api/sendRequest.api";
+import { trackMetaPixelLead } from "@/src/libs/meta-pixel";
 import { utmStorage } from "@/src/libs/utm-storage";
 import { ECurrency } from "@/src/shared/types/currency.enum";
 import NumericFormatPhone from "@/src/shared/ui/number-input/NumericFormatPhone";
@@ -205,6 +206,7 @@ export default function CartOrderRequest({ locale, exchangeRate }: Props) {
         utmTags: utmStorage.get(),
       });
 
+      trackMetaPixelLead({ formType: "cart_order" });
       clear();
       setSubmitStatus("success");
     } catch (error) {

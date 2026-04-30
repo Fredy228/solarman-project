@@ -4,6 +4,7 @@ import { EOrderType, type IOrderRequest } from "@/src/features/order";
 import { sendRequestApi } from "@/src/features/order/api/sendRequest.api";
 import { ELocale } from "@/src/i18n/routing";
 import { reportGoogleAdsRequestConversion } from "@/src/libs/google-ads";
+import { trackMetaPixelLead } from "@/src/libs/meta-pixel";
 import { utmStorage } from "@/src/libs/utm-storage";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
@@ -268,6 +269,7 @@ export default function QuizEngine({ config, locale }: Props) {
     try {
       await sendRequestApi(request);
       reportGoogleAdsRequestConversion({ formType: "consultation" });
+      trackMetaPixelLead({ formType: "quiz" });
       setScreen("success");
     } catch (error) {
       console.error("Failed to send quiz request:", error);
