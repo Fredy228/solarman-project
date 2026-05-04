@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
 
 import { ELocale } from "@/src/i18n/routing";
-import { getQuizConfig, QuizEngine } from "@/src/features/quiz";
+import { getQuizConfigBySlug, QuizEngine } from "@/src/features/quiz";
 import { buildMetadata, buildUrl, SITE_URL } from "@/src/shared/utils/seo";
+import { notFound } from "next/navigation";
 
-type Props = { params: Promise<{ locale: ELocale }> };
-
-const quizUk = getQuizConfig(ELocale.UK);
-const quizRu = getQuizConfig(ELocale.RU);
+type Props = { params: Promise<{ locale: ELocale; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale, slug } = await params;
+  const quizUk = getQuizConfigBySlug(ELocale.UK, slug);
+  const quizRu = getQuizConfigBySlug(ELocale.RU, slug);
+
+  if (!quizUk || !quizRu) {
+    return {};
+  }
 
   return buildMetadata({
     locale,
-    path: "/quiz",
+    path: `/quiz/${slug}`,
     titles: {
       [ELocale.UK]: quizUk.meta.title,
       [ELocale.RU]: quizRu.meta.title,
@@ -23,27 +27,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       [ELocale.UK]: quizUk.meta.description,
       [ELocale.RU]: quizRu.meta.description,
     },
-    keywords: {
-      [ELocale.UK]: [
-        "розрахунок сонячної станції",
-        "вартість сонячної станції",
-        "сонячна станція Одеса",
-        "кошторис СЕС",
-      ],
-      [ELocale.RU]: [
-        "расчет солнечной станции",
-        "стоимость солнечной станции",
-        "солнечная станция Одесса",
-        "смета СЭС",
-      ],
-    },
   });
 }
 
-export default async function QuizPage({ params }: Props) {
-  const { locale } = await params;
-  const config = getQuizConfig(locale);
-  const pageUrl = buildUrl(locale, "/quiz");
+export default async function QuizSlugPage({ params }: Props) {
+  const { locale, slug } = await params;
+  const config = getQuizConfigBySlug(locale, slug);
+
+  if (!config) {
+    notFound();
+  }
+
+  const pageUrl = buildUrl(locale, `/quiz/${slug}`);
 
   const webPageSchema = {
     "@context": "https://schema.org",

@@ -2,11 +2,14 @@
 
 import { Dialog, DialogTitle, IconButton } from "@mui/material";
 import { PhoneCall, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import SendRequest from "./SendRequest";
 import { useSendRequestStore } from "./store/useSendRequestStore";
 
 export default function SendRequestModal() {
   const { open, openModal, closeModal } = useSendRequestStore();
+  const pathname = usePathname();
+  const isQuizPage = pathname.includes("/quiz");
 
   return (
     <>
@@ -14,7 +17,10 @@ export default function SendRequestModal() {
         size="large"
         sx={{
           position: "fixed",
-          bottom: "60px",
+          bottom: {
+            xs: isQuizPage ? "116px" : "60px",
+            md: "60px",
+          },
           right: "20px",
           backgroundColor: "primary.main",
           color: "white",

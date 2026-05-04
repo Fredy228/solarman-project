@@ -7,6 +7,10 @@ import quizPurposeIncomePc from "@/src/assets/quiz/main-quiz/quiz-1-3_pc.webp";
 import quizDiagram from "@/src/assets/quiz/quiz-diagrama.webp";
 import quizStart from "@/src/assets/quiz/quiz-start.webp";
 import quizThanks from "@/src/assets/quiz/thanks.webp";
+import introCredit from "@/src/assets/intro/intro-credit.jpg";
+import serviceEnterprise from "@/src/assets/intro/services/enterprise-intro.webp";
+import serviceHome from "@/src/assets/intro/services/home-intro.webp";
+import serviceIncome from "@/src/assets/intro/services/income-intro.webp";
 import type { StaticImageData } from "next/image";
 
 const quizImageMap: Record<string, StaticImageData> = {
@@ -19,6 +23,10 @@ const quizImageMap: Record<string, StaticImageData> = {
   quizPurposeIncomePc,
   quizStart,
   quizThanks,
+  solarMatchBusiness: serviceEnterprise,
+  solarMatchCredit: introCredit,
+  solarMatchHome: serviceHome,
+  solarMatchIncome: serviceIncome,
 };
 
 export type QuizResolvedImage = StaticImageData | string;

@@ -1,0 +1,255 @@
+{
+  "id": "solar-match-quiz",
+  "slug": "solar-match",
+  "pageTitle": "Розрахуйте вартість вашої сонячної станції",
+  "progressTotal": 6,
+  "meta": {
+    "title": "Підбір сонячного рішення",
+    "description": "Дайте відповідь на 6 питань, щоб підібрати категорію проєкту та отримати прорахунок сонячної станції."
+  },
+  "ui": {
+    "progressLabel": "Питання",
+    "back": "Назад",
+    "next": "Далі",
+    "submit": "Надіслати",
+    "home": "На головну",
+    "requiredMessage": "Заповніть поле, щоб продовжити",
+    "submitError": "Не вдалося надіслати заявку. Спробуйте ще раз."
+  },
+  "intro": {
+    "title": [
+      { "text": "Отримайте " },
+      { "text": "безкоштовний", "accent": true },
+      { "text": "\nпроект і кошторис\nвашої станції" }
+    ],
+    "subtitle": "Для цього дайте відповідь\nлише на 6 питань",
+    "buttonLabel": "Почати розрахунок",
+    "leftImage": "asset:quizStart",
+    "leftImageAlt": "Сонячні панелі на об'єкті",
+    "rightImage": "asset:quizDiagram",
+    "rightImageAlt": "Кошторис сонячної станції"
+  },
+  "success": {
+    "title": "Дякуємо!",
+    "subtitle": "Найближчим часом ми зв’яжемося з вами\nі надамо детальну інформацію",
+    "image": "asset:quizThanks",
+    "imageAlt": "Сонячна станція"
+  },
+  "googleAdsConversion": {
+    "stepId": "category",
+    "fallbackFormType": "consultation",
+    "optionFormTypes": {
+      "business": "request_price_business",
+      "income": "request_price_earnings",
+      "financing": "request_price_lending",
+      "household": "request_price_home"
+    }
+  },
+  "steps": [
+    {
+      "id": "category",
+      "module": "image-options",
+      "question": "Оберіть категорію",
+      "required": true,
+      "options": [
+        {
+          "id": "business",
+          "title": "Для підприємств",
+          "image": {
+            "desktop": "asset:quizPurposeBusinessPc",
+            "mobile": "asset:quizPurposeBusinessMobile"
+          },
+          "imageAlt": "Сонячне рішення для підприємств"
+        },
+        {
+          "id": "household",
+          "title": "Для домогосподарств",
+          "image": {
+            "desktop": "asset:quizPurposeHomePc",
+            "mobile": "asset:quizPurposeHomeMobile"
+          },
+          "imageAlt": "Сонячне рішення для домогосподарств"
+        },
+        {
+          "id": "financing",
+          "title": "Кредитування",
+          "image": "asset:solarMatchCredit",
+          "imageAlt": "Кредитування сонячних проєктів"
+        },
+        {
+          "id": "income",
+          "title": "Заробіток",
+          "image": {
+            "desktop": "asset:quizPurposeIncomePc",
+            "mobile": "asset:quizPurposeIncomeMobile"
+          },
+          "imageAlt": "Продаж електроенергії"
+        }
+      ]
+    },
+    {
+      "id": "business-industry",
+      "module": "text-options",
+      "question": "Оберіть галузь",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["business"] },
+      "options": [
+        { "id": "production", "title": "Виробництво" },
+        { "id": "trade-logistics", "title": "Торгівля / Логістика" },
+        { "id": "services", "title": "Сфера послуг" },
+        { "id": "real-estate", "title": "Нерухомість" },
+        {
+          "id": "other",
+          "title": "Інше",
+          "input": {
+            "id": "industry",
+            "placeholder": "Напишіть галузь",
+            "required": true,
+            "maxLength": 100
+          }
+        }
+      ]
+    },
+    {
+      "id": "household-object",
+      "module": "text-options",
+      "question": "Тип об'єкта",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["household"] },
+      "options": [
+        { "id": "private-house", "title": "Приватний будинок" },
+        { "id": "apartment", "title": "Квартира" },
+        { "id": "land", "title": "Ділянка" }
+      ]
+    },
+    {
+      "id": "financing-type",
+      "module": "text-options",
+      "question": "Для кого",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["financing"] },
+      "options": [
+        { "id": "individual", "title": "Фізична особа (ФО)" },
+        { "id": "fop", "title": "ФОП" },
+        { "id": "company", "title": "Юридична особа (ЮО)" }
+      ]
+    },
+    {
+      "id": "income-compensation",
+      "module": "text-options",
+      "question": "Тип компенсації",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["income"] },
+      "options": [
+        { "id": "green-tariff", "title": "Зелений тариф (ЗТ)" },
+        { "id": "net-billing", "title": "Net-billing" },
+        { "id": "net-metering", "title": "Net-metering" }
+      ]
+    },
+    {
+      "id": "business-spend",
+      "module": "slider",
+      "question": "Трати на електроенергію в місяць",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["business"] },
+      "mobileHint": "грн / місяць",
+      "defaultOptionId": "20000",
+      "options": [
+        { "id": "5000", "label": "5 000 грн", "mobileLabel": "5 000", "value": 5000 },
+        { "id": "20000", "label": "20 000 грн", "mobileLabel": "20 000", "value": 20000 },
+        { "id": "50000", "label": "50 000 грн", "mobileLabel": "50 000", "value": 50000 },
+        { "id": "100000", "label": "100 000 грн", "mobileLabel": "100 000", "value": 100000 },
+        { "id": "500000-plus", "label": "500 000+ грн", "mobileLabel": "500k+", "value": 500000 }
+      ]
+    },
+    {
+      "id": "household-spend",
+      "module": "slider",
+      "question": "Трати на електроенергію в місяць",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["household"] },
+      "mobileHint": "грн / місяць",
+      "defaultOptionId": "1000",
+      "options": [
+        { "id": "500", "label": "500 грн", "mobileLabel": "500", "value": 500 },
+        { "id": "1000", "label": "1 000 грн", "mobileLabel": "1 000", "value": 1000 },
+        { "id": "2000", "label": "2 000 грн", "mobileLabel": "2 000", "value": 2000 },
+        { "id": "3000", "label": "3 000 грн", "mobileLabel": "3 000", "value": 3000 },
+        { "id": "5000-plus", "label": "5 000+ грн", "mobileLabel": "5 000+", "value": 5000 }
+      ]
+    },
+    {
+      "id": "financing-spend",
+      "module": "slider",
+      "question": "Трати на електроенергію в місяць",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["financing"] },
+      "mobileHint": "грн / місяць",
+      "defaultOptionId": "10000",
+      "options": [
+        { "id": "3000", "label": "3 000 грн", "mobileLabel": "3 000", "value": 3000 },
+        { "id": "10000", "label": "10 000 грн", "mobileLabel": "10 000", "value": 10000 },
+        { "id": "30000", "label": "30 000 грн", "mobileLabel": "30 000", "value": 30000 },
+        { "id": "100000", "label": "100 000 грн", "mobileLabel": "100 000", "value": 100000 },
+        { "id": "250000-plus", "label": "250 000+ грн", "mobileLabel": "250k+", "value": 250000 }
+      ]
+    },
+    {
+      "id": "income-station",
+      "module": "text-options",
+      "question": "Наявність станції",
+      "required": true,
+      "visibleIf": { "stepId": "category", "optionIds": ["income"] },
+      "options": [
+        { "id": "grid", "title": "Є мережева" },
+        { "id": "hybrid", "title": "Є гібридна" },
+        { "id": "none", "title": "Немає" }
+      ]
+    },
+    {
+      "id": "goal",
+      "module": "text-options",
+      "question": "Мета встановлення системи",
+      "required": true,
+      "options": [
+        { "id": "backup", "title": "Захист від відключень світла" },
+        { "id": "saving", "title": "Економія на рахунках" },
+        { "id": "hybrid-goal", "title": "Гібридна ціль" }
+      ]
+    },
+    {
+      "id": "location",
+      "module": "text-options",
+      "question": "Де знаходиться об'єкт?",
+      "required": true,
+      "options": [
+        { "id": "odesa", "title": "Одеса" },
+        { "id": "odesa-10km", "title": "в межах 10 км від Одеси" },
+        { "id": "odesa-region", "title": "Одеська обл." }
+      ]
+    },
+    {
+      "id": "contacts",
+      "module": "contact-form",
+      "question": "Залиште контакти для отримання результату",
+      "required": true,
+      "fields": [
+        {
+          "id": "name",
+          "label": "Ваше ім’я",
+          "placeholder": "Ваше ім’я",
+          "inputType": "text",
+          "required": true,
+          "maxLength": 100
+        },
+        {
+          "id": "phone",
+          "label": "Номер телефону",
+          "placeholder": "Номер телефону",
+          "inputType": "tel",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

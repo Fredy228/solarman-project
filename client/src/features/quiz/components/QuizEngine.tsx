@@ -4,12 +4,19 @@ import { EOrderType, type IOrderRequest } from "@/src/features/order";
 import { sendRequestApi } from "@/src/features/order/api/sendRequest.api";
 import { ELocale } from "@/src/i18n/routing";
 import { reportGoogleAdsRequestConversion } from "@/src/libs/google-ads";
-import { trackMetaPixelLead } from "@/src/libs/meta-pixel";
 import { utmStorage } from "@/src/libs/utm-storage";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { ArrowLeft, ArrowRight, Send } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   QuizAnswerValue,
   QuizAnswers,
@@ -22,6 +29,7 @@ import type {
   QuizStep,
   QuizTextOptionsStep,
   QuizUiLabels,
+  QuizVisibleIfRule,
 } from "../types";
 import QuizIntro from "./QuizIntro";
 import QuizProgress from "./QuizProgress";
@@ -69,6 +77,29 @@ function isFormAnswer(
 
 function cleanText(value: string): string {
   return value.replace(/\s*\n\s*/g, " ").trim();
+}
+
+function matchesVisibleRule(
+  rule: QuizVisibleIfRule,
+  answers: QuizAnswers,
+): boolean {
+  const answer = answers[rule.stepId];
+
+  if (!isOptionAnswer(answer)) return false;
+
+  return rule.optionIds.includes(answer.optionId);
+}
+
+function getVisibleSteps(config: QuizConfig, answers: QuizAnswers): QuizStep[] {
+  return config.steps.filter((step) => {
+    if (!step.visibleIf) return true;
+
+    const rules = Array.isArray(step.visibleIf)
+      ? step.visibleIf
+      : [step.visibleIf];
+
+    return rules.every((rule) => matchesVisibleRule(rule, answers));
+  });
 }
 
 function createInitialAnswers(config: QuizConfig): QuizAnswers {
@@ -167,8 +198,8 @@ function getChoiceAnswerText(
   return inputValue ? `${cleanText(title)}: ${inputValue}` : cleanText(title);
 }
 
-function buildQuizNotes(config: QuizConfig, answers: QuizAnswers): string {
-  const notes = config.steps
+function buildQuizNotes(steps: QuizStep[], answers: QuizAnswers): string {
+  const notes = steps
     .filter((step) => step.module !== "contact-form")
     .map((step, index) => {
       const answer = answers[step.id];
@@ -198,15 +229,42 @@ function normalizePhone(phone: string): string {
   return digits.startsWith("380") ? digits : `380${digits}`;
 }
 
+function getQuizGoogleAdsFormType(
+  config: QuizConfig,
+  answers: QuizAnswers,
+): string {
+  const conversionConfig = config.googleAdsConversion;
+
+  if (!conversionConfig) {
+    return "consultation";
+  }
+
+  const answer = answers[conversionConfig.stepId];
+
+  if (!isOptionAnswer(answer)) {
+    return conversionConfig.fallbackFormType ?? "consultation";
+  }
+
+  return (
+    conversionConfig.optionFormTypes[answer.optionId] ??
+    conversionConfig.fallbackFormType ??
+    "consultation"
+  );
+}
+
 export default function QuizEngine({ config, locale }: Props) {
   const pathname = usePathname();
+  const theme = useTheme();
+  const isMobileStickyViewport = useMediaQuery(theme.breakpoints.down("md"));
   const initialAnswers = useMemo(() => createInitialAnswers(config), [config]);
+  const actionsRowRef = useRef<HTMLDivElement | null>(null);
   const [screen, setScreen] = useState<QuizScreen>("intro");
   const [activeIndex, setActiveIndex] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers);
   const [touchedSteps, setTouchedSteps] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showFloatingActions, setShowFloatingActions] = useState(false);
 
   useEffect(() => {
     setScreen("intro");
@@ -216,11 +274,60 @@ export default function QuizEngine({ config, locale }: Props) {
     setSubmitError(null);
   }, [initialAnswers, locale]);
 
-  const currentStep = config.steps[activeIndex];
+  const visibleSteps = useMemo(
+    () => getVisibleSteps(config, answers),
+    [config, answers],
+  );
+  const safeActiveIndex =
+    visibleSteps.length > 0
+      ? Math.min(activeIndex, visibleSteps.length - 1)
+      : 0;
+
+  useEffect(() => {
+    if (activeIndex !== safeActiveIndex) {
+      setActiveIndex(safeActiveIndex);
+    }
+  }, [activeIndex, safeActiveIndex]);
+
+  const currentStep = visibleSteps[safeActiveIndex];
   const currentAnswer = answers[currentStep.id];
   const validation = validateStep(currentStep, currentAnswer, config.ui);
   const showValidation = touchedSteps[currentStep.id];
-  const isLastStep = activeIndex === config.steps.length - 1;
+  const isLastStep = safeActiveIndex === visibleSteps.length - 1;
+  const progressTotal = config.progressTotal ?? visibleSteps.length;
+
+  useEffect(() => {
+    if (!isMobileStickyViewport || screen !== "questions") {
+      setShowFloatingActions(false);
+      return;
+    }
+
+    const updateFloatingState = () => {
+      const actionsRow = actionsRowRef.current;
+      const ACTIONS_VISIBILITY_BUFFER = 88;
+
+      if (!actionsRow) {
+        setShowFloatingActions(false);
+        return;
+      }
+
+      const { top } = actionsRow.getBoundingClientRect();
+      setShowFloatingActions(
+        top > window.innerHeight - ACTIONS_VISIBILITY_BUFFER,
+      );
+    };
+
+    const frameId = window.requestAnimationFrame(updateFloatingState);
+
+    window.addEventListener("scroll", updateFloatingState, { passive: true });
+    window.addEventListener("resize", updateFloatingState);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("scroll", updateFloatingState);
+      window.removeEventListener("resize", updateFloatingState);
+    };
+  }, [isMobileStickyViewport, screen, safeActiveIndex, currentStep.id]);
 
   const updateAnswer = (stepId: string, answer: QuizAnswerValue) => {
     setAnswers((prev) => ({ ...prev, [stepId]: answer }));
@@ -232,7 +339,7 @@ export default function QuizEngine({ config, locale }: Props) {
 
     if (validation.stepError) return;
 
-    setActiveIndex((prev) => Math.min(prev + 1, config.steps.length - 1));
+    setActiveIndex((prev) => Math.min(prev + 1, visibleSteps.length - 1));
     setSubmitError(null);
   };
 
@@ -257,7 +364,7 @@ export default function QuizEngine({ config, locale }: Props) {
       email: null,
       name: contactsAnswer.name?.trim() ?? "",
       phone: normalizePhone(contactsAnswer.phone ?? ""),
-      notes: buildQuizNotes(config, answers),
+      notes: buildQuizNotes(visibleSteps, answers),
       type: EOrderType.QUIZ,
       pageUrl: pathname,
       utmTags: utmStorage.get(),
@@ -268,8 +375,9 @@ export default function QuizEngine({ config, locale }: Props) {
 
     try {
       await sendRequestApi(request);
-      reportGoogleAdsRequestConversion({ formType: "consultation" });
-      trackMetaPixelLead({ formType: "quiz" });
+      reportGoogleAdsRequestConversion({
+        formType: getQuizGoogleAdsFormType(config, answers),
+      });
       setScreen("success");
     } catch (error) {
       console.error("Failed to send quiz request:", error);
@@ -341,7 +449,7 @@ export default function QuizEngine({ config, locale }: Props) {
       sx={{
         minHeight: "100vh",
         pt: { xs: 10, md: 12 },
-        pb: { xs: 5, md: 9 },
+        pb: { xs: 10, md: 9 },
         background: "var(--bg-section-gradient)",
       }}
     >
@@ -401,7 +509,7 @@ export default function QuizEngine({ config, locale }: Props) {
                 flexShrink: 0,
               }}
             >
-              {activeIndex + 1}
+              {safeActiveIndex + 1}
             </Typography>
             <Typography
               component="h2"
@@ -420,8 +528,8 @@ export default function QuizEngine({ config, locale }: Props) {
           </Box>
 
           <QuizProgress
-            activeIndex={activeIndex}
-            total={config.steps.length}
+            activeIndex={safeActiveIndex}
+            total={progressTotal}
             label={config.ui.progressLabel}
             sx={{ order: { xs: 1, md: 2 } }}
           />
@@ -443,13 +551,15 @@ export default function QuizEngine({ config, locale }: Props) {
         ) : null}
 
         <Stack
+          ref={actionsRowRef}
           direction="row"
           justifyContent="center"
           alignItems="center"
           spacing={{ xs: 2, md: 3 }}
           mt={{ xs: 4.5, md: 7 }}
+          mb={{ xs: 1, md: 0 }}
         >
-          {activeIndex > 0 && (
+          {safeActiveIndex > 0 && (
             <Button
               type="button"
               variant="outlined"
@@ -480,6 +590,69 @@ export default function QuizEngine({ config, locale }: Props) {
           </Button>
         </Stack>
       </Container>
+
+      <Box
+        sx={{
+          display: {
+            xs: showFloatingActions ? "block" : "none",
+            md: "none",
+          },
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 20,
+          px: 2,
+          pt: 1.5,
+          pb: "calc(16px + env(safe-area-inset-bottom, 0px))",
+          background:
+            "linear-gradient(180deg, rgba(233,244,255,0) 0%, rgba(233,244,255,0.88) 24%, rgba(233,244,255,0.98) 100%)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <Container maxWidth="sm" disableGutters>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            {safeActiveIndex > 0 && (
+              <Button
+                type="button"
+                variant="outlined"
+                size="large"
+                startIcon={<ArrowLeft size={20} />}
+                onClick={goBack}
+                disabled={isSubmitting}
+                sx={{
+                  minWidth: 0,
+                  px: 2.25,
+                  py: 1.15,
+                  color: "var(--color-text-g3)",
+                  borderColor: "var(--color-text-g3)",
+                  flexShrink: 0,
+                }}
+              >
+                {config.ui.back}
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant="contained"
+              size="large"
+              endIcon={
+                isLastStep ? <Send size={19} /> : <ArrowRight size={20} />
+              }
+              onClick={isLastStep ? submitQuiz : goNext}
+              loading={isSubmitting}
+              sx={{
+                py: 1.2,
+                px: 3,
+                minWidth: 0,
+                flex: 1,
+              }}
+            >
+              {isLastStep ? config.ui.submit : config.ui.next}
+            </Button>
+          </Stack>
+        </Container>
+      </Box>
     </Box>
   );
 }

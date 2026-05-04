@@ -81,6 +81,19 @@ export default function SliderModule({ step, answer, onChange }: Props) {
     return { left: `${offset}%`, transform: "translateX(-50%)" };
   };
 
+  const getMobileSelectedLabelPosition = (index: number) => {
+    if (index <= 0) {
+      return { left: `${selectedOffset}%`, transform: "translateX(-14%)" };
+    }
+
+    if (index >= step.options.length - 1) {
+      return { left: `${selectedOffset}%`, transform: "translateX(-76%)" };
+    }
+
+    return { left: `${selectedOffset}%`, transform: "translateX(-50%)" };
+  };
+  const mobileLabelPosition = getMobileSelectedLabelPosition(currentIndex);
+
   const handleChange = (_event: Event, value: number | number[]) => {
     const index = Array.isArray(value) ? value[0] : value;
     const option = step.options[index];
@@ -153,7 +166,7 @@ export default function SliderModule({ step, answer, onChange }: Props) {
         sx={{
           display: { xs: "block", sm: "none" },
           position: "relative",
-          height: 30,
+          height: step.mobileHint ? 48 : 30,
           mt: 0.5,
         }}
       >
@@ -163,18 +176,19 @@ export default function SliderModule({ step, answer, onChange }: Props) {
           onClick={() => onChange({ optionId: step.options[currentIndex].id })}
           sx={{
             position: "absolute",
-            left: `${selectedOffset}%`,
-            transform: `translateX(-${selectedOffset}%)`,
+            left: mobileLabelPosition.left,
+            transform: mobileLabelPosition.transform,
             border: "none",
             borderRadius: "10px",
             px: 1.75,
             py: 0.5,
-            minWidth: 72,
+            minWidth: 88,
             bgcolor: "var(--color-primary)",
             color: "#fff",
             fontWeight: 700,
             fontSize: 13,
             lineHeight: 1,
+            whiteSpace: "nowrap",
             cursor: "pointer",
             fontFamily: "inherit",
             transition: "left 160ms ease, transform 160ms ease",
@@ -183,6 +197,25 @@ export default function SliderModule({ step, answer, onChange }: Props) {
           {step.options[currentIndex]?.mobileLabel ??
             step.options[currentIndex]?.label}
         </Box>
+        {step.mobileHint ? (
+          <Box
+            component="span"
+            sx={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              textAlign: "center",
+              color: "var(--color-text-g3)",
+              fontSize: 12,
+              fontWeight: 600,
+              lineHeight: 1,
+              letterSpacing: 0,
+            }}
+          >
+            {step.mobileHint}
+          </Box>
+        ) : null}
       </Box>
     </Box>
   );

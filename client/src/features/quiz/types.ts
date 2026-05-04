@@ -36,11 +36,22 @@ export type QuizSuccessConfig = {
   imageAlt?: string;
 };
 
+export type QuizGoogleAdsConversionConfig = {
+  stepId: string;
+  optionFormTypes: Record<string, string>;
+  fallbackFormType?: string;
+};
+
 export type QuizOptionInput = {
   id: string;
   placeholder: string;
   required?: boolean;
   maxLength?: number;
+};
+
+export type QuizVisibleIfRule = {
+  stepId: string;
+  optionIds: string[];
 };
 
 export type QuizOption = {
@@ -63,6 +74,7 @@ type QuizBaseStep = {
   module: QuizModuleType;
   question: string;
   required?: boolean;
+  visibleIf?: QuizVisibleIfRule | QuizVisibleIfRule[];
 };
 
 export type QuizImageOptionsStep = QuizBaseStep & {
@@ -86,6 +98,7 @@ export type QuizSliderStep = QuizBaseStep & {
   module: "slider";
   options: QuizSliderOption[];
   defaultOptionId?: string;
+  mobileHint?: string;
 };
 
 export type QuizFormField = {
@@ -112,6 +125,7 @@ export type QuizConfig = {
   id: string;
   slug: string;
   pageTitle: string;
+  progressTotal?: number;
   meta: {
     title: string;
     description: string;
@@ -119,6 +133,7 @@ export type QuizConfig = {
   ui: QuizUiLabels;
   intro: QuizIntroConfig;
   success: QuizSuccessConfig;
+  googleAdsConversion?: QuizGoogleAdsConversionConfig;
   steps: QuizStep[];
 };
 

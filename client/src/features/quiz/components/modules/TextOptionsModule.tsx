@@ -17,6 +17,8 @@ export default function TextOptionsModule({
   onChange,
   error,
 }: Props) {
+  const denseLayout = step.options.length > 4;
+
   return (
     <Box width="100%">
       <Box
@@ -26,9 +28,9 @@ export default function TextOptionsModule({
             xs: "1fr",
             md: `repeat(${step.options.length}, minmax(0, 1fr))`,
           },
-          gap: { xs: 2.25, md: 4 },
+          gap: { xs: 2.25, md: denseLayout ? 2.25 : 4 },
           width: "100%",
-          maxWidth: 1400,
+          maxWidth: denseLayout ? 1320 : 1400,
           mx: "auto",
           pl: { xs: 3.5, md: 0 },
         }}

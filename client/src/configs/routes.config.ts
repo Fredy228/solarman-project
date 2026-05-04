@@ -21,6 +21,7 @@ export const PUBLIC_ROUTES = {
   products: "/products",
   productsItem: (tag: string) => `/products/${tag}`,
   quiz: "/quiz",
+  quizItem: (slug: string) => `/quiz/${slug}`,
   projects: "/projects",
   blog: "/blog",
   blogItem: (tag: string) => `/blog/${tag}`,

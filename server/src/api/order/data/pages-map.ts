@@ -11,5 +11,6 @@ export const PagesMap = new Map<number, string>([
   [11, '/contacts'],
   [12, '/cart'],
   [13, '/quiz'],
+  [14, '/quiz/solar-match'],
   [1, '/'],
 ]);
