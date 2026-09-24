@@ -4,7 +4,7 @@ import { EUserRole, IUser } from "@/src/features/user";
 import { authProvider } from "./authProvider";
 
 export const accessControlProvider: AccessControlProvider = {
-  can: async ({ resource, action }) => {
+  can: async ({ resource }) => {
     const identity = await authProvider.getIdentity?.();
     const user = identity as IUser | null;
     const role = user?.role;
